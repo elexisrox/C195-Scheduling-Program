@@ -5,8 +5,8 @@ module com.example.c195_scheduling_program_v4_rox {
     requires mysql.connector.java;
 
 
-    opens application to javafx.fxml;
-    exports application;
-    exports application.controller;
-    opens application.controller to javafx.fxml;
+    opens app to javafx.fxml;
+    exports app;
+    exports app.controller;
+    opens app.controller to javafx.fxml;
 }

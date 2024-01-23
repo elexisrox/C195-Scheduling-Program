@@ -1,4 +1,4 @@
-package application.helper;
+package app.helper;
 
 public class Utilities {
 }

@@ -1,7 +1,7 @@
-package application.DBaccess;
+package app.DBaccess;
 
-import application.helper.*;
-import application.model.Countries;
+import app.helper.JDBC;
+import app.model.Countries;
 import java.sql.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

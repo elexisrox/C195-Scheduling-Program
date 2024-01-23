@@ -1,4 +1,4 @@
-package application;
+package app;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,12 +8,13 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class MainApplication extends Application {
-    //initialize application
+
+    //initialize app
     @Override
     public void init() {
         System.out.println("Initializing Application...");
     }
-    //application content
+    //app content
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("hello-view.fxml"));
@@ -22,12 +23,20 @@ public class MainApplication extends Application {
         stage.setScene(scene);
         stage.show();
     }
-    //stop application
+    //stop app
     @Override
     public void stop() {
         System.out.println("Application terminated successfully.");
     }
+
     public static void main(String[] args) {
+        //connect to database
+        app.helper.JDBC.openConnection();
+
+        //launch application
         launch();
+
+        //end connection to database
+        app.helper.JDBC.closeConnection();
     }
 }
