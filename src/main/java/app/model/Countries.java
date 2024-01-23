@@ -3,6 +3,7 @@ package app.model;
 /**
  * Countries class provides country objects.
  */
+
 public class Countries {
 
     int countryID;
