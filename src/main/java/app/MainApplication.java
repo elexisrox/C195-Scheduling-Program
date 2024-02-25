@@ -18,10 +18,13 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("MainView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 250, 250);
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 550);
         stage.setTitle("Login");
         stage.setScene(scene);
+        stage.sizeToScene();
         stage.show();
+        stage.setMinWidth(400);
+        stage.setMinHeight(400);
     }
     //stop app
     @Override
