@@ -18,8 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<ScrollPane fitToHeight="true" fitToWidth="true" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.MainViewController">
    <content>
       <VBox maxWidth="1.7976931348623157E308">
          <children>
@@ -53,12 +52,21 @@
                 <RowConstraints vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
+                  <HBox GridPane.columnIndex="1">
+                     <children>
+                        <Label text="Filter Appointments: " />
+                        <ChoiceBox />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </HBox>
                   <VBox maxWidth="1.7976931348623157E308" spacing="10.0" GridPane.rowIndex="1">
                      <children>
                         <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Add Appointment" />
                         <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Modify Appointment" />
                         <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Delete Appointment" />
-                        <Label alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" minHeight="75.0" prefHeight="75.0" text="Error Message: Testing. Here is a bunch of text. I hate WGU" textFill="RED" wrapText="true">
+                        <Label alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" minHeight="75.0" prefHeight="75.0" text="Error Message: Testing. Here is a bunch of text." textFill="RED" wrapText="true">
                            <font>
                               <Font name="System Italic" size="12.0" />
                            </font>
@@ -80,7 +88,7 @@
                       <TableColumn prefWidth="75.0" text="Title" />
                         <TableColumn prefWidth="75.0" text="Description" />
                         <TableColumn prefWidth="75.0" text="Location" />
-                        <TableColumn prefWidth="75.0" text="Contact" />
+                        <TableColumn prefWidth="75.0" text="Contact ID" />
                         <TableColumn prefWidth="75.0" text="Type" />
                         <TableColumn prefWidth="75.0" text="Start Date" />
                         <TableColumn prefWidth="75.0" text="Start Time" />
@@ -90,15 +98,6 @@
                         <TableColumn prefWidth="75.0" text="User ID" />
                     </columns>
                   </TableView>
-                  <HBox GridPane.columnIndex="1">
-                     <children>
-                        <Label text="Filter Appointments: " />
-                        <ChoiceBox />
-                     </children>
-                     <padding>
-                        <Insets bottom="10.0" top="10.0" />
-                     </padding>
-                  </HBox>
                </children>
             </GridPane>
          </children>
