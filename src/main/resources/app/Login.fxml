@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -34,7 +35,7 @@
             </VBox>
             <GridPane hgap="10.0" prefWidth="320.0" vgap="10.0">
               <columnConstraints>
-                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="0.0" />
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="35.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
               </columnConstraints>
               <rowConstraints>
@@ -42,14 +43,14 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <TextField GridPane.columnIndex="1" />
-                  <TextField layoutX="170.0" layoutY="63.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="usernameField" GridPane.columnIndex="1" />
                   <Label text="Username" />
                   <Label layoutX="10.0" layoutY="67.0" text="Password" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
                   </Label>
+                  <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
                <VBox.margin>
                   <Insets />
@@ -58,13 +59,21 @@
             <ButtonBar />
             <VBox alignment="CENTER" spacing="5.0">
                <children>
-                <Button alignment="CENTER" contentDisplay="CENTER" defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Login" textAlignment="CENTER" />
-                  <Button alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Exit" textAlignment="CENTER">
+                  <Label fx:id="loginErrorWarning" text="Username and password do not match." textFill="RED" wrapText="true">
+                     <font>
+                        <Font name="System Italic" size="12.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin>
+                  </Label>
+                <Button alignment="CENTER" contentDisplay="CENTER" defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionLogin" text="Login" textAlignment="CENTER" />
+                  <Button alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionExit" text="Exit" textAlignment="CENTER">
                      <VBox.margin>
                         <Insets top="5.0" />
                      </VBox.margin>
                   </Button>
-                  <Hyperlink graphicTextGap="0.0" text="Reset Fields" textAlignment="CENTER" />
+                  <Hyperlink graphicTextGap="0.0" onAction="#onActionReset" text="Reset Fields" textAlignment="CENTER" />
                </children>
                <VBox.margin>
                   <Insets bottom="50.0" top="20.0" />
@@ -72,7 +81,7 @@
             </VBox>
             <GridPane hgap="10.0" prefWidth="300.0" vgap="10.0">
                <columnConstraints>
-                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="0.0" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="35.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
                <rowConstraints>
@@ -82,8 +91,8 @@
                <children>
                   <Label text="Language" />
                   <ChoiceBox maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
-                  <Label text="Current Time Zone" GridPane.rowIndex="1" />
-                  <Label text="Unable to Display" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="Current Time Zone" wrapText="true" GridPane.rowIndex="1" />
+                  <Label fx:id="timeZoneLabel" text="Unable to Display" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
                <VBox.margin>
                   <Insets top="20.0" />

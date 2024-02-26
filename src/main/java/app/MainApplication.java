@@ -17,7 +17,9 @@ public class MainApplication extends Application {
     //app content
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("MainView.fxml"));
+        //FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("MainView.fxml"));
+        //Scene scene = new Scene(fxmlLoader.load(), 1000, 550);
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("Login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1000, 550);
         stage.setTitle("Login");
         stage.setScene(scene);
