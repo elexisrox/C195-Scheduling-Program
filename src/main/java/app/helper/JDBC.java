@@ -18,6 +18,7 @@ public abstract class JDBC {
 
     /**
      * Start database connection to client_schedule.
+     * @author Elexis Rox
      */
     public static void openConnection()
     {

@@ -7,18 +7,19 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 
-<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.LoginController">
-   <children>
-      <VBox maxWidth="400.0" minWidth="350.0" spacing="10.0">
+<?import javafx.scene.control.ComboBox?>
+<ScrollPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.LoginController">
+   <content>
+      <VBox alignment="CENTER" spacing="10.0">
          <children>
             <VBox>
                <children>
@@ -39,8 +40,8 @@
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints vgrow="SOMETIMES" />
+                <RowConstraints vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <TextField fx:id="usernameField" GridPane.columnIndex="1" />
@@ -85,12 +86,12 @@
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
                   <Label text="Language" />
-                  <ChoiceBox maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+                  <ComboBox fx:id="langComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
                   <Label text="Current Time Zone" wrapText="true" GridPane.rowIndex="1" />
                   <Label fx:id="timeZoneLabel" text="Unable to Display" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
@@ -103,5 +104,5 @@
             <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
          </padding>
       </VBox>
-   </children>
-</StackPane>
+   </content>
+</ScrollPane>

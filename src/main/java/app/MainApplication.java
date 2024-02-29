@@ -1,11 +1,15 @@
 package app;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+import app.controller.LoginController;
 
 public class MainApplication extends Application {
 
@@ -20,14 +24,14 @@ public class MainApplication extends Application {
         //FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("MainView.fxml"));
         //Scene scene = new Scene(fxmlLoader.load(), 1000, 550);
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("Login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 550);
-        stage.setTitle("Login");
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("Appointment Scheduler Login");
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.sizeToScene();
         stage.show();
-        stage.setMinWidth(400);
-        stage.setMinHeight(400);
     }
+
     //stop app
     @Override
     public void stop() {
