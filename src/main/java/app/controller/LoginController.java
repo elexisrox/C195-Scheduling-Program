@@ -5,8 +5,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 /** Controller class for Login.fxml.
@@ -18,24 +20,26 @@ public class LoginController implements Initializable {
     private ComboBox<String> langComboBox;
 
     @FXML
-    private Label loginErrorWarning;
+    private Label loginErrorLbl;
 
+    //User fields
+    @FXML
+    private TextField usernameField;
     @FXML
     private PasswordField passwordField;
 
+    //Strings
     @FXML
-    private Label timeZoneLabel;
+    private Label timezoneLblString;
+    @FXML
+    private Label langLblString;
 
-    @FXML
-    private TextField usernameField;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         langComboBox.setItems(FXCollections.observableArrayList("English","French"));
-    }
+        langComboBox.getSelectionModel().selectFirst();
 
-    @FXML
-    void onActionExit(ActionEvent event) {
 
     }
 
@@ -45,10 +49,30 @@ public class LoginController implements Initializable {
     }
 
     @FXML
+    void onActionExit(ActionEvent event) {
+
+    }
+
+    @FXML
     void onActionReset(ActionEvent event) {
 
     }
 
+    @FXML
+    void onActionLangCombo(ActionEvent event) {
+         /*if (Objects.equals(langComboBox.getValue(), "French")) {
+             helper.Strings.updateLanguage(french);
+         } else {
+             helper.Strings.updateLanguage(english);
+         }*/
+    }
+
+
+
+    // Method to update the text of each node based on the selected language
+    /*private void updateLanguage() {
+        Utilities.updateLanguage(loginErrorWarning, timeZoneLabel, langComboBox.getSelectionModel().getSelectedItem());
+    }*/
 
     /*
     public TableView exampleTable;

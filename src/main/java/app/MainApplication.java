@@ -8,8 +8,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import app.helper.Utilities;
 import app.controller.LoginController;
+
 
 public class MainApplication extends Application {
 
@@ -38,9 +41,21 @@ public class MainApplication extends Application {
         System.out.println("Application terminated successfully.");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         //connect to database
         app.helper.JDBC.openConnection();
+
+        //FRUITS EXERCISE
+        Utilities.select(3);
+        /*int rowsAffected = Utilities.delete(7);
+
+        if(rowsAffected > 0){
+            System.out.println("Delete Successful");
+        }
+        else{
+            System.out.println("Delete Failed!");
+        }*/
+        //END FRUITS EXERCISE
 
         //launch application
         launch();
