@@ -18,7 +18,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.MainViewController">
+
+<ScrollPane fitToHeight="true" fitToWidth="true" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.ApptViewController">
    <content>
       <VBox maxWidth="1.7976931348623157E308">
          <children>
@@ -55,7 +56,7 @@
                   <HBox GridPane.columnIndex="1">
                      <children>
                         <Label text="Filter Appointments: " />
-                        <ChoiceBox />
+                        <ChoiceBox fx:id="filterApptDropdown" />
                      </children>
                      <padding>
                         <Insets bottom="10.0" top="10.0" />
@@ -63,10 +64,10 @@
                   </HBox>
                   <VBox maxWidth="1.7976931348623157E308" spacing="10.0" GridPane.rowIndex="1">
                      <children>
-                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Add Appointment" />
-                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Modify Appointment" />
-                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Delete Appointment" />
-                        <Label alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" minHeight="75.0" prefHeight="75.0" text="Error Message: Testing. Here is a bunch of text." textFill="RED" wrapText="true">
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionAddAppt" text="Add Appointment" />
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionModAppt" text="Modify Appointment" />
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionDelAppt" text="Delete Appointment" />
+                        <Label fx:id="errorMsgLbl" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308" minHeight="75.0" prefHeight="75.0" text=" " textFill="RED" wrapText="true">
                            <font>
                               <Font name="System Italic" size="12.0" />
                            </font>
@@ -79,23 +80,23 @@
                               <Insets bottom="20.0" top="20.0" />
                            </padding>
                         </Separator>
-                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Exit" />
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionExit" text="Exit" />
                      </children>
                   </VBox>
-                  <TableView maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <TableView fx:id="apptTable" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="Appt ID" />
-                      <TableColumn prefWidth="75.0" text="Title" />
-                        <TableColumn prefWidth="75.0" text="Description" />
-                        <TableColumn prefWidth="75.0" text="Location" />
-                        <TableColumn prefWidth="75.0" text="Contact ID" />
-                        <TableColumn prefWidth="75.0" text="Type" />
-                        <TableColumn prefWidth="75.0" text="Start Date" />
-                        <TableColumn prefWidth="75.0" text="Start Time" />
-                        <TableColumn prefWidth="75.0" text="End Date" />
-                        <TableColumn prefWidth="75.0" text="End Time" />
-                        <TableColumn prefWidth="75.0" text="Customer ID" />
-                        <TableColumn prefWidth="75.0" text="User ID" />
+                      <TableColumn fx:id="apptIDCol" prefWidth="75.0" text="Appt ID" />
+                      <TableColumn fx:id="apptTitleCol" prefWidth="75.0" text="Title" />
+                        <TableColumn fx:id="apptDescCol" prefWidth="75.0" text="Description" />
+                        <TableColumn fx:id="apptLocCol" prefWidth="75.0" text="Location" />
+                        <TableColumn fx:id="apptContactCol" prefWidth="75.0" text="Contact ID" />
+                        <TableColumn fx:id="apptTypeCol" prefWidth="75.0" text="Type" />
+                        <TableColumn fx:id="apptStartDateCol" prefWidth="75.0" text="Start Date" />
+                        <TableColumn fx:id="apptStartTimeCol" prefWidth="75.0" text="Start Time" />
+                        <TableColumn fx:id="apptEndDateCol" prefWidth="75.0" text="End Date" />
+                        <TableColumn fx:id="apptEndTimeCol" prefWidth="75.0" text="End Time" />
+                        <TableColumn fx:id="apptCustIDCol" prefWidth="75.0" text="Customer ID" />
+                        <TableColumn fx:id="apptUserIDCol" prefWidth="75.0" text="User ID" />
                     </columns>
                   </TableView>
                </children>

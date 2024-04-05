@@ -1,17 +1,12 @@
 package app;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
-import app.helper.Utilities;
-import app.controller.LoginController;
 
 
 public class MainApplication extends Application {
@@ -24,11 +19,10 @@ public class MainApplication extends Application {
     //app content
     @Override
     public void start(Stage stage) throws IOException {
-        //FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("MainView.fxml"));
-        //Scene scene = new Scene(fxmlLoader.load(), 1000, 550);
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("Login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
+        FXMLLoader fxmlLoaderDialog = new FXMLLoader(MainApplication.class.getResource("Login.fxml"));
+        Scene scene = new Scene(fxmlLoaderDialog.load());
         stage.setTitle("Appointment Scheduler Login");
+        stage.centerOnScreen();
         stage.setResizable(false);
         stage.setScene(scene);
         stage.sizeToScene();
@@ -46,10 +40,10 @@ public class MainApplication extends Application {
         app.helper.JDBC.openConnection();
 
         //FRUITS EXERCISE
-        Utilities.select(3);
-        /*int rowsAffected = Utilities.delete(7);
+        /*Utilities.select(3);
+        int rowsAffected = Utilities.delete(7);
 
-        if(rowsAffected > 0){
+        if(rowsAffected > 0){s
             System.out.println("Delete Successful");
         }
         else{

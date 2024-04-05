@@ -32,29 +32,4 @@ public class Country {
     public Country(int cID, String cName) {
         this.countryID = cID;    this.countryName = cName;}
 
-
-    /*OLD:
-    int countryID;
-    String countryName;
-
-    public Country(int cID, String cName) {
-        this.countryID = cID;
-        this.countryName = cName;
-    }
-
-    public int getID() {
-        return countryID;
-    }
-
-    public void setID(int cID) {
-        this.countryID = cID;
-    }
-
-    public String getName() {
-        return countryName;
-    }
-
-    public void setName(String cName) {
-        this.countryName = cName;
-    }*/
 }

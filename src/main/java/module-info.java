@@ -2,6 +2,7 @@ module com.example.c195_scheduling_program_v4_rox {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
+    //TODO Commented out below: causing issues
     requires mysql.connector.java;
 
 

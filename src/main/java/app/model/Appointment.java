@@ -21,9 +21,23 @@ public class Appointment {
     private LocalTime apptEndTime;
     private int apptUserID;
     private int apptContactID;
+    private int apptCustomerID;
+    public Appointment(int apptID, String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDate apptStartDate, LocalDate apptEndDate, LocalTime apptStartTime, LocalTime apptEndTime, int apptUserID, int apptContactID, int apptCustomerID) {
+        this.apptID = apptID;
+        this.apptTitle = apptTitle;
+        this.apptDesc = apptDesc;
+        this.apptLocation = apptLocation;
+        this.apptType = apptType;
+        this.apptStartDate = apptStartDate;
+        this.apptEndDate = apptEndDate;
+        this.apptStartTime = apptStartTime;
+        this.apptEndTime = apptEndTime;
+        this.apptUserID = apptUserID;
+        this.apptContactID = apptContactID;
+        this.apptCustomerID = apptCustomerID;
+    }
 
     //Getters
-
     public int getApptID() {
         return apptID;
     }
@@ -66,6 +80,10 @@ public class Appointment {
 
     public int getApptContactID() {
         return apptContactID;
+    }
+
+    public int getApptCustomerID() {
+        return apptCustomerID;
     }
 
     //Setters
@@ -111,6 +129,10 @@ public class Appointment {
 
     public void setApptContactID(int apptContactID) {
         this.apptContactID = apptContactID;
+    }
+
+    public void setApptCustomerID(int apptCustomerID) {
+        this.apptCustomerID = apptCustomerID;
     }
 
 }
