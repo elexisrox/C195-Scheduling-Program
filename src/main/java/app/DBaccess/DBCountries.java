@@ -3,6 +3,8 @@ package app.DBaccess;
 import app.helper.JDBC;
 import app.model.Country;
 import java.sql.*;
+
+import com.mysql.cj.x.protobuf.MysqlxPrepare;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -12,7 +14,8 @@ import javafx.collections.ObservableList;
  */
 public class DBCountries {
 
-    public static ObservableList<Country> getAllCountries() {
+    //SQL Query that gets all countries and adds them to an ObservableList
+    public static ObservableList<Country> readAllCountries() {
 
         ObservableList<Country> countryList = FXCollections.observableArrayList();
 
@@ -37,5 +40,30 @@ public class DBCountries {
         }
         return countryList;
     }
+
+    //SQL Query that returns a country's name based on the provided country ID
+    public static Country readCountry(int countryID) {
+
+        int providedCountryID = 0;
+        String countryName = null;
+
+        try {
+            String sql = "SELECT Country_ID, Country FROM countries WHERE Country_ID = ?";
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ps.setInt(1, countryID);
+            ResultSet rs = ps.executeQuery();
+
+            rs.next();
+            providedCountryID = rs.getInt("Country_ID");
+            countryName = rs.getString("Country");
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Country):" + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+        return new Country(providedCountryID, countryName);
+    }
+
+    //TODO May need more queries for reports
 }
 

@@ -10,6 +10,11 @@ public class Country {
     private int countryID;
     private String countryName;
 
+    //Overloaded constructor for Country
+    public Country(int cID, String cName) {
+        this.countryID = cID;
+        this.countryName = cName;}
+
     // Getters
     public int getCountryID() {
         return countryID;
@@ -27,9 +32,5 @@ public class Country {
     public void setCountryName(String countryName) {
         this.countryName = countryName;
     }
-
-    //Creates an identifier for a country within the database based on the country's ID and name.
-    public Country(int cID, String cName) {
-        this.countryID = cID;    this.countryName = cName;}
 
 }

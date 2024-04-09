@@ -9,16 +9,17 @@ import java.sql.SQLException;
  * @author Elexis Rox
  */
 
+//TODO UPDATE: THIS IS NOT FOR CRUD!!
 public abstract class Utilities {
 
     //FRUITS EXERCISE
+    //CREATE
     public static int insert(String fruitName, int colorID) throws SQLException {
         String sql = "INSERT INTO FRUITS (Fruit_Name, Color_ID) VALUES(?, ?)";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1, fruitName);
         ps.setInt(2, colorID);
-        int rowsAffected = ps.executeUpdate();
-        return rowsAffected;
+        return ps.executeUpdate();
     }
 
     public static int update(int fruitID, String fruitName) throws SQLException {
@@ -38,6 +39,7 @@ public abstract class Utilities {
         return rowsAffected;
     }
 
+    //READ
     public static void select() throws SQLException {
         String sql = "SELECT * FROM FRUITS";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -64,4 +66,5 @@ public abstract class Utilities {
             System.out.print(colorIDFK + "\n");
         }
     }
+
 }

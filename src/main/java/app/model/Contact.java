@@ -8,8 +8,14 @@ package app.model;
 public class Contact {
     private int contactID;
     private String contactName;
-    private String email;
+    private String contactEmail;
 
+    //Overloaded constructor for Contact
+    public Contact(int cID, String cName, String cEmail) {
+        this.contactID = cID;
+        this.contactName = cName;
+        this.contactEmail = cEmail;
+    }
     // Getters
     public int getContactID() {
         return contactID;
@@ -19,8 +25,8 @@ public class Contact {
         return contactName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getContactEmail() {
+        return contactEmail;
     }
 
     // Setters
@@ -32,7 +38,7 @@ public class Contact {
         this.contactName = contactName;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setContactEmail(String cEmail) {
+        this.contactEmail = cEmail;
     }
 }

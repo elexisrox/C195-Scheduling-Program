@@ -21,6 +21,7 @@ import java.util.ResourceBundle;
  * @author Elexis Rox
  */
 
+//TODO Possibly rename MainViewController depending on how I handle the other views
 public class ApptViewController implements Initializable {
     /**
      *  Initializes the Appointment View Controller Class.
