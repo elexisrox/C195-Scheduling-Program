@@ -41,18 +41,7 @@ public class ApptViewController implements Initializable {
     @FXML
     public void onActionAddAppt(ActionEvent event) throws IOException {
         System.out.println("Add Appointment button clicked.");
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("/app/ApptDialog.fxml"));
-        DialogPane addApptPane = fxmlLoader.load();
-
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setDialogPane((DialogPane) addApptPane);
-        dialog.setTitle("Add Appointment");
-
-        Optional<ButtonType> clickedButton = dialog.showAndWait();
-        if (clickedButton.get() == ButtonType.OK){
-            System.out.println("OK button clicked.");
-        }
+        UniversalControls.openApptDialog();
     }
 
     @FXML
