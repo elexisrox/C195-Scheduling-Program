@@ -11,7 +11,16 @@ public class Customer {
     private String custAddress;
     private String custPostalCode;
     private String custPhone;
+    //TODO GETTERS AND SETTERS FOR BELOW, IDK HOW TO AUTOPOPULATE? DO DBDIVISIONS FIRST?
+    private int custDivisionID;
+    private String custDivisionName;
+    private int custCountryID;
+    private String custCountryName;
 
+    //TODO Overloaded Constructor for Customer
+    public Customer() {
+
+    }
     // Getters
     public int getCustID() {
         return custID;
