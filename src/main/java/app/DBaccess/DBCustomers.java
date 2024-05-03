@@ -6,4 +6,8 @@ package app.DBaccess;
  */
 
 public class DBCustomers {
+    //CREATE
+    //READ
+    //UPDATE
+    //DELETE
 }

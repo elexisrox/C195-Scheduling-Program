@@ -14,7 +14,7 @@ import javafx.collections.ObservableList;
  */
 public class DBCountries {
 
-    //SQL Query that gets all countries and adds them to an ObservableList
+    //SQL Query that retrieves all countries and adds them to an ObservableList.
     public static ObservableList<Country> readAllCountries() {
 
         ObservableList<Country> countryList = FXCollections.observableArrayList();
@@ -41,7 +41,7 @@ public class DBCountries {
         return countryList;
     }
 
-    //SQL Query that returns a country's name based on the provided country ID
+    //SQL Query that returns a country's name based on the provided country ID.
     public static Country readCountry(int countryID) {
 
         int providedCountryID = 0;

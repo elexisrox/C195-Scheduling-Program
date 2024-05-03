@@ -15,8 +15,7 @@ import java.sql.SQLException;
  */
 
 public class DBContacts {
-
-    //SQL Query that gets all contacts and adds them to an ObservableList
+    //SQL Query that retrieves all contacts and adds them to an ObservableList.
     public static ObservableList<Contact> readAllContacts() {
 
         ObservableList<Contact> contactList = FXCollections.observableArrayList();
@@ -36,15 +35,14 @@ public class DBContacts {
                 contactList.add(C);
             }
         } catch (SQLException e) {
-            System.out.println("SQL Exception Error (Contacts):" + e.getErrorCode());
-        } catch(Exception e)
-        {
-            System.out.println("Error:" + e.getMessage());
+            System.out.println("SQL Exception Error (Contacts): " + e.getErrorCode());
+        } catch(Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
         return contactList;
     }
 
-    //SQL Query that returns a Contact's name based on the provided Contact ID
+    //SQL Query that returns a Contact's name based on the provided Contact ID.
     public static Contact readContact(int contactID) {
 
         int providedContactID = 0;
@@ -69,7 +67,7 @@ public class DBContacts {
         return new Contact(providedContactID, contactName, contactEmail);
     }
 
-    //SQL Query that returns a Contact ID based on the provided Contact Name
+    //SQL Query that returns a Contact ID based on the provided Contact Name.
     public static int readContactID(String contactName) {
 
         int contactID = 0;
