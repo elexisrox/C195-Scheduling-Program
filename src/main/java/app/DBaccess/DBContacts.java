@@ -31,7 +31,9 @@ public class DBContacts {
                 int contactID = rs.getInt("Contact_ID");
                 String contactName = rs.getString("Contact_Name");
                 String contactEmail = rs.getString("Email");
+
                 Contact C = new Contact(contactID, contactName, contactEmail);
+
                 contactList.add(C);
             }
         } catch (SQLException e) {

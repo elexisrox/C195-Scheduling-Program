@@ -28,7 +28,7 @@ public class DBAppointments {
 
            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
-           ResultSet rs = ps.execute();
+           ResultSet rs = ps.executeQuery();
 
            while (rs.next()) {
                int apptID = rs.getInt("Appointment_ID");
@@ -36,10 +36,14 @@ public class DBAppointments {
                String apptDesc = rs.getString("Description");
                String apptLocation = rs.getString("Location");
                String apptType = rs.getString("Type");
-               LocalDateTime apptStartDate = rs.getTimestamp("Start").toLocalDateTime();
-               LocalDateTime apptEndDate = rs.getTimestamp("End").toLocalDateTime();
+               LocalDateTime apptStart = rs.getTimestamp("Start").toLocalDateTime();
+               LocalDateTime apptEnd = rs.getTimestamp("End").toLocalDateTime();
+               int apptUserID = rs.getInt("User_ID");
+               int apptContactID = rs.getInt("Contact_ID");
+               int apptCustomerID = rs.getInt("Customer_ID");
 
-               Appointment A = new Appointment(apptID, apptTitle, apptDesc, apptLocation);
+               Appointment A = new Appointment(apptID, apptTitle, apptDesc, apptLocation, apptType, apptStart, apptEnd, apptUserID, apptContactID, apptCustomerID);
+
                apptList.add(A);
            }
        } catch (SQLException e) {
