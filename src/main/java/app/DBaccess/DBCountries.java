@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
  */
 public class DBCountries {
 
+    //READ QUERIES
     //SQL Query that retrieves all countries and adds them to an ObservableList.
     public static ObservableList<Country> readAllCountries() {
 

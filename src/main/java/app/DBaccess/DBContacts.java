@@ -15,6 +15,7 @@ import java.sql.SQLException;
  */
 
 public class DBContacts {
+    //READ QUERIES
     //SQL Query that retrieves all contacts and adds them to an ObservableList.
     public static ObservableList<Contact> readAllContacts() {
 

@@ -1,5 +1,6 @@
 package app;
 
+import app.DBaccess.DBAppointments;
 import app.DBaccess.DBCountries;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 
 public class MainApplication extends Application {
@@ -50,7 +52,11 @@ public class MainApplication extends Application {
         else{
             System.out.println("Delete Failed!");
         }*/
-        //END FRUITS EXERCISE
+
+        //APPOINTMENT ADD/DELETE TEST
+        /*DBAppointments.addAppt("Test Appt", "TestDesc", "test location", "test type", LocalDateTime.of(2019, 3, 28, 14, 33, 48, 640000), LocalDateTime.of(2019, 3, 28, 16, 33, 48, 640000), 1, 1, 1);
+
+        DBAppointments.deleteAppt(3);*/
 
         //launch application
         launch();

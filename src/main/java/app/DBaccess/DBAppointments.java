@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -16,11 +17,35 @@ import java.time.LocalDateTime;
  */
 
 public class DBAppointments {
-    //CREATE
+    //CREATE QUERIES
     //SQL Query that adds a new appointment in the database. Appointment ID is auto-incremented by the database.
-    //READ
-    //SQL Query that retrieves all appointments and adds them to an ObservableList.
-    public static ObservableList<Appointment> readAllAppointments() {
+    public static void addAppt(String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDateTime apptStart, LocalDateTime apptEnd, int apptUserID, int apptContactID, int apptCustomerID) {
+        try {
+            String sql = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, User_ID, Contact_ID, Customer_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+
+            ps.setString(1, apptTitle);
+            ps.setString(2, apptDesc);
+            ps.setString(3, apptLocation);
+            ps.setString(4, apptType);
+            ps.setTimestamp(5, Timestamp.valueOf(apptStart));
+            ps.setTimestamp(6, Timestamp.valueOf(apptEnd));
+            ps.setInt(7, apptUserID);
+            ps.setInt(8, apptContactID);
+            ps.setInt(9, apptCustomerID);
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Add Appointment): " + e.getErrorCode());
+        } catch(Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+    //READ QUERIES
+    //SQL Query that retrieves all appointments in the database and adds them to an ObservableList.
+    public static ObservableList<Appointment> readAllAppts() {
        ObservableList<Appointment> apptList = FXCollections.observableArrayList();
 
        try {
@@ -57,11 +82,50 @@ public class DBAppointments {
     //SQL Query that retrieves all appointments within a specific month.
     //SQL Query that retrieves all appointments associated with the user in order to display alerts for appointments within 15 minutes.
     //SQL Query that retrieves all appointments by contact ID.
-    //UPDATE
+    //UPDATE QUERIES
     //SQL Query that updates a selected appointment within the database.
-    //DELETE
+    public static void updateAppt(String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDateTime apptStart, LocalDateTime apptEnd, int apptUserID, int apptContactID, int apptCustomerID) {
+        try {
+            String sql = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, User_ID = ?, Contact_ID = ?, Customer_ID = ? WHERE Appointment_ID = ?";
+
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+
+            ps.setString(1, apptTitle);
+            ps.setString(2, apptDesc);
+            ps.setString(3, apptLocation);
+            ps.setString(4, apptType);
+            ps.setTimestamp(5, Timestamp.valueOf(apptStart));
+            ps.setTimestamp(6, Timestamp.valueOf(apptEnd));
+            ps.setInt(7, apptUserID);
+            ps.setInt(8, apptContactID);
+            ps.setInt(9, apptCustomerID);
+
+            ps.execute();
+
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Update Appointment):" + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+    }
+    //DELETE QUERIES
     //SQL Query that deletes a selected appointment within the database by the appointment ID.
-    //REPORTS: Other queries used for reports
+    public static void deleteAppt(int apptID) {
+        try {
+            String sql = "DELETE FROM appointments WHERE Appointment_ID = ?";
+
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+
+            ps.setInt(1, apptID);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Delete Appointment):" + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+    }
+    //REPORTS QUERIES: Other queries used for reports
     //SQL Query that retrieves and counts all appointments by appointment type.
     //SQL Query that retrieves the number of appointments per month.
 }
