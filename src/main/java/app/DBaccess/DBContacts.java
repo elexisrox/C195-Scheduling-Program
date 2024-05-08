@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * DBContacts class contains all queries to the contacts table in the database.
+ * DBContacts class contains all queries for the contacts table in the database.
  * @author Elexis Rox
  */
 
@@ -22,7 +22,7 @@ public class DBContacts {
         ObservableList<Contact> contactList = FXCollections.observableArrayList();
 
         try{
-            String sql = "SELECT * from contacts";
+            String sql = "SELECT Contact_ID, Contact_Name, Email FROM contacts";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -33,9 +33,9 @@ public class DBContacts {
                 String contactName = rs.getString("Contact_Name");
                 String contactEmail = rs.getString("Email");
 
-                Contact C = new Contact(contactID, contactName, contactEmail);
+                Contact c = new Contact(contactID, contactName, contactEmail);
 
-                contactList.add(C);
+                contactList.add(c);
             }
         } catch (SQLException e) {
             System.out.println("SQL Exception Error (Contacts): " + e.getErrorCode());
@@ -53,12 +53,13 @@ public class DBContacts {
         String contactEmail = null;
 
         try {
-            String sql = "SELECT * FROM contacts WHERE Contact_ID = ?";
+            String sql = "SELECT Contact_ID, Contact_Name, Email FROM contacts WHERE Contact_ID = ?";
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setInt(1, contactID);
             ResultSet rs = ps.executeQuery();
 
             rs.next();
+
             providedContactID = rs.getInt("Contact_ID");
             contactName = rs.getString("Contact_Name");
             contactEmail = rs.getString("Email");
@@ -76,7 +77,7 @@ public class DBContacts {
         int contactID = 0;
 
         try {
-            String sql = "SELECT * FROM contacts WHERE Contact_Name = ?";
+            String sql = "SELECT Contact_ID, Contact_Name FROM contacts WHERE Contact_Name = ?";
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setString(1, contactName);
             ResultSet rs = ps.executeQuery();

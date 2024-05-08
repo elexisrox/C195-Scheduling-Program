@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
- * DBAppointments class contains all queries to the appointments table in the database.
+ * DBAppointments class contains all queries for the appointments table in the database.
  * @author Elexis Rox
  */
 
@@ -43,13 +43,14 @@ public class DBAppointments {
             System.out.println("Error: " + e.getMessage());
         }
     }
+
     //READ QUERIES
     //SQL Query that retrieves all appointments in the database and adds them to an ObservableList.
     public static ObservableList<Appointment> readAllAppts() {
        ObservableList<Appointment> apptList = FXCollections.observableArrayList();
 
        try {
-           String sql = "SELECT * FROM appointments JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID ORDER BY appointments.Appointment_ID";
+           String sql = "SELECT Appointment_ID, Title, Description, Location, Type, Start, End, User_ID, Contact_ID, Customer_ID FROM appointments JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID ORDER BY appointments.Appointment_ID";
 
            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -67,9 +68,9 @@ public class DBAppointments {
                int apptContactID = rs.getInt("Contact_ID");
                int apptCustomerID = rs.getInt("Customer_ID");
 
-               Appointment A = new Appointment(apptID, apptTitle, apptDesc, apptLocation, apptType, apptStart, apptEnd, apptUserID, apptContactID, apptCustomerID);
+               Appointment a = new Appointment(apptID, apptTitle, apptDesc, apptLocation, apptType, apptStart, apptEnd, apptUserID, apptContactID, apptCustomerID);
 
-               apptList.add(A);
+               apptList.add(a);
            }
        } catch (SQLException e) {
            System.out.println("SQL Exception Error (Appointments): " + e.getErrorCode());
@@ -82,9 +83,10 @@ public class DBAppointments {
     //SQL Query that retrieves all appointments within a specific month.
     //SQL Query that retrieves all appointments associated with the user in order to display alerts for appointments within 15 minutes.
     //SQL Query that retrieves all appointments by contact ID.
+
     //UPDATE QUERIES
     //SQL Query that updates a selected appointment within the database.
-    public static void updateAppt(String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDateTime apptStart, LocalDateTime apptEnd, int apptUserID, int apptContactID, int apptCustomerID) {
+    public static void updateAppt(int apptID, String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDateTime apptStart, LocalDateTime apptEnd, int apptUserID, int apptContactID, int apptCustomerID) {
         try {
             String sql = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, User_ID = ?, Contact_ID = ?, Customer_ID = ? WHERE Appointment_ID = ?";
 
@@ -99,6 +101,7 @@ public class DBAppointments {
             ps.setInt(7, apptUserID);
             ps.setInt(8, apptContactID);
             ps.setInt(9, apptCustomerID);
+            ps.setInt(10, apptID);
 
             ps.execute();
 
@@ -108,6 +111,7 @@ public class DBAppointments {
             System.out.println("Error:" + e.getMessage());
         }
     }
+
     //DELETE QUERIES
     //SQL Query that deletes a selected appointment within the database by the appointment ID.
     public static void deleteAppt(int apptID) {
@@ -125,6 +129,7 @@ public class DBAppointments {
             System.out.println("Error:" + e.getMessage());
         }
     }
+
     //REPORTS QUERIES: Other queries used for reports
     //SQL Query that retrieves and counts all appointments by appointment type.
     //SQL Query that retrieves the number of appointments per month.

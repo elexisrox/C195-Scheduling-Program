@@ -10,10 +10,17 @@ public class User {
     private String userName;
     private String userPass;
 
+    //Overloaded Constructor for User
     public User(int userID, String userName, String userPass) {
         this.userID = userID;
         this.userName = userName;
         this.userPass = userPass;
+    }
+
+    //Constructor for displaying list of Users
+    public User(int userID, String userName) {
+        this.userID = userID;
+        this.userName = userName;
     }
 
     //Getters

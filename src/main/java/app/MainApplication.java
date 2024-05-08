@@ -2,7 +2,9 @@ package app;
 
 import app.DBaccess.DBAppointments;
 import app.DBaccess.DBCountries;
+import app.model.Appointment;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -53,10 +55,13 @@ public class MainApplication extends Application {
             System.out.println("Delete Failed!");
         }*/
 
-        //APPOINTMENT ADD/DELETE TEST
-        /*DBAppointments.addAppt("Test Appt", "TestDesc", "test location", "test type", LocalDateTime.of(2019, 3, 28, 14, 33, 48, 640000), LocalDateTime.of(2019, 3, 28, 16, 33, 48, 640000), 1, 1, 1);
+        //APPOINTMENTS ADD/DELETE/VIEW TEST
+        //DBAppointments.addAppt("Test Appt", "TestDesc", "test location", "test type", LocalDateTime.of(2019, 3, 28, 14, 33, 48, 640000), LocalDateTime.of(2019, 3, 28, 16, 33, 48, 640000), 1, 1, 1);
 
-        DBAppointments.deleteAppt(3);*/
+        DBAppointments.deleteAppt(6);
+
+        //ObservableList<Appointment> AppointmentList = DBAppointments.readAllAppts();
+        //System.out.println(AppointmentList);
 
         //launch application
         launch();

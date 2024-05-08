@@ -11,16 +11,24 @@ public class Customer {
     private String custAddress;
     private String custPostalCode;
     private String custPhone;
-    //TODO GETTERS AND SETTERS FOR BELOW, IDK HOW TO AUTOPOPULATE? DO DBDIVISIONS FIRST?
     private int custDivisionID;
     private String custDivisionName;
     private int custCountryID;
     private String custCountryName;
 
-    //TODO Overloaded Constructor for Customer
-    public Customer() {
-
+    //Overloaded Constructor for Customer
+    public Customer(int custID, String custName, String custAddress, String custPostalCode, String custPhone, int custDivisionID, String custDivisionName, int custCountryID, String custCountryName) {
+        this.custID = custID;
+        this.custName = custName;
+        this.custAddress = custAddress;
+        this.custPostalCode = custPostalCode;
+        this.custPhone = custPhone;
+        this.custDivisionID = custDivisionID;
+        this.custDivisionName = custDivisionName;
+        this.custCountryID = custCountryID;
+        this.custCountryName = custCountryName;
     }
+
     // Getters
     public int getCustID() {
         return custID;
@@ -42,6 +50,22 @@ public class Customer {
         return custPhone;
     }
 
+    public int getCustDivisionID() {
+        return custDivisionID;
+    }
+
+    public String getCustDivisionName() {
+        return custDivisionName;
+    }
+
+    public int getCustCountryID() {
+        return custCountryID;
+    }
+
+    public String getCustCountryName() {
+        return custCountryName;
+    }
+
     // Setters
     public void setCustID(int custID) {
         this.custID = custID;
@@ -61,5 +85,21 @@ public class Customer {
 
     public void setCustPhone(String custPhone) {
         this.custPhone = custPhone;
+    }
+
+    public void setCustDivisionID(int custDivisionID) {
+        this.custDivisionID = custDivisionID;
+    }
+
+    public void setCustDivisionName(String custDivisionName) {
+        this.custDivisionName = custDivisionName;
+    }
+
+    public void setCustCountryID(int custCountryID) {
+        this.custCountryID = custCountryID;
+    }
+
+    public void setCustCountryName(String custCountryName) {
+        this.custCountryName = custDivisionName;
     }
 }

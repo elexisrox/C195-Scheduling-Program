@@ -21,6 +21,8 @@ public class Appointment {
     private int apptUserID;
     private int apptContactID;
     private int apptCustomerID;
+
+    //Overloaded Constructor for Appointment
     public Appointment(int apptID, String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDateTime apptStart, LocalDateTime apptEnd, int apptUserID, int apptContactID, int apptCustomerID) {
         this.apptID = apptID;
         this.apptTitle = apptTitle;

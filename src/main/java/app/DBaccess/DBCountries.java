@@ -9,7 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * DBCountries class contains all queries to the countries table in the database.
+ * DBCountries class contains all queries for the countries table in the database.
  * @author Elexis Rox
  */
 public class DBCountries {
@@ -21,7 +21,7 @@ public class DBCountries {
         ObservableList<Country> countryList = FXCollections.observableArrayList();
 
         try{
-            String sql = "SELECT * from countries";
+            String sql = "SELECT Country_ID, Country from countries";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -30,8 +30,10 @@ public class DBCountries {
             while(rs.next()){
                 int countryID = rs.getInt("Country_ID");
                 String countryName = rs.getString("Country");
-                Country C = new Country(countryID, countryName);
-                countryList.add(C);
+
+                Country c = new Country(countryID, countryName);
+
+                countryList.add(c);
             }
         } catch (SQLException e) {
             System.out.println("SQL Exception Error (Countries):" + e.getErrorCode());
