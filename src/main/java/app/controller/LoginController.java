@@ -1,6 +1,7 @@
 package app.controller;
 
 //TODO Organize imports for clarity/readability
+import app.DBaccess.DBUsers;
 import app.MainApplication;
 import app.helper.Utilities;
 import javafx.event.ActionEvent;
@@ -29,9 +30,6 @@ public class LoginController implements Initializable {
     @FXML
     private ComboBox<String> langComboBox;
 
-    @FXML
-    private Label loginErrorLbl;
-
     //User fields
     @FXML
     private TextField usernameField;
@@ -40,34 +38,65 @@ public class LoginController implements Initializable {
 
     //Strings
     @FXML
+    private Label loginErrorLbl;
+    @FXML
     private Label timezoneLblString;
     @FXML
     private Label langLblString;
 
-    //Validates username and password upon login. Displays an error/success message upon login attempt and logs unsuccessful attempts in login_activity.txt file.
+    //Validates username and password upon login. Displays an  appropriate error/success message upon login attempt. Logs completed login attempts in login_activity.txt file.
     @FXML
     void onActionLogin(ActionEvent event) throws IOException {
+        System.out.println("Login button clicked.");
+
         String userName = usernameField.getText();
         String userPassword = passwordField.getText();
+        boolean loginSuccessful = false;
 
+        //Displays error message if both username and password fields are blank or empty.
+        if ((userName.isBlank() || userName.isEmpty()) && (userPassword.isBlank() || userPassword.isEmpty())) {
+            loginErrorLbl.setText(Utilities.getErrorMsg(1));
+        }
         //Displays error message if username field is blank or empty.
-        if (userName.isBlank() || userName.isEmpty()) {
-            Utilities.getErrorMsg(1);
+        else if (userName.isBlank() || userName.isEmpty()) {
+            loginErrorLbl.setText(Utilities.getErrorMsg(2));
         }
         //Displays error message if password field is blank or empty.
-        //Displays error message if both username and password fields are blank or empty.
-        //Displays error message if username, password, or both are incorrect.
-        //Ensures username and password are both correct and loads the main application Appointment view.
-        else if (userLogin(userName, userPassword)) {
-            System.out.println("Login button clicked.");
-            transitionApptView(event);
-
-            //If login is successful, checks for upcoming appointments within 15 minutes of logging in.
-            //Displays a message if there are no upcoming appointments within 15 minutes of logging in.
+        else if (userPassword.isBlank() || userPassword.isEmpty()) {
+            loginErrorLbl.setText(Utilities.getErrorMsg(3));
         }
+        //Displays error message if the provided username does not exist in the database. Records the login attempt.
+        else if (!DBUsers.userNameValidate(userName)) {
+            loginErrorLbl.setText(Utilities.getErrorMsg(4));
+            //TODO: LOGIN ACTIVITY
+            //loginActivity();
+        }
+        //Attempts to validate that the provided username and password match.
+        else {
+            loginSuccessful = DBUsers.userLoginValidate(userName, userPassword);
 
+            //If username and password do not match, displays an error message. Records the login attempt.
+            if (!loginSuccessful) {
+                loginErrorLbl.setText(Utilities.getErrorMsg(5));
+                //TODO
+                //loginActivity();
+            }
+            //If username and password are successfully validated, loads the main application Appointment view. Records the login attempt.
+            else {
+                System.out.println("Login successful.");
+                loginErrorLbl.setText(null);
+                //TODO
+                //loginActivity();
+                transitionApptView(event);
 
+                //TODO
+                //If login is successful, checks for upcoming appointments within 15 minutes of logging in.
+                //TODO
+                //Displays a message if there are no upcoming appointments within 15 minutes of logging in.
+            }
+        }
     }
+
 
     @FXML
     void onActionExit(ActionEvent event) {

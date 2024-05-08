@@ -4,7 +4,6 @@ import app.helper.JDBC;
 import app.model.Country;
 import java.sql.*;
 
-import com.mysql.cj.x.protobuf.MysqlxPrepare;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

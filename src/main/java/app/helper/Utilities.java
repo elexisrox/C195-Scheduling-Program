@@ -15,17 +15,16 @@ import java.sql.SQLException;
 public abstract class Utilities {
 
     //Error Messages
-    public static void getErrorMsg(int errorType) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        switch (errorType) {
-
-            case 1:
-                alert.setTitle("Test");
-                alert.setContentText("Test");
-                alert.showAndWait();
-                break;
-
-        }
+    public static String getErrorMsg(int errorType) {
+        return switch (errorType) {
+            //
+            case 1 -> "Please provide a username and password.";
+            case 2 -> "Please provide a username.";
+            case 3 -> "Please provide a password.";
+            case 4 -> "Username not found. Please try again.";
+            case 5 -> "Username and password do not match. Please try again.";
+            default -> null;
+        };
     }
     //FRUITS EXERCISE
     //CREATE

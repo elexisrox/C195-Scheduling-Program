@@ -106,5 +106,61 @@ public class DBUsers {
 
     //VALIDATION QUERIES
     //SQL Query that validates Username is case-sensitive and correct.
-    //SQL Query that validates Password is case-sensitive and correct.
+    public static boolean userNameValidate(String userName) {
+        boolean matchFound = false;
+        try {
+            String sql = "SELECT * FROM users WHERE BINARY User_Name = ?";
+
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+
+            ps.setString(1, userName);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                System.out.println("Username found in database.");
+                matchFound = true;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Username): " + e.getErrorCode());
+        } catch(Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        if (!matchFound) {
+            System.out.println("Username not found in database.");
+        }
+        return matchFound;
+    }
+
+    //SQL Query that validates Password matches the associated Username and is case-sensitive and correct.
+    public static boolean userLoginValidate(String userName, String userPassword) {
+        boolean loginValidated = false;
+        try {
+            String sql = "SELECT * FROM users WHERE BINARY User_Name = ? AND BINARY Password = ?";
+
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+
+            ps.setString(1, userName);
+            ps.setString(2, userPassword);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                System.out.println("Username and password validation success!");
+                loginValidated = true;
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Login Database Match): " + e.getErrorCode());
+        } catch(Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        if (!loginValidated) {
+            System.out.println("Username and password validation failure.");
+        }
+
+        return loginValidated;
+    }
 }

@@ -37,7 +37,7 @@ public class MainApplication extends Application {
     //stop app
     @Override
     public void stop() {
-        System.out.println("Application terminated successfully.");
+        System.out.println("Application terminated.");
     }
 
     public static void main(String[] args) throws SQLException {
