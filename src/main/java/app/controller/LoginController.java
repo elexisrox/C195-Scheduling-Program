@@ -2,6 +2,7 @@ package app.controller;
 
 //TODO Organize imports for clarity/readability
 import app.MainApplication;
+import app.helper.Utilities;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,10 +44,29 @@ public class LoginController implements Initializable {
     @FXML
     private Label langLblString;
 
+    //Validates username and password upon login. Displays an error/success message upon login attempt and logs unsuccessful attempts in login_activity.txt file.
     @FXML
     void onActionLogin(ActionEvent event) throws IOException {
-        System.out.println("Login button clicked.");
-        transitionApptView(event);
+        String userName = usernameField.getText();
+        String userPassword = passwordField.getText();
+
+        //Displays error message if username field is blank or empty.
+        if (userName.isBlank() || userName.isEmpty()) {
+            Utilities.getErrorMsg(1);
+        }
+        //Displays error message if password field is blank or empty.
+        //Displays error message if both username and password fields are blank or empty.
+        //Displays error message if username, password, or both are incorrect.
+        //Ensures username and password are both correct and loads the main application Appointment view.
+        else if (userLogin(userName, userPassword)) {
+            System.out.println("Login button clicked.");
+            transitionApptView(event);
+
+            //If login is successful, checks for upcoming appointments within 15 minutes of logging in.
+            //Displays a message if there are no upcoming appointments within 15 minutes of logging in.
+        }
+
+
     }
 
     @FXML

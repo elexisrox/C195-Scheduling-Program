@@ -1,5 +1,7 @@
 package app.helper;
 
+import javafx.scene.control.Alert;
+
 import javax.xml.transform.Result;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,6 +14,19 @@ import java.sql.SQLException;
 //TODO UPDATE: THIS IS NOT FOR CRUD!!
 public abstract class Utilities {
 
+    //Error Messages
+    public static void getErrorMsg(int errorType) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        switch (errorType) {
+
+            case 1:
+                alert.setTitle("Test");
+                alert.setContentText("Test");
+                alert.showAndWait();
+                break;
+
+        }
+    }
     //FRUITS EXERCISE
     //CREATE
     public static int insert(String fruitName, int colorID) throws SQLException {
