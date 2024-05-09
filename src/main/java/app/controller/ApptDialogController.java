@@ -1,5 +1,6 @@
 package app.controller;
 
+import app.helper.UniversalControls;
 import javafx.fxml.Initializable;
 
 import java.io.IOException;
@@ -10,7 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-/** Controller class for ApptDialog.fxml.
+/** Controller class for ApptDialog.fxml. Applies to both the Add Appointment and Modify Appointment dialog boxes.
  * @author Elexis Rox
  */
 
@@ -101,4 +102,13 @@ public class ApptDialogController implements Initializable {
     @FXML
     private ChoiceBox<?> userIDInput;
 
+    //Opens the Add Appointments dialog box and sets labels and text accordingly.
+    public static void openAddApptDialog() throws IOException {
+        UniversalControls.openApptDialog("Add Appointment");
+    }
+
+    //Opens the Add Appointments dialog box and sets labels and text accordingly.
+    public static void openModApptDialog() throws IOException {
+        UniversalControls.openApptDialog("Modify Appointment");
+    }
 }

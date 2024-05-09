@@ -24,19 +24,20 @@ public class ApptViewController implements Initializable {
     Parent scene;
 
     @FXML
-    public void onActionDelAppt(ActionEvent event) {
-        System.out.println("Delete Appointment button clicked.");
-    }
-
-    @FXML
-    public void onActionModAppt(ActionEvent event) {
-        System.out.println("Modify Appointment button clicked.");
-    }
-
-    @FXML
     public void onActionAddAppt(ActionEvent event) throws IOException {
         System.out.println("Add Appointment button clicked.");
-        UniversalControls.openApptDialog();
+        ApptDialogController.openAddApptDialog();
+    }
+
+    @FXML
+    public void onActionModAppt(ActionEvent event) throws IOException {
+        System.out.println("Modify Appointment button clicked.");
+        ApptDialogController.openModApptDialog();
+    }
+
+    @FXML
+    public void onActionDelAppt(ActionEvent event) {
+        System.out.println("Delete Appointment button clicked.");
     }
 
     @FXML

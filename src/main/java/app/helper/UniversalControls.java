@@ -10,14 +10,17 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class UniversalControls {
-    public static void openApptDialog() throws IOException {
+    //Scene Transitions
+    //Dialog Box Transitions
+    //Main method to open the Add/Modify Appointments Dialog
+    public static void openApptDialog(String dialogBoxTitle) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(UniversalControls.class.getResource("/app/ApptDialog.fxml"));
         DialogPane addApptPane = fxmlLoader.load();
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setDialogPane((DialogPane) addApptPane);
-        dialog.setTitle("Add Appointment");
+        dialog.setTitle(dialogBoxTitle);
 
         //Set the text of the Save and Cancel buttons
         ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
