@@ -17,12 +17,22 @@ public abstract class Utilities {
     //Error Messages
     public static String getErrorMsg(int errorType) {
         return switch (errorType) {
-            //
+            //Login Errors
             case 1 -> "Please provide a username and password.";
             case 2 -> "Please provide a username.";
             case 3 -> "Please provide a password.";
             case 4 -> "Username not found. Please try again.";
             case 5 -> "Username and password do not match. Please try again.";
+            //Appointment Dialog Box Errors
+            case 7 -> "Please enter a descriptive title to continue.";
+            case 8 -> "Please enter a brief description of the appointment to continue.";
+            case 9 -> "Please enter a location to continue.";
+            case 10 -> "Please specify the type of appointment to continue.";
+            case 11 -> "Please select a Contact ID to continue.";
+            case 12 -> "Please select a Customer ID to continue.";
+            case 13 -> "Please select a User ID to continue.";
+            case 14 -> "End Date must occur after Start Date.";
+            case 15 -> "Unable to save. Please check the warnings above and try again.";
             default -> null;
         };
     }

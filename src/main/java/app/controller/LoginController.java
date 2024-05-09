@@ -101,12 +101,15 @@ public class LoginController implements Initializable {
     @FXML
     void onActionExit(ActionEvent event) {
         System.out.println("Exit button clicked.");
+        System.out.println("Application terminated.");
         System.exit(0);
     }
 
     @FXML
     void onActionReset(ActionEvent event) {
         System.out.println("Reset fields button clicked.");
+        usernameField.clear();
+        passwordField.clear();
     }
 
     @FXML

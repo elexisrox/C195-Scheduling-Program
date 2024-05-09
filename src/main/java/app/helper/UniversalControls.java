@@ -1,4 +1,4 @@
-package app.controller;
+package app.helper;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ButtonBar;

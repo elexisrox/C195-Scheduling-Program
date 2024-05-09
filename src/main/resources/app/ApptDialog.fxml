@@ -15,7 +15,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <DialogPane expanded="true" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.ApptDialogController">
    <content>
       <VBox alignment="TOP_CENTER" spacing="10.0">
@@ -58,7 +57,7 @@
                         <Insets />
                      </GridPane.margin>
                   </Label>
-                  <Label fx:id="apptTitleWarning" text="Please enter a descriptive title to continue." textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                  <Label fx:id="apptTitleWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font>
@@ -75,32 +74,32 @@
                   <ChoiceBox fx:id="contactIDInput" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                   <ChoiceBox fx:id="custIDInput" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                   <ChoiceBox fx:id="userIDInput" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                  <Label fx:id="apptDescWarning" text="Please enter a brief description of the appointment to continue." textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                  <Label fx:id="apptDescWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2">
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font>
                   </Label>
-                  <Label fx:id="apptLocWarning" text="Please enter a location to continue." textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                  <Label fx:id="apptLocWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="3">
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font>
                   </Label>
-                  <Label fx:id="apptTypeWarning" text="Please specify the type of appointment to continue." textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                  <Label fx:id="apptTypeWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="4">
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font>
                   </Label>
-                  <Label fx:id="apptContactWarning" text="Please select a Contact ID to continue." textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                  <Label fx:id="apptContactWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="5">
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font>
                   </Label>
-                  <Label fx:id="apptCustomerWarning" text="Please select a Customer ID to continue." textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="6">
+                  <Label fx:id="apptCustomerWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="6">
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font>
                   </Label>
-                  <Label fx:id="apptUserWarning" text="Please select a User ID to continue." textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="7">
+                  <Label fx:id="apptUserWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="7">
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font>
@@ -143,14 +142,14 @@
                   </HBox>
                </children>
             </GridPane>
-            <Label fx:id="apptTimeWarning" text="End Date must occur after Start Date." textFill="RED" wrapText="true">
+            <Label fx:id="apptTimeWarning" textFill="RED" wrapText="true">
                <font>
                   <Font name="System Italic" size="12.0" />
                </font>
             </Label>
             <VBox alignment="CENTER" spacing="5.0">
                <children>
-                  <Label fx:id="failureSaveWarning" text="Unable to save. Please check the warnings above and try again." textAlignment="CENTER" textFill="RED" wrapText="true">
+                  <Label fx:id="failureSaveWarning" textAlignment="CENTER" textFill="RED" wrapText="true">
                      <font>
                         <Font name="System Italic" size="12.0" />
                      </font>
