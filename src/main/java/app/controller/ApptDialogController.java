@@ -19,10 +19,7 @@ public class ApptDialogController implements Initializable {
     /**
      *  Initializes the Appointment Dialog Box Controller Class.
      */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
 
-    }
 
     @FXML
     private DialogPane dialogPane;
@@ -94,7 +91,7 @@ public class ApptDialogController implements Initializable {
     private Spinner<?> startTimeMinutesInput;
 
     @FXML
-    private Label titleLabel;
+    private Label topTitleLabel;
 
     @FXML
     private Label topMsgLabel;
@@ -110,5 +107,10 @@ public class ApptDialogController implements Initializable {
     //Opens the Add Appointments dialog box and sets labels and text accordingly.
     public static void openModApptDialog() throws IOException {
         UniversalControls.openApptDialog("Modify Appointment");
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
     }
 }

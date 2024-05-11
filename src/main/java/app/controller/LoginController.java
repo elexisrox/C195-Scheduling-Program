@@ -46,7 +46,7 @@ public class LoginController implements Initializable {
 
     //Validates username and password upon login. Displays an  appropriate error/success message upon login attempt. Logs completed login attempts in login_activity.txt file.
     @FXML
-    void onActionLogin(ActionEvent event) throws IOException {
+    public void onActionLogin(ActionEvent event) throws IOException {
         System.out.println("Login button clicked.");
 
         String userName = usernameField.getText();
