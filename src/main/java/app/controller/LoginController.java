@@ -39,9 +39,7 @@ public class LoginController implements Initializable {
     @FXML
     private Label loginErrorLbl;
     @FXML
-    private Label timezoneLblString;
-    @FXML
-    private Label langLblString;
+    private Label userTimezoneLbl;
 
     //Validates username and password upon login. Displays an  appropriate error/success message upon login attempt. Logs completed login attempts in login_activity.txt file.
     @FXML

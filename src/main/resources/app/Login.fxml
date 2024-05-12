@@ -88,10 +88,10 @@
                   <RowConstraints minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="langLblString" text="langLblString" />
+                  <Label text="Language" />
                   <ComboBox fx:id="langComboBox" maxWidth="1.7976931348623157E308" onAction="#onActionLangCombo" GridPane.columnIndex="1" />
-                  <Label fx:id="timezoneLblString" text="timezoneLblString" wrapText="true" GridPane.rowIndex="1" />
-                  <Label fx:id="timeZoneLabel" text="Unable to Display" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="Timezone" wrapText="true" GridPane.rowIndex="1" />
+                  <Label fx:id="userTimezoneLbl" text="userTimezoneLbl" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                </children>
                <VBox.margin>
                   <Insets top="20.0" />

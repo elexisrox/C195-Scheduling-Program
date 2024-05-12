@@ -95,12 +95,12 @@ public class ApptViewController implements Initializable {
 
     @FXML
     public void onActionLogout(ActionEvent event) {
-
+        System.out.println("Logout button clicked.");
     }
 
     @FXML
     public void onActionExit(ActionEvent event) {
-
+        System.out.println("Exit button clicked.");
     }
 
     private void loadApptTableData() {
