@@ -6,13 +6,22 @@ import javax.xml.transform.Result;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 /** Utilities class provides CRUD queries and other utility functions.
  * @author Elexis Rox
  */
 
-//TODO UPDATE: THIS IS NOT FOR CRUD!!
-public abstract class Utilities {
+public class Utilities {
+
+    //Used for LocalDateTime formatting methods
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     //Error Messages
     public static String getErrorMsg(int errorType) {
@@ -36,59 +45,18 @@ public abstract class Utilities {
             default -> null;
         };
     }
-    //FRUITS EXERCISE
-    //CREATE
-    public static int insert(String fruitName, int colorID) throws SQLException {
-        String sql = "INSERT INTO FRUITS (Fruit_Name, Color_ID) VALUES(?, ?)";
-        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-        ps.setString(1, fruitName);
-        ps.setInt(2, colorID);
-        return ps.executeUpdate();
+
+    // Converts LocalDateTime to a formatted date string in a specific timezone
+    public static String formatDate(LocalDateTime utcDateTime, ZoneId targetZone) {
+        if (utcDateTime == null) return "";
+        ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
+        return DATE_FORMATTER.format(zonedDateTime);
     }
 
-    public static int update(int fruitID, String fruitName) throws SQLException {
-        String sql = "UPDATE FRUITS SET Fruit_Name = ? WHERE Fruit_ID = ?";
-        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-        ps.setString(1, fruitName);
-        ps.setInt(2, fruitID);
-        int rowsAffected = ps.executeUpdate();
-        return rowsAffected;
+    // Converts UTC LocalDateTime to a formatted time string in a specific timezone
+    public static String formatTime(LocalDateTime utcDateTime, ZoneId targetZone) {
+        if (utcDateTime == null) return "";
+        ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
+        return TIME_FORMATTER.format(zonedDateTime);
     }
-
-    public static int delete(int fruitID) throws SQLException {
-        String sql = "DELETE FROM FRUITS WHERE Fruit_ID = ?";
-        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-        ps.setInt(1, fruitID);
-        int rowsAffected = ps.executeUpdate();
-        return rowsAffected;
-    }
-
-    //READ
-    public static void select() throws SQLException {
-        String sql = "SELECT * FROM FRUITS";
-        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
-        while(rs.next()){
-            int fruitID = rs.getInt("Fruit_ID");
-            String fruitName = rs.getString("Fruit_Name");
-            System.out.print(fruitID + " | ");
-            System.out.print(fruitName + "\n");
-        }
-    }
-
-    public static void select(int colorID) throws SQLException {
-        String sql = "SELECT * FROM FRUITS WHERE Color_ID = ?";
-        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-        ps.setInt(1, colorID);
-        ResultSet rs = ps.executeQuery();
-        while(rs.next()){
-            int fruitID = rs.getInt("Fruit_ID");
-            String fruitName = rs.getString("Fruit_Name");
-            int colorIDFK = rs.getInt("Color_ID");
-            System.out.print(fruitID + " | ");
-            System.out.print(fruitName + " | ");
-            System.out.print(colorIDFK + "\n");
-        }
-    }
-
 }

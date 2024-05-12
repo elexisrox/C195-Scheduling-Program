@@ -17,6 +17,12 @@ import java.time.LocalDateTime;
  */
 
 public class DBAppointments {
+    //Establishes a reusable SQL query for appointment retrieval from the database.
+    private static final String APPT_BASE_SQL =
+                "SELECT a.Appointment_ID, a.Title, a.Description, a.Location, a.Type, a.Start, a.End, a.User_ID, a.Contact_ID, a.Customer_ID " +
+                "FROM appointments AS a " +
+                "JOIN contacts AS c ON a.Contact_ID = c.Contact_ID ";
+
     //CREATE QUERIES
     //SQL Query that adds a new appointment in the database. Appointment ID is auto-incremented by the database.
     public static void addAppt(String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDateTime apptStart, LocalDateTime apptEnd, int apptUserID, int apptContactID, int apptCustomerID) {
@@ -46,15 +52,29 @@ public class DBAppointments {
     }
 
     //READ QUERIES
+    //SQL Query that retrieves an appointment from the database.
+    private static Appointment retrieveAppt(ResultSet rs) throws SQLException {
+        int apptID = rs.getInt("Appointment_ID");
+        String apptTitle = rs.getString("Title");
+        String apptDesc = rs.getString("Description");
+        String apptLocation = rs.getString("Location");
+        String apptType = rs.getString("Type");
+        LocalDateTime apptStart = rs.getTimestamp("Start").toLocalDateTime();
+        LocalDateTime apptEnd = rs.getTimestamp("End").toLocalDateTime();
+        int apptUserID = rs.getInt("User_ID");
+        int apptContactID = rs.getInt("Contact_ID");
+        int apptCustomerID = rs.getInt("Customer_ID");
+
+        return new Appointment(apptID, apptTitle, apptDesc, apptLocation, apptType,
+                apptStart, apptEnd, apptUserID, apptContactID, apptCustomerID);
+    }
+
     //SQL Query that retrieves all appointments in the database and adds them to an ObservableList.
     public static ObservableList<Appointment> readAllAppts() {
        ObservableList<Appointment> apptList = FXCollections.observableArrayList();
 
        try {
-           String sql = "SELECT a.Appointment_ID, a.Title, a.Description, a.Location, a.Type, a.Start, a.End, a.User_ID, a.Contact_ID, a.Customer_ID " +
-                        "FROM appointments AS a " +
-                        "JOIN contacts AS c " +
-                        "ON a.Contact_ID = c.Contact_ID " +
+           String sql = APPT_BASE_SQL +
                         "ORDER BY a.Appointment_ID";
 
            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
@@ -62,20 +82,7 @@ public class DBAppointments {
            ResultSet rs = ps.executeQuery();
 
            while (rs.next()) {
-               int apptID = rs.getInt("Appointment_ID");
-               String apptTitle = rs.getString("Title");
-               String apptDesc = rs.getString("Description");
-               String apptLocation = rs.getString("Location");
-               String apptType = rs.getString("Type");
-               LocalDateTime apptStart = rs.getTimestamp("Start").toLocalDateTime();
-               LocalDateTime apptEnd = rs.getTimestamp("End").toLocalDateTime();
-               int apptUserID = rs.getInt("User_ID");
-               int apptContactID = rs.getInt("Contact_ID");
-               int apptCustomerID = rs.getInt("Customer_ID");
-
-               Appointment a = new Appointment(apptID, apptTitle, apptDesc, apptLocation, apptType, apptStart, apptEnd, apptUserID, apptContactID, apptCustomerID);
-
-               apptList.add(a);
+               apptList.add(retrieveAppt(rs));
            }
        } catch (SQLException e) {
            System.out.println("SQL Exception Error (Appointments): " + e.getErrorCode());
@@ -93,9 +100,7 @@ public class DBAppointments {
     //SQL Query that updates a selected appointment within the database.
     public static void updateAppt(int apptID, String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDateTime apptStart, LocalDateTime apptEnd, int apptUserID, int apptContactID, int apptCustomerID) {
         try {
-            String sql = "UPDATE appointments " +
-                    "SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, User_ID = ?, Contact_ID = ?, Customer_ID = ? " +
-                    "WHERE Appointment_ID = ?";
+            String sql = APPT_BASE_SQL;
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
