@@ -99,18 +99,12 @@ public class ApptDialogController implements Initializable {
     @FXML
     private ChoiceBox<?> userIDInput;
 
-    //Opens the Add Appointments dialog box and sets labels and text accordingly.
-    public static void openAddApptDialog() throws IOException {
-        UniversalControls.openApptDialog("Add Appointment");
-    }
-
-    //Opens the Add Appointments dialog box and sets labels and text accordingly.
-    public static void openModApptDialog() throws IOException {
-        UniversalControls.openApptDialog("Modify Appointment");
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+    }
+
+    public void setApptLabels(String topTitleString) {
+        topTitleLabel.setText(topTitleString);
     }
 }

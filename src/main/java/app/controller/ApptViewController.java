@@ -26,13 +26,13 @@ public class ApptViewController implements Initializable {
     @FXML
     public void onActionAddAppt(ActionEvent event) throws IOException {
         System.out.println("Add Appointment button clicked.");
-        ApptDialogController.openAddApptDialog();
+        UniversalControls.openAddApptDialog();
     }
 
     @FXML
     public void onActionModAppt(ActionEvent event) throws IOException {
         System.out.println("Modify Appointment button clicked.");
-        ApptDialogController.openModApptDialog();
+       UniversalControls.openModApptDialog();
     }
 
     @FXML
