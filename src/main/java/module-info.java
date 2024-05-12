@@ -11,4 +11,5 @@ module com.example.c195_scheduling_program_v4_rox {
     opens app.controller to javafx.fxml;
     exports app.helper;
     opens app.helper to javafx.fxml;
+    opens app.model to javafx.base;
 }

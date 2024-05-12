@@ -4,6 +4,7 @@ import app.controller.ApptDialogController;
 import app.controller.LoginController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -13,9 +14,17 @@ import java.util.Optional;
 
 public class UniversalControls {
     //Scene Transitions
+    //Method to transition to the Appointment View in the main application.
+    public static <Parent> void transitionApptView(Stage stage) throws IOException {
+        Parent scene = FXMLLoader.load(UniversalControls.class.getResource("/app/ApptView.fxml"));
+        stage.setScene(new Scene((javafx.scene.Parent) scene));
+        stage.centerOnScreen();
+        stage.setTitle("View Appointments");
+        stage.show();
+    }
 
     //Dialog Box Transitions
-    //Main method to open the Add/Modify Appointments Dialog
+    //Main method to open the Add/Modify Appointments Dialog, which is referenced by more specific methods below.
     public static void openApptDialog(String dialogBoxTitle, String label) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(UniversalControls.class.getResource("/app/ApptDialog.fxml"));
         DialogPane apptPane = fxmlLoader.load();
@@ -36,10 +45,12 @@ public class UniversalControls {
         }
     }
 
+    //Method to specifically open the Add Appointment dialog box.
     public static void openAddApptDialog() throws IOException {
         openApptDialog("Add Appointment", "Add Appointment");
     }
 
+    //Method to specifically open the Modify Appointment dialog box.
     public static void openModApptDialog() throws IOException {
         openApptDialog("Modify Appointment", "Modify Appointment");
     }

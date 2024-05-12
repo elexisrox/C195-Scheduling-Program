@@ -15,160 +15,151 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane expanded="true" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="app.controller.ApptDialogController">
+<DialogPane expanded="true" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.ApptDialogController">
     <content>
         <VBox alignment="TOP_CENTER" spacing="10.0">
             <padding>
-                <Insets bottom="25.0" left="25.0" right="25.0" top="25.0"/>
+                <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
             </padding>
             <VBox>
                 <VBox.margin>
-                    <Insets bottom="20.0"/>
+                    <Insets bottom="20.0" />
                 </VBox.margin>
                 <Label fx:id="topTitleLabel" text="Dialogue Box Title ">
                     <font>
-                        <Font size="25.0"/>
+                        <Font size="25.0" />
                     </font>
                 </Label>
-                <Label fx:id="topMsgLabel" text="Dialogue box message"/>
+                <Label fx:id="topMsgLabel" text="Please fill out all fields below." />
             </VBox>
             <GridPane hgap="10.0" vgap="15.0">
                 <columnConstraints>
-                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES"/>
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0"/>
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="200.0"/>
+                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="200.0" />
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints vgrow="SOMETIMES"/>
-                    <RowConstraints vgrow="SOMETIMES"/>
-                    <RowConstraints vgrow="SOMETIMES"/>
-                    <RowConstraints vgrow="SOMETIMES"/>
-                    <RowConstraints vgrow="SOMETIMES"/>
-                    <RowConstraints vgrow="SOMETIMES"/>
-                    <RowConstraints vgrow="SOMETIMES"/>
-                    <RowConstraints vgrow="SOMETIMES"/>
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
                 </rowConstraints>
                 <VBox.margin>
-                    <Insets bottom="10.0"/>
+                    <Insets bottom="10.0" />
                 </VBox.margin>
-                <TextField fx:id="apptIDInput" GridPane.columnIndex="1"/>
-                <TextField fx:id="apptTitleInput" layoutX="170.0" layoutY="63.0" GridPane.columnIndex="1"
-                           GridPane.rowIndex="1"/>
-                <Label text="Appointment ID"/>
+                <TextField fx:id="apptIDInput" editable="false" GridPane.columnIndex="1" />
+                <TextField fx:id="apptTitleInput" layoutX="170.0" layoutY="63.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label text="Appointment ID" />
                 <Label layoutX="10.0" layoutY="67.0" text="Title" GridPane.rowIndex="1">
                     <GridPane.margin>
-                        <Insets/>
+                        <Insets />
                     </GridPane.margin>
                 </Label>
-                <Label fx:id="apptTitleWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2"
-                       GridPane.rowIndex="1">
+                <Label fx:id="apptTitleWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
                     <font>
-                        <Font name="System Italic" size="12.0"/>
+                        <Font name="System Italic" size="12.0" />
                     </font>
                 </Label>
-                <Label text="Description" GridPane.rowIndex="2"/>
-                <Label text="Location" GridPane.rowIndex="3"/>
-                <Label text="Type" GridPane.rowIndex="4"/>
-                <Label text="Contact ID" GridPane.rowIndex="5"/>
-                <Label text="Customer ID" GridPane.rowIndex="6"/>
-                <Label text="User ID" GridPane.rowIndex="7"/>
-                <TextField fx:id="apptDescInput" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                <TextField fx:id="apptLocInput" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                <TextField fx:id="apptTypeInput" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                <ChoiceBox fx:id="contactIDInput" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-                <ChoiceBox fx:id="custIDInput" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-                <ChoiceBox fx:id="userIDInput" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-                <Label fx:id="apptDescWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2"
-                       GridPane.rowIndex="2">
+                <Label text="Description" GridPane.rowIndex="2" />
+                <Label text="Location" GridPane.rowIndex="3" />
+                <Label text="Type" GridPane.rowIndex="4" />
+                <Label text="Contact ID" GridPane.rowIndex="5" />
+                <Label text="Customer ID" GridPane.rowIndex="6" />
+                <Label text="User ID" GridPane.rowIndex="7" />
+                <TextField fx:id="apptDescInput" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <TextField fx:id="apptLocInput" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <TextField fx:id="apptTypeInput" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <ChoiceBox fx:id="contactIDInput" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                <ChoiceBox fx:id="custIDInput" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                <ChoiceBox fx:id="userIDInput" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                <Label fx:id="apptDescWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2">
                     <font>
-                        <Font name="System Italic" size="12.0"/>
+                        <Font name="System Italic" size="12.0" />
                     </font>
                 </Label>
-                <Label fx:id="apptLocWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2"
-                       GridPane.rowIndex="3">
+                <Label fx:id="apptLocWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="3">
                     <font>
-                        <Font name="System Italic" size="12.0"/>
+                        <Font name="System Italic" size="12.0" />
                     </font>
                 </Label>
-                <Label fx:id="apptTypeWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2"
-                       GridPane.rowIndex="4">
+                <Label fx:id="apptTypeWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="4">
                     <font>
-                        <Font name="System Italic" size="12.0"/>
+                        <Font name="System Italic" size="12.0" />
                     </font>
                 </Label>
-                <Label fx:id="apptContactWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2"
-                       GridPane.rowIndex="5">
+                <Label fx:id="apptContactWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="5">
                     <font>
-                        <Font name="System Italic" size="12.0"/>
+                        <Font name="System Italic" size="12.0" />
                     </font>
                 </Label>
-                <Label fx:id="apptCustomerWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2"
-                       GridPane.rowIndex="6">
+                <Label fx:id="apptCustomerWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="6">
                     <font>
-                        <Font name="System Italic" size="12.0"/>
+                        <Font name="System Italic" size="12.0" />
                     </font>
                 </Label>
-                <Label fx:id="apptUserWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2"
-                       GridPane.rowIndex="7">
+                <Label fx:id="apptUserWarning" textFill="RED" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="7">
                     <font>
-                        <Font name="System Italic" size="12.0"/>
+                        <Font name="System Italic" size="12.0" />
                     </font>
                 </Label>
             </GridPane>
             <GridPane hgap="10.0" vgap="10.0">
                 <columnConstraints>
-                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" prefWidth="100.0"/>
-                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0"/>
-                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES"/>
-                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0"/>
+                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                    <RowConstraints vgrow="SOMETIMES"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
                 </rowConstraints>
                 <children>
-                    <Label text="Start Date"/>
-                    <DatePicker fx:id="startDateInput" GridPane.columnIndex="1"/>
-                    <Label text="Start Time" GridPane.columnIndex="2"/>
-                    <Label text="End Date" GridPane.rowIndex="1"/>
-                    <Label text="End Time" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                    <DatePicker fx:id="endDateInput" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    <Label text="Start Date" />
+                    <DatePicker fx:id="startDateInput" GridPane.columnIndex="1" />
+                    <Label text="Start Time" GridPane.columnIndex="2" />
+                    <Label text="End Date" GridPane.rowIndex="1" />
+                    <Label text="End Time" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                    <DatePicker fx:id="endDateInput" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                     <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
                         <children>
-                            <Spinner fx:id="startTimeHoursInput"/>
-                            <Spinner fx:id="startTimeMinutesInput"/>
+                            <Spinner fx:id="startTimeHoursInput" />
+                            <Spinner fx:id="startTimeMinutesInput" />
                         </children>
                     </HBox>
                     <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                         <children>
-                            <Spinner fx:id="endTimeHoursInput"/>
-                            <Spinner fx:id="endTimeMinutesInput"/>
+                            <Spinner fx:id="endTimeHoursInput" />
+                            <Spinner fx:id="endTimeMinutesInput" />
                         </children>
                     </HBox>
                 </children>
             </GridPane>
             <Label fx:id="apptTimeWarning" textFill="RED" wrapText="true">
                 <font>
-                    <Font name="System Italic" size="12.0"/>
+                    <Font name="System Italic" size="12.0" />
                 </font>
             </Label>
             <VBox alignment="CENTER" spacing="5.0">
                 <VBox.margin>
-                    <Insets bottom="50.0" top="20.0"/>
+                    <Insets bottom="50.0" top="20.0" />
                 </VBox.margin>
                 <Label fx:id="failureSaveWarning" textAlignment="CENTER" textFill="RED" wrapText="true">
                     <font>
-                        <Font name="System Italic" size="12.0"/>
+                        <Font name="System Italic" size="12.0" />
                     </font>
                     <VBox.margin>
-                        <Insets bottom="5.0"/>
+                        <Insets bottom="5.0" />
                     </VBox.margin>
                 </Label>
             </VBox>
         </VBox>
     </content>
-    <ButtonType fx:constant="CANCEL"/>
-    <ButtonType fx:constant="OK"/>
+    <ButtonType fx:constant="CANCEL" />
+    <ButtonType fx:constant="OK" />
 </DialogPane>

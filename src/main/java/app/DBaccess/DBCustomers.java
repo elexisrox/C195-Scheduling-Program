@@ -45,7 +45,13 @@ public class DBCustomers {
         ObservableList<Customer> custList = FXCollections.observableArrayList();
 
         try {
-            String sql = "SELECT customers.Customer_ID, customers.Customer_Name, customers.Address, customers.Postal_Code, customers.Phone, customers.Division_ID, first_level_divisions.Division, first_level_divisions.Country_ID, countries.Country FROM customers JOIN first_level_divisions ON customers.Division_ID = first_level_divisions.Division_ID JOIN countries ON countries.Country_ID = first_level_divisions.Country_ID ORDER BY customers.Customer_ID";
+            String sql = "SELECT customers.Customer_ID, customers.Customer_Name, customers.Address, customers.Postal_Code, customers.Phone, customers.Division_ID, first_level_divisions.Division, first_level_divisions.Country_ID, countries.Country " +
+                    "FROM customers as c " +
+                    "JOIN first_level_divisions as f " +
+                    "ON c.Division_ID = f.Division_ID " +
+                    "JOIN countries " +
+                    "ON c.Country_ID = f.Country_ID " +
+                    "ORDER BY c.Customer_ID";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -78,7 +84,8 @@ public class DBCustomers {
     //SQL Query that updates a selected customer within the database.
     public static void updateCustomer(int custID, String custName, String custAddress, String custPostalCode, String custPhone, int custDivisionID) {
         try {
-            String sql = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ? WHERE Customer_ID = ?";
+            String sql = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ? " +
+                    "WHERE Customer_ID = ?";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 

@@ -24,7 +24,8 @@ public class DBDivisions {
     public static ObservableList<Division> readAllDivisions() {
         ObservableList<Division> divList = FXCollections.observableArrayList();
         try {
-            String sql = "SELECT Division_ID, Division, Country_ID FROM first_level_divisions";
+            String sql = "SELECT f.Division_ID, f.Division, f.Country_ID " +
+                    "FROM first_level_divisions as f";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -51,7 +52,9 @@ public class DBDivisions {
     public static Division returnDivisionName(int divID) {
         Division d = null;
         try {
-            String sql = "SELECT Division_ID, Division FROM first_level_divisions WHERE Division_ID = ?";
+            String sql = "SELECT f.Division_ID, f.Division " +
+                    "FROM first_level_divisions as f" +
+                    "WHERE Division_ID = ?";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 

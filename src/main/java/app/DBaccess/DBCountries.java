@@ -20,7 +20,8 @@ public class DBCountries {
         ObservableList<Country> countryList = FXCollections.observableArrayList();
 
         try{
-            String sql = "SELECT Country_ID, Country from countries";
+            String sql = "SELECT cu.Country_ID, cu.Country " +
+                        "FROM countries as cu";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -50,7 +51,9 @@ public class DBCountries {
         String countryName = null;
 
         try {
-            String sql = "SELECT Country_ID, Country FROM countries WHERE Country_ID = ?";
+            String sql = "SELECT c.Country_ID, c.Country " +
+                        "FROM countries as c " +
+                        "WHERE Country_ID = ?";
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setInt(1, countryID);
             ResultSet rs = ps.executeQuery();

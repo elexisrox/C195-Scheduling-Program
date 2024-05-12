@@ -22,7 +22,8 @@ public class DBContacts {
         ObservableList<Contact> contactList = FXCollections.observableArrayList();
 
         try{
-            String sql = "SELECT Contact_ID, Contact_Name, Email FROM contacts";
+            String sql = "SELECT c.Contact_ID, c.Contact_Name, c.Email " +
+                        "FROM contacts as c";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 

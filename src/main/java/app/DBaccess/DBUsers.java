@@ -23,7 +23,8 @@ public class DBUsers {
     public static ObservableList<User> readAllUsers() {
         ObservableList<User> userList = FXCollections.observableArrayList();
         try {
-            String sql = "SELECT User_ID, User_Name FROM users";
+            String sql = "SELECT u.User_ID, u.User_Name " +
+                    "FROM users as u";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -48,7 +49,9 @@ public class DBUsers {
     //SQL Query that checks the user's login username and password to ensure they are correct.
     public static boolean userLoginSuccess(String userName, String userPass) {
         try {
-            String sql = "SELECT User_Name, Password FROM Users WHERE User_Name = ? AND Password = ?";
+            String sql = "SELECT u.User_Name, u.Password " +
+                    "FROM Users as u " +
+                    "WHERE User_Name = ? AND Password = ?";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -71,7 +74,9 @@ public class DBUsers {
     public static int readUserID(String userName) throws SQLException {
         int userID = 0;
 
-        String sql = "SELECT User_ID, User_Name from users WHERE User_Name = ?";
+        String sql = "SELECT u.User_ID, u.User_Name " +
+                "FROM users as u " +
+                "WHERE User_Name = ?";
 
         PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -90,7 +95,9 @@ public class DBUsers {
     public static String readUserName(int userID) throws SQLException {
         String userName = null;
 
-        String sql = "SELECT User_ID, User_Name from users WHERE User_ID = ?";
+        String sql = "SELECT u.User_ID, u.User_Name " +
+                "from users as u " +
+                "WHERE User_ID = ?";
 
         PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -109,7 +116,8 @@ public class DBUsers {
     public static boolean userNameValidate(String userName) {
         boolean matchFound = false;
         try {
-            String sql = "SELECT * FROM users WHERE BINARY User_Name = ?";
+            String sql = "SELECT * FROM users " +
+                    "WHERE BINARY User_Name = ?";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -138,7 +146,9 @@ public class DBUsers {
     public static boolean userLoginValidate(String userName, String userPassword) {
         boolean loginValidated = false;
         try {
-            String sql = "SELECT * FROM users WHERE BINARY User_Name = ? AND BINARY Password = ?";
+            String sql = "SELECT * FROM users " +
+                    "WHERE BINARY User_Name = ? " +
+                    "AND BINARY Password = ?";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 

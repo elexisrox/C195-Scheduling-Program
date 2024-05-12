@@ -18,7 +18,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <ScrollPane fitToHeight="true" fitToWidth="true" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.ApptViewController">
    <content>
       <VBox maxWidth="1.7976931348623157E308">
@@ -34,11 +33,11 @@
                      <children>
                         <RadioButton mnemonicParsing="false" selected="true" text="All Appointments">
                            <toggleGroup>
-                              <ToggleGroup fx:id="TopMenuToggle" />
+                              <ToggleGroup fx:id="topMenuToggle" />
                            </toggleGroup>
                         </RadioButton>
-                        <RadioButton mnemonicParsing="false" text="Customers" toggleGroup="$TopMenuToggle" />
-                        <RadioButton mnemonicParsing="false" text="Reports" toggleGroup="$TopMenuToggle" />
+                        <RadioButton mnemonicParsing="false" text="Customers" toggleGroup="$topMenuToggle" />
+                        <RadioButton mnemonicParsing="false" text="Reports" toggleGroup="$topMenuToggle" />
                      </children>
                   </HBox>
                </items>
@@ -89,14 +88,14 @@
                       <TableColumn fx:id="apptTitleCol" prefWidth="75.0" text="Title" />
                         <TableColumn fx:id="apptDescCol" prefWidth="75.0" text="Description" />
                         <TableColumn fx:id="apptLocCol" prefWidth="75.0" text="Location" />
-                        <TableColumn fx:id="apptContactCol" prefWidth="75.0" text="Contact ID" />
                         <TableColumn fx:id="apptTypeCol" prefWidth="75.0" text="Type" />
                         <TableColumn fx:id="apptStartDateCol" prefWidth="75.0" text="Start Date" />
                         <TableColumn fx:id="apptStartTimeCol" prefWidth="75.0" text="Start Time" />
                         <TableColumn fx:id="apptEndDateCol" prefWidth="75.0" text="End Date" />
                         <TableColumn fx:id="apptEndTimeCol" prefWidth="75.0" text="End Time" />
-                        <TableColumn fx:id="apptCustIDCol" prefWidth="75.0" text="Customer ID" />
                         <TableColumn fx:id="apptUserIDCol" prefWidth="75.0" text="User ID" />
+                        <TableColumn fx:id="apptContactCol" prefWidth="75.0" text="Contact ID" />
+                        <TableColumn fx:id="apptCustIDCol" prefWidth="75.0" text="Customer ID" />
                     </columns>
                   </TableView>
                </children>

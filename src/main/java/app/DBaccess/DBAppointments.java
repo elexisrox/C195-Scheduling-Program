@@ -21,7 +21,8 @@ public class DBAppointments {
     //SQL Query that adds a new appointment in the database. Appointment ID is auto-incremented by the database.
     public static void addAppt(String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDateTime apptStart, LocalDateTime apptEnd, int apptUserID, int apptContactID, int apptCustomerID) {
         try {
-            String sql = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, User_ID, Contact_ID, Customer_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, User_ID, Contact_ID, Customer_ID) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -50,7 +51,11 @@ public class DBAppointments {
        ObservableList<Appointment> apptList = FXCollections.observableArrayList();
 
        try {
-           String sql = "SELECT Appointment_ID, Title, Description, Location, Type, Start, End, User_ID, Contact_ID, Customer_ID FROM appointments JOIN contacts ON appointments.Contact_ID = contacts.Contact_ID ORDER BY appointments.Appointment_ID";
+           String sql = "SELECT a.Appointment_ID, a.Title, a.Description, a.Location, a.Type, a.Start, a.End, a.User_ID, a.Contact_ID, a.Customer_ID " +
+                        "FROM appointments AS a " +
+                        "JOIN contacts AS c " +
+                        "ON a.Contact_ID = c.Contact_ID " +
+                        "ORDER BY a.Appointment_ID";
 
            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
@@ -88,7 +93,9 @@ public class DBAppointments {
     //SQL Query that updates a selected appointment within the database.
     public static void updateAppt(int apptID, String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDateTime apptStart, LocalDateTime apptEnd, int apptUserID, int apptContactID, int apptCustomerID) {
         try {
-            String sql = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, User_ID = ?, Contact_ID = ?, Customer_ID = ? WHERE Appointment_ID = ?";
+            String sql = "UPDATE appointments " +
+                    "SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, User_ID = ?, Contact_ID = ?, Customer_ID = ? " +
+                    "WHERE Appointment_ID = ?";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
