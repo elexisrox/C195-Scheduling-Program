@@ -1,6 +1,9 @@
 package app.controller;
 
 import app.helper.UniversalControls;
+import app.helper.Utilities;
+import app.model.Contact;
+import app.model.Customer;
 import javafx.fxml.Initializable;
 
 import java.io.IOException;
@@ -20,87 +23,72 @@ public class ApptDialogController implements Initializable {
      *  Initializes the Appointment Dialog Box Controller Class.
      */
 
-
     @FXML
     private DialogPane dialogPane;
-
-    @FXML
-    private Label apptContactWarning;
-
-    @FXML
-    private Label apptCustomerWarning;
-
-    @FXML
-    private TextField apptDescInput;
-
-    @FXML
-    private Label apptDescWarning;
-
-    @FXML
-    private TextField apptIDInput;
-
-    @FXML
-    private TextField apptLocInput;
-
-    @FXML
-    private Label apptLocWarning;
-
-    @FXML
-    private Label apptTimeWarning;
-
-    @FXML
-    private TextField apptTitleInput;
-
-    @FXML
-    private Label apptTitleWarning;
-
-    @FXML
-    private TextField apptTypeInput;
-
-    @FXML
-    private Label apptTypeWarning;
-
-    @FXML
-    private Label apptUserWarning;
-
-    @FXML
-    private ChoiceBox<?> contactIDInput;
-
-    @FXML
-    private ChoiceBox<?> custIDInput;
-
-    @FXML
-    private DatePicker endDateInput;
-
-    @FXML
-    private Spinner<?> endTimeHoursInput;
-
-    @FXML
-    private Spinner<?> endTimeMinutesInput;
-
-    @FXML
-    private Label failureSaveWarning;
-
-    @FXML
-    private DatePicker startDateInput;
-
-    @FXML
-    private Spinner<?> startTimeHoursInput;
-
-    @FXML
-    private Spinner<?> startTimeMinutesInput;
-
     @FXML
     private Label topTitleLabel;
 
+    //Text fields
     @FXML
-    private Label topMsgLabel;
+    private TextField apptIDInput;
+    @FXML
+    private TextField apptTitleInput;
+    @FXML
+    private TextField apptDescInput;
+    @FXML
+    private TextField apptLocInput;
+    @FXML
+    private TextField apptTypeInput;
 
+    //Error/Warning Labels
+    @FXML
+    private Label apptTitleWarning;
+    @FXML
+    private Label apptDescWarning;
+    @FXML
+    private Label apptLocWarning;
+    @FXML
+    private Label apptTypeWarning;
+    @FXML
+    private Label apptContactWarning;
+    @FXML
+    private Label apptCustomerWarning;
+    @FXML
+    private Label apptUserWarning;
+    @FXML
+    private Label apptTimeWarning;
+    @FXML
+    private Label failureSaveWarning;
+
+    //Date Pickers
+    @FXML
+    private DatePicker startDateInput;
+    @FXML
+    private DatePicker endDateInput;
+
+    //Spinners
+    @FXML
+    private Spinner<?> startTimeHoursInput;
+    @FXML
+    private Spinner<?> startTimeMinutesInput;
+    @FXML
+    private Spinner<?> endTimeHoursInput;
+    @FXML
+    private Spinner<?> endTimeMinutesInput;
+
+    //ChoiceBoxes
+    @FXML
+    private ChoiceBox<Contact> contactIDInput;
+    @FXML
+    private ChoiceBox<Customer> custIDInput;
     @FXML
     private ChoiceBox<?> userIDInput;
 
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //Load Choice boxes
+        Utilities.loadChoiceBoxContacts(contactIDInput);
 
     }
 

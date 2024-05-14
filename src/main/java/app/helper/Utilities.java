@@ -1,7 +1,11 @@
 package app.helper;
 
+import app.DBaccess.DBContacts;
+import app.model.Contact;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
 
 import javax.xml.transform.Result;
 import java.sql.PreparedStatement;
@@ -14,6 +18,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import javafx.util.StringConverter;
 
 /** Utilities class provides CRUD queries and other utility functions.
  * @author Elexis Rox
@@ -25,6 +30,7 @@ public class Utilities {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
+    //ERRORS
     //Error Messages
     public static String getErrorMsg(int errorType) {
         return switch (errorType) {
@@ -48,6 +54,7 @@ public class Utilities {
         };
     }
 
+    //TIME
     //Converts LocalDateTime to a formatted date string in a specific timezone
     public static String formatDate(LocalDateTime utcDateTime, ZoneId targetZone) {
         if (utcDateTime == null) return "";
@@ -69,5 +76,26 @@ public class Utilities {
         alert.setHeaderText(header);
         alert.setContentText(content);
         return alert.showAndWait();
+    }
+
+    //CHOICE BOXES
+    //Load Contacts into Contacts ChoiceBox
+    public static void loadChoiceBoxContacts(ChoiceBox<Contact> choiceBox) {
+        ObservableList<Contact> contacts = DBContacts.readAllContacts();
+        choiceBox.setItems(contacts);
+        choiceBox.setConverter(new StringConverter<Contact>() {
+            @Override
+            public String toString(Contact contact) {
+                return contact == null ? null : contact.getContactName() + " (" + contact.getContactID() + ")";
+            }
+
+            @Override
+            public Contact fromString(String string) {
+                return choiceBox.getItems().stream()
+                        .filter(contact -> (contact.getContactName() + " (" + contact.getContactID() + ")").equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
     }
 }

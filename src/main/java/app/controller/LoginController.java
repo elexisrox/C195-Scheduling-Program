@@ -42,7 +42,7 @@ public class LoginController implements Initializable {
     @FXML
     private Label timezoneLbl;
 
-    //Detect the user's timezone
+    //Detect the user's time zone
     ZoneId userLocalZone = ZoneId.systemDefault();
 
     //Validates username and password upon login. Displays an  appropriate error/success message upon login attempt. Logs completed login attempts in login_activity.txt file.

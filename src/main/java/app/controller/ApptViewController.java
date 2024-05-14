@@ -76,7 +76,7 @@ public class ApptViewController implements Initializable {
     @FXML
     private TableColumn<Appointment, Integer> apptUserIDCol;
 
-    //Detect the user's timezone
+    //Detect the user's time zone
     ZoneId userLocalZone = ZoneId.systemDefault();
 
     //Label Setters

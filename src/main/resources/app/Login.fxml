@@ -20,17 +20,15 @@
       <VBox alignment="CENTER" spacing="10.0">
          <children>
             <VBox>
-               <children>
-                  <Label text="Welcome">
-                     <font>
-                        <Font size="25.0" />
-                     </font>
-                  </Label>
-                  <Label text="Please login to your account." />
-               </children>
                <VBox.margin>
-                  <Insets bottom="25.0" />
+                  <Insets bottom="25.0"/>
                </VBox.margin>
+               <Label text="Welcome">
+                  <font>
+                     <Font size="25.0"/>
+                  </font>
+               </Label>
+               <Label text="Please login to your account."/>
             </VBox>
             <GridPane hgap="10.0" prefWidth="320.0" vgap="10.0">
               <columnConstraints>
@@ -57,45 +55,44 @@
             </GridPane>
             <ButtonBar />
             <VBox alignment="CENTER" spacing="5.0">
-               <children>
-                  <Label fx:id="loginErrorLbl" textFill="RED" wrapText="true">
-                     <font>
-                        <Font name="System Italic" size="12.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets bottom="5.0" />
-                     </VBox.margin>
-                  </Label>
-                <Button alignment="CENTER" contentDisplay="CENTER" defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionLogin" text="Login" textAlignment="CENTER" />
-                  <Button alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionExit" text="Exit" textAlignment="CENTER">
-                     <VBox.margin>
-                        <Insets top="5.0" />
-                     </VBox.margin>
-                  </Button>
-                  <Hyperlink graphicTextGap="0.0" onAction="#onActionReset" text="Reset Fields" textAlignment="CENTER" />
-               </children>
                <VBox.margin>
-                  <Insets bottom="50.0" top="20.0" />
+                  <Insets bottom="50.0" top="20.0"/>
                </VBox.margin>
+               <Label fx:id="loginErrorLbl" textFill="RED" wrapText="true">
+                  <font>
+                     <Font name="System Italic" size="12.0"/>
+                  </font>
+                  <VBox.margin>
+                     <Insets bottom="5.0"/>
+                  </VBox.margin>
+               </Label>
+               <Button alignment="CENTER" contentDisplay="CENTER" defaultButton="true" maxWidth="1.7976931348623157E308"
+                       mnemonicParsing="false" onAction="#onActionLogin" text="Login" textAlignment="CENTER"/>
+               <Button alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308"
+                       mnemonicParsing="false" onAction="#onActionExit" text="Exit" textAlignment="CENTER">
+                  <VBox.margin>
+                     <Insets top="5.0"/>
+                  </VBox.margin>
+               </Button>
+               <Hyperlink graphicTextGap="0.0" onAction="#onActionReset" text="Reset Fields" textAlignment="CENTER"/>
             </VBox>
             <GridPane hgap="10.0" prefWidth="300.0" vgap="10.0">
                <columnConstraints>
-                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="35.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="35.0"/>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0"/>
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                  <RowConstraints vgrow="SOMETIMES"/>
+                  <RowConstraints minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
                </rowConstraints>
-               <children>
-                  <Label text="Language" />
-                  <ComboBox fx:id="langComboBox" maxWidth="1.7976931348623157E308" onAction="#onActionLangCombo" GridPane.columnIndex="1" />
-                  <Label text="Timezone" wrapText="true" GridPane.rowIndex="1" />
-                  <Label fx:id="timezoneLbl" text="userTimezoneLbl" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-               </children>
                <VBox.margin>
-                  <Insets top="20.0" />
+                  <Insets top="20.0"/>
                </VBox.margin>
+               <Label text="Language"/>
+               <ComboBox fx:id="langComboBox" maxWidth="1.7976931348623157E308" onAction="#onActionLangCombo"
+                         GridPane.columnIndex="1"/>
+               <Label text="Time Zone" wrapText="true" GridPane.rowIndex="1"/>
+               <Label fx:id="timezoneLbl" text="userTimezoneLbl" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
             </GridPane>
          </children>
          <padding>
