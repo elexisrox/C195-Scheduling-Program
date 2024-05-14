@@ -9,7 +9,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 
 /**
  * DBAppointments class contains all queries for the appointments table in the database.
@@ -85,14 +88,59 @@ public class DBAppointments {
                apptList.add(retrieveAppt(rs));
            }
        } catch (SQLException e) {
-           System.out.println("SQL Exception Error (Appointments): " + e.getErrorCode());
+           System.out.println("SQL Exception Error (All Appointments): " + e.getErrorCode());
        } catch(Exception e) {
            System.out.println("Error: " + e.getMessage());
        }
        return apptList;
     }
-    //SQL Query that retrieves all appointments in the next 7 days and adds them to an ObservableList.
-    //SQL Query that retrieves all appointments within a specific month.
+    //SQL Query that retrieves all appointments beginning with the most recent Monday and spanning the next 7 days and adds them to an ObservableList.
+    public static ObservableList<Appointment> readWeekAppts() {
+        ObservableList<Appointment> apptList = FXCollections.observableArrayList();
+        LocalDate startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY);
+        LocalDate endOfWeek = startOfWeek.plusDays(6);
+
+        String sql = APPT_BASE_SQL +
+                "WHERE a.Start BETWEEN ? AND ? " +
+                "ORDER BY a.Appointment_ID";
+
+        try (PreparedStatement ps = JDBC.getConnection().prepareStatement(sql)) {
+            ps.setObject(1, startOfWeek);
+            ps.setObject(2, endOfWeek);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    apptList.add(retrieveAppt(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Appointments by Week): " + e.getErrorCode());
+        }
+        return apptList;
+    }
+
+    //SQL Query that retrieves all appointments in the current calendar month and adds them to an ObservableList.
+    public static ObservableList<Appointment> readMonthAppts() {
+        ObservableList<Appointment> apptList = FXCollections.observableArrayList();
+        LocalDate firstDayOfMonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate lastDayOfMonth = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+
+        String sql = APPT_BASE_SQL +
+                "WHERE a.Start BETWEEN ? AND ? " +
+                "ORDER BY a.Appointment_ID";
+
+        try (PreparedStatement ps = JDBC.getConnection().prepareStatement(sql)) {
+            ps.setObject(1, firstDayOfMonth);
+            ps.setObject(2, lastDayOfMonth);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    apptList.add(retrieveAppt(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Appointments by Month): " + e.getErrorCode());
+        }
+        return apptList;
+    }
     //SQL Query that retrieves all appointments associated with the user in order to display alerts for appointments within 15 minutes.
     //SQL Query that retrieves all appointments by contact ID.
 

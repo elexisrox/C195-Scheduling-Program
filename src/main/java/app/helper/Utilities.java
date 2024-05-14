@@ -1,6 +1,7 @@
 package app.helper;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import javax.xml.transform.Result;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /** Utilities class provides CRUD queries and other utility functions.
  * @author Elexis Rox
@@ -46,17 +48,26 @@ public class Utilities {
         };
     }
 
-    // Converts LocalDateTime to a formatted date string in a specific timezone
+    //Converts LocalDateTime to a formatted date string in a specific timezone
     public static String formatDate(LocalDateTime utcDateTime, ZoneId targetZone) {
         if (utcDateTime == null) return "";
         ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
         return DATE_FORMATTER.format(zonedDateTime);
     }
 
-    // Converts UTC LocalDateTime to a formatted time string in a specific timezone
+    //Converts UTC LocalDateTime to a formatted time string in a specific timezone
     public static String formatTime(LocalDateTime utcDateTime, ZoneId targetZone) {
         if (utcDateTime == null) return "";
         ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
         return TIME_FORMATTER.format(zonedDateTime);
+    }
+
+    //Displays a confirmation alert with custom title, header, and content text.
+    public static Optional<ButtonType> showConfirmationAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        return alert.showAndWait();
     }
 }

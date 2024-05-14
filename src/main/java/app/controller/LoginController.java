@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.ZoneId;
 import java.util.ResourceBundle;
 
 /** Controller class for Login.fxml.
@@ -39,7 +40,10 @@ public class LoginController implements Initializable {
     @FXML
     private Label loginErrorLbl;
     @FXML
-    private Label userTimezoneLbl;
+    private Label timezoneLbl;
+
+    //Detect the user's timezone
+    ZoneId userLocalZone = ZoneId.systemDefault();
 
     //Validates username and password upon login. Displays an  appropriate error/success message upon login attempt. Logs completed login attempts in login_activity.txt file.
     @FXML
@@ -95,7 +99,6 @@ public class LoginController implements Initializable {
         }
     }
 
-
     @FXML
     void onActionExit(ActionEvent event) {
         System.out.println("Exit button clicked.");
@@ -146,26 +149,8 @@ public class LoginController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //langComboBox.setItems(FXCollections.observableArrayList("English","French"));
-        //langComboBox.getSelectionModel().selectFirst();
+        //Sets timezone label according to the user's timezone
+        timezoneLbl.setText(String.valueOf(userLocalZone));
     }
 
-    //BEGIN SCREEN TRANSITION METHODS
-    //Transitions to main Appt View Scene
-    public static void transitionApptView(ActionEvent event) throws IOException {
-        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(LoginController.class.getResource("/app/ApptView.fxml"));
-        stage.setScene(new Scene(scene));
-        stage.centerOnScreen();
-        stage.setTitle("View Appointments");
-        stage.show();
-    }
-
-    //BEGIN OPEN DIALOG BOX METHODS
-    //Opens AddAppt Dialog Box
-//    public static void dialogAddAppt(ActionEvent event) throws IOException {
-//    }
-
-    //BEGIN ALERT TYPES
-    //TODO move all alert types here
 }

@@ -4,6 +4,7 @@ import app.DBaccess.DBAppointments;
 import app.helper.UniversalControls;
 import app.helper.Utilities;
 import app.model.Appointment;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,10 +13,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.ZoneId;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /** Controller class for ApptView.fxml.
@@ -45,8 +48,6 @@ public class ApptViewController implements Initializable {
     @FXML
     private Label errorMsgLbl;
     @FXML
-    private Label userTimeLbl;
-    @FXML
     private Label timezoneLbl;
 
     //Appointment Table Columns
@@ -75,6 +76,9 @@ public class ApptViewController implements Initializable {
     @FXML
     private TableColumn<Appointment, Integer> apptUserIDCol;
 
+    //Detect the user's timezone
+    ZoneId userLocalZone = ZoneId.systemDefault();
+
     //Label Setters
     @FXML
     public void onActionAddAppt(ActionEvent event) throws IOException {
@@ -94,8 +98,24 @@ public class ApptViewController implements Initializable {
     }
 
     @FXML
-    public void onActionLogout(ActionEvent event) {
+    public void onActionLogout(ActionEvent event) throws IOException {
         System.out.println("Logout button clicked.");
+
+        //Create a confirmation alert
+        Optional<ButtonType> result = Utilities.showConfirmationAlert(
+                "Logout Confirmation",
+                "Logging Out",
+                "Are you sure you want to log out?"
+        );
+
+        //Transition to login screen if user clicks OK.
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            System.out.println("Logout confirmed.");
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            UniversalControls.transitionLoginView(stage);
+        } else {
+            System.out.println("Logout canceled.");
+        }
     }
 
     @FXML
@@ -103,42 +123,32 @@ public class ApptViewController implements Initializable {
         System.out.println("Exit button clicked.");
     }
 
-    private void loadApptTableData() {
-        setApptColumns();
-        ObservableList<Appointment> appointments = DBAppointments.readAllAppts();
-        apptTable.setItems(appointments);
-    }
-
+    //Sets all columns in the Appointments table
     private void setApptColumns() {
-        //Detect the user's timezone and set "timezoneLbl" and "userTimeLbl" accordingly
-        ZoneId localZone = ZoneId.systemDefault();
-
         //Set Time/Date Columns
         apptStartDateCol.setCellValueFactory(cellData ->
                 new SimpleStringProperty(
-                        Utilities.formatDate(cellData.getValue().getApptStart(), localZone)
+                        Utilities.formatDate(cellData.getValue().getApptStart(), userLocalZone)
                 )
         );
-
         apptStartTimeCol.setCellValueFactory(cellData ->
                 new SimpleStringProperty(
-                        Utilities.formatTime(cellData.getValue().getApptStart(), localZone)
+                        Utilities.formatTime(cellData.getValue().getApptStart(), userLocalZone)
                 )
         );
         apptEndDateCol.setCellValueFactory(cellData ->
                 new SimpleStringProperty(
-                        Utilities.formatDate(cellData.getValue().getApptEnd(), localZone)
+                        Utilities.formatDate(cellData.getValue().getApptEnd(), userLocalZone)
                 )
         );
-
         apptEndTimeCol.setCellValueFactory(cellData ->
                 new SimpleStringProperty(
-                        Utilities.formatTime(cellData.getValue().getApptEnd(), localZone)
+                        Utilities.formatTime(cellData.getValue().getApptEnd(), userLocalZone)
                 )
         );
 
         //Set all remaining columns
-        // Initialize each column to use the property from the Appointment model
+        //Initialize each column to use the property from the Appointment model
         apptIDCol.setCellValueFactory(new PropertyValueFactory<>("apptID"));
         apptTitleCol.setCellValueFactory(new PropertyValueFactory<>("apptTitle"));
         apptDescCol.setCellValueFactory(new PropertyValueFactory<>("apptDesc"));
@@ -152,22 +162,60 @@ public class ApptViewController implements Initializable {
     //Initializes the appointment table data.
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        loadApptTableData();
+        //Sets timezone label according to the user's timezone
+        timezoneLbl.setText(String.valueOf(userLocalZone));
+
+        //Initialize the table columns first without loading data
+        setApptColumns();
+
+        //Load data based on the selected tab
+        updateTableData();
     }
 
     //Tab Selection Filtering
+    //Event fires when a tab is selected. "View All" tab is selected by default on application load
     @FXML
-    void tabAllSelected(Event event) {
-
+    void onTabChanged(Event event) {
+        if (event.getSource() instanceof Tab) {
+            updateTableData();
+        }
     }
 
-    @FXML
-    void tabMonthSelected(Event event) {
-
+    //Update the table data based on the selected tab
+    private void updateTableData() {
+        if (tabAll.isSelected()) {
+            loadAllAppts();
+        } else if (tabMonth.isSelected()) {
+            loadMonthAppts();
+        } else if (tabWeek.isSelected()) {
+            loadWeekAppts();
+        }
     }
 
+    //Loads all appointments
     @FXML
-    void tabWeekSelected(Event event) {
+    void loadAllAppts() {
+        if (apptTable != null) {
+            ObservableList<Appointment> appointments = DBAppointments.readAllAppts();
+            apptTable.setItems(appointments);
+        }
+    }
 
+    //Loads all appointments within the current month
+    @FXML
+    void loadMonthAppts() {
+        if (apptTable != null) {
+            ObservableList<Appointment> appointments = DBAppointments.readMonthAppts();
+            apptTable.setItems(appointments);
+        }
+    }
+
+    //Loads appointments within the current week (Monday-Sunday)
+    @FXML
+    void loadWeekAppts() {
+        if (apptTable != null) {
+            ObservableList<Appointment> appointments = DBAppointments.readWeekAppts();
+            apptTable.setItems(appointments);
+        }
     }
 }

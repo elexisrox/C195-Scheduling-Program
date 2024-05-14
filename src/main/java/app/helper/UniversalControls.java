@@ -23,6 +23,15 @@ public class UniversalControls {
         stage.show();
     }
 
+    //Method to transition to the Login screen in the main application.
+    public static <Parent> void transitionLoginView(Stage stage) throws IOException {
+        Parent scene = FXMLLoader.load(UniversalControls.class.getResource("/app/Login.fxml"));
+        stage.setScene(new Scene((javafx.scene.Parent) scene));
+        stage.centerOnScreen();
+        stage.setTitle("Appointment Scheduler Login");
+        stage.show();
+    }
+
     //Dialog Box Transitions
     //Main method to open the Add/Modify Appointments Dialog, which is referenced by more specific methods below.
     public static void openApptDialog(String dialogBoxTitle, String label) throws IOException {
