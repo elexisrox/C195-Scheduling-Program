@@ -99,28 +99,13 @@ public class ApptViewController implements Initializable {
 
     @FXML
     public void onActionLogout(ActionEvent event) throws IOException {
-        System.out.println("Logout button clicked.");
-
-        //Create a confirmation alert
-        Optional<ButtonType> result = Utilities.showConfirmationAlert(
-                "Logout Confirmation",
-                "Logging Out",
-                "Are you sure you want to log out?"
-        );
-
-        //Transition to login screen if user clicks OK.
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            System.out.println("Logout confirmed.");
-            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            UniversalControls.transitionLoginView(stage);
-        } else {
-            System.out.println("Logout canceled.");
-        }
+        Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+        Utilities.logoutButton(stage);
     }
 
     @FXML
     public void onActionExit(ActionEvent event) {
-        System.out.println("Exit button clicked.");
+        Utilities.exitButton();
     }
 
     //Sets all columns in the Appointments table

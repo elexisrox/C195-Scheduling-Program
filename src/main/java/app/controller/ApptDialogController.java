@@ -4,6 +4,7 @@ import app.helper.UniversalControls;
 import app.helper.Utilities;
 import app.model.Contact;
 import app.model.Customer;
+import app.model.User;
 import javafx.fxml.Initializable;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 
 /** Controller class for ApptDialog.fxml. Applies to both the Add Appointment and Modify Appointment dialog boxes.
  * @author Elexis Rox
@@ -68,13 +70,7 @@ public class ApptDialogController implements Initializable {
 
     //Spinners
     @FXML
-    private Spinner<?> startTimeHoursInput;
-    @FXML
-    private Spinner<?> startTimeMinutesInput;
-    @FXML
-    private Spinner<?> endTimeHoursInput;
-    @FXML
-    private Spinner<?> endTimeMinutesInput;
+    private Spinner<Integer> startTimeHoursInput, startTimeMinutesInput, endTimeHoursInput, endTimeMinutesInput;
 
     //ChoiceBoxes
     @FXML
@@ -82,14 +78,21 @@ public class ApptDialogController implements Initializable {
     @FXML
     private ChoiceBox<Customer> custIDInput;
     @FXML
-    private ChoiceBox<?> userIDInput;
+    private ChoiceBox<User> userIDInput;
 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //Load Choice boxes
         Utilities.loadChoiceBoxContacts(contactIDInput);
+        Utilities.loadChoiceBoxCustomers(custIDInput);
+        Utilities.loadChoiceBoxUsers(userIDInput);
 
+        //Initialize spinners
+        startTimeHoursInput.setValueFactory(new IntegerSpinnerValueFactory(0, 23, 12));
+        startTimeMinutesInput.setValueFactory(new IntegerSpinnerValueFactory(0, 59, 0, 5));
+        endTimeHoursInput.setValueFactory(new IntegerSpinnerValueFactory(0, 23, 12));
+        endTimeMinutesInput.setValueFactory(new IntegerSpinnerValueFactory(0, 59, 0, 5));
     }
 
     public void setApptLabels(String topTitleString) {

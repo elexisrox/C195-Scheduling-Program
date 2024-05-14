@@ -45,12 +45,12 @@ public class DBCustomers {
         ObservableList<Customer> custList = FXCollections.observableArrayList();
 
         try {
-            String sql = "SELECT customers.Customer_ID, customers.Customer_Name, customers.Address, customers.Postal_Code, customers.Phone, customers.Division_ID, first_level_divisions.Division, first_level_divisions.Country_ID, countries.Country " +
+            String sql = "SELECT c.Customer_ID, c.Customer_Name, c.Address, c.Postal_Code, c.Phone, c.Division_ID, f.Division, f.Country_ID, countries.Country " +
                     "FROM customers as c " +
                     "JOIN first_level_divisions as f " +
                     "ON c.Division_ID = f.Division_ID " +
                     "JOIN countries " +
-                    "ON c.Country_ID = f.Country_ID " +
+                    "ON countries.Country_ID = f.Country_ID " +
                     "ORDER BY c.Customer_ID";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);

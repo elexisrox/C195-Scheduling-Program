@@ -101,10 +101,7 @@ public class LoginController implements Initializable {
 
     @FXML
     void onActionExit(ActionEvent event) {
-        System.out.println("Exit button clicked.");
-        app.helper.JDBC.closeConnection();
-        System.out.println("Application terminated.");
-        System.exit(0);
+        Utilities.exitButton();
     }
 
     @FXML

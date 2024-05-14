@@ -24,7 +24,8 @@ public class DBUsers {
         ObservableList<User> userList = FXCollections.observableArrayList();
         try {
             String sql = "SELECT u.User_ID, u.User_Name " +
-                    "FROM users as u";
+                    "FROM users as u " +
+                    "ORDER BY u.User_ID";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
