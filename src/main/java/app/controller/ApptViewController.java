@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -83,13 +84,15 @@ public class ApptViewController implements Initializable {
     @FXML
     public void onActionAddAppt(ActionEvent event) throws IOException {
         System.out.println("Add Appointment button clicked.");
-        UniversalControls.openAddApptDialog();
+        Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        UniversalControls.openAddApptDialog(ownerStage);
     }
 
     @FXML
     public void onActionModAppt(ActionEvent event) throws IOException {
         System.out.println("Modify Appointment button clicked.");
-       UniversalControls.openModApptDialog();
+        Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        UniversalControls.openModApptDialog(ownerStage);
     }
 
     @FXML

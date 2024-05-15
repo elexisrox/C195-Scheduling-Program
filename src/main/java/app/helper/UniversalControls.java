@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -34,34 +35,36 @@ public class UniversalControls {
 
     //Dialog Box Transitions
     //Main method to open the Add/Modify Appointments Dialog, which is referenced by more specific methods below.
-    public static void openApptDialog(String dialogBoxTitle, String label) throws IOException {
+    public static void openApptDialog(Stage ownerStage, boolean isAddMode) throws IOException {
+        //Initialize the dialog pane.
         FXMLLoader fxmlLoader = new FXMLLoader(UniversalControls.class.getResource("/app/ApptDialog.fxml"));
         DialogPane apptPane = fxmlLoader.load();
-
         ApptDialogController controller = fxmlLoader.getController();
-        controller.setApptLabels(label); // Set label text here
-
-        Dialog<ButtonType> dialog = new Dialog<>();
+        Dialog<Void> dialog = new Dialog<>();
         dialog.setDialogPane(apptPane);
-        dialog.setTitle(dialogBoxTitle);
+        dialog.initOwner(ownerStage); // Set the owner to ensure modality and proper event dispatch
+        dialog.initModality(Modality.APPLICATION_MODAL);
 
-        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().setAll(saveButtonType, ButtonType.CANCEL);
+        //Determine if dialog pane is in Add or Modify mode and set the labels accordingly.
+        String modeString = isAddMode ? "Add Appointment" : "Modify Appointment";
+        dialog.setTitle(modeString);
+        controller.setApptLabels(modeString);
 
-        Optional<ButtonType> clickedButton = dialog.showAndWait();
-        if (clickedButton.isPresent() && clickedButton.get() == ButtonType.OK) {
-            System.out.println("Save button in dialog box clicked.");
-        }
+        ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().add(cancelButtonType);
+
+        dialog.showAndWait();
+
     }
 
-    //Method to specifically open the Add Appointment dialog box.
-    public static void openAddApptDialog() throws IOException {
-        openApptDialog("Add Appointment", "Add Appointment");
+    //Method to specifically open the Add Appointment dialog box. Sets isAddMode to true.
+    public static void openAddApptDialog(Stage ownerStage) throws IOException {
+        openApptDialog(ownerStage, true);
     }
 
-    //Method to specifically open the Modify Appointment dialog box.
-    public static void openModApptDialog() throws IOException {
-        openApptDialog("Modify Appointment", "Modify Appointment");
+    //Method to specifically open the Modify Appointment dialog box. Sets isAddMode to false.
+    public static void openModApptDialog(Stage ownerStage) throws IOException {
+        openApptDialog(ownerStage, false);
     }
 }
 

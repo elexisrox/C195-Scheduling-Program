@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ButtonType?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.DialogPane?>
@@ -19,7 +18,7 @@
     <content>
         <VBox alignment="TOP_CENTER" spacing="10.0">
             <padding>
-                <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                <Insets left="25.0" right="25.0" top="25.0" />
             </padding>
             <VBox>
                 <VBox.margin>
@@ -30,7 +29,7 @@
                         <Font size="25.0" />
                     </font>
                 </Label>
-                <Label fx:id="topMsgLabel" text="Please fill out all fields below." />
+                <Label text="Please fill out all fields below." />
             </VBox>
             <GridPane hgap="10.0" vgap="15.0">
                 <columnConstraints>
@@ -119,47 +118,39 @@
                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     <RowConstraints vgrow="SOMETIMES" />
                 </rowConstraints>
-                <children>
-                    <Label text="Start Date" />
-                    <DatePicker fx:id="startDateInput" GridPane.columnIndex="1" />
-                    <Label text="Start Time" GridPane.columnIndex="2" />
-                    <Label text="End Date" GridPane.rowIndex="1" />
-                    <Label text="End Time" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                    <DatePicker fx:id="endDateInput" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                    <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
-                        <children>
-                            <Spinner fx:id="startTimeHoursInput" />
-                            <Spinner fx:id="startTimeMinutesInput" />
-                        </children>
-                    </HBox>
-                    <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                        <children>
-                            <Spinner fx:id="endTimeHoursInput" />
-                            <Spinner fx:id="endTimeMinutesInput" />
-                        </children>
-                    </HBox>
-                </children>
+                <Label text="Start Date" />
+                <DatePicker fx:id="startDateInput" GridPane.columnIndex="1" />
+                <Label text="Start Time" GridPane.columnIndex="2" />
+                <Label text="End Date" GridPane.rowIndex="1" />
+                <Label text="End Time" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                <DatePicker fx:id="endDateInput" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
+                    <Spinner fx:id="startTimeHoursInput" />
+                    <Spinner fx:id="startTimeMinutesInput" />
+                </HBox>
+                <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                    <Spinner fx:id="endTimeHoursInput" />
+                    <Spinner fx:id="endTimeMinutesInput" />
+                </HBox>
             </GridPane>
             <Label fx:id="apptTimeWarning" textFill="RED" wrapText="true">
                 <font>
                     <Font name="System Italic" size="12.0" />
                 </font>
             </Label>
-            <VBox alignment="CENTER" spacing="5.0">
+             <Label fx:id="failureSaveWarning" textAlignment="CENTER" textFill="RED" wrapText="true">
+                 <font>
+                     <Font name="System Italic" size="12.0" />
+                 </font>
+                 <VBox.margin>
+                     <Insets bottom="5.0" />
+                 </VBox.margin>
+             </Label>
+            <HBox alignment="BOTTOM_RIGHT" spacing="10.0">
                 <VBox.margin>
-                    <Insets bottom="50.0" top="20.0" />
+                    <Insets bottom="5.0" />
                 </VBox.margin>
-                <Label fx:id="failureSaveWarning" textAlignment="CENTER" textFill="RED" wrapText="true">
-                    <font>
-                        <Font name="System Italic" size="12.0" />
-                    </font>
-                    <VBox.margin>
-                        <Insets bottom="5.0" />
-                    </VBox.margin>
-                </Label>
-            </VBox>
+            </HBox>
         </VBox>
     </content>
-    <ButtonType fx:constant="CANCEL" />
-    <ButtonType fx:constant="OK"/>
 </DialogPane>
