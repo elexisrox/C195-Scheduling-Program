@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane expanded="true" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.ApptDialogController">
+<DialogPane fx:id="dialogPane" expanded="true" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.ApptDialogController">
     <content>
         <VBox alignment="TOP_CENTER" spacing="10.0">
             <padding>
@@ -50,7 +50,7 @@
                 <VBox.margin>
                     <Insets bottom="10.0" />
                 </VBox.margin>
-                <TextField fx:id="apptIDInput" editable="false" GridPane.columnIndex="1" />
+                <TextField fx:id="apptIDInput" disable="true" editable="false" GridPane.columnIndex="1" />
                 <TextField fx:id="apptTitleInput" layoutX="170.0" layoutY="63.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <Label text="Appointment ID" />
                 <Label layoutX="10.0" layoutY="67.0" text="Title" GridPane.rowIndex="1">

@@ -2,6 +2,7 @@ package app.helper;
 
 import app.controller.ApptDialogController;
 import app.controller.LoginController;
+import app.model.Appointment;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -36,24 +37,40 @@ public class UniversalControls {
     //Dialog Box Transitions
     //Main method to open the Add/Modify Appointments Dialog, which is referenced by more specific methods below.
     public static void openApptDialog(Stage ownerStage, boolean isAddMode) throws IOException {
-        //Initialize the dialog pane.
+        //Initializes the dialog pane
         FXMLLoader fxmlLoader = new FXMLLoader(UniversalControls.class.getResource("/app/ApptDialog.fxml"));
         DialogPane apptPane = fxmlLoader.load();
         ApptDialogController controller = fxmlLoader.getController();
-        Dialog<Void> dialog = new Dialog<>();
+        Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setDialogPane(apptPane);
-        dialog.initOwner(ownerStage); // Set the owner to ensure modality and proper event dispatch
+
+        //Sets the owner to ensure modality and proper event dispatch.
+        dialog.initOwner(ownerStage);
         dialog.initModality(Modality.APPLICATION_MODAL);
 
-        //Determine if dialog pane is in Add or Modify mode and set the labels accordingly.
+        //Determines if dialog pane is in Add or Modify mode and set the labels accordingly.
         String modeString = isAddMode ? "Add Appointment" : "Modify Appointment";
         dialog.setTitle(modeString);
         controller.setApptLabels(modeString);
 
-        ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().add(cancelButtonType);
+        //Creates Save/Cancel buttons
+        Utilities.createDialogButtons(dialog);
 
-        dialog.showAndWait();
+        //For new appointments, retrieves auto-generated AppointmentID from the database
+        if (isAddMode) {
+            controller.retrieveNewApptID();
+        }
+
+        //Sets actions taken upon Save/Cancel
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+            //Handles save operation
+            System.out.println("Save button selected.");
+            controller.handleSave(isAddMode);
+        } else {
+            //Handles cancel or X button operation
+            System.out.println("Cancel or close button selected.");
+        }
 
     }
 

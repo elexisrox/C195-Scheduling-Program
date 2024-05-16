@@ -3,6 +3,7 @@ package app.controller;
 import app.DBaccess.DBAppointments;
 import app.helper.UniversalControls;
 import app.helper.Utilities;
+import app.model.Appointment;
 import app.model.Contact;
 import app.model.Customer;
 import app.model.User;
@@ -30,66 +31,35 @@ public class ApptDialogController implements Initializable {
      *  Initializes the Appointment Dialog Box Controller Class.
      */
 
-    @FXML
-    private DialogPane dialogPane;
-    @FXML
-    private Label topTitleLabel;
+    @FXML public DialogPane dialogPane;
+    @FXML private Label topTitleLabel;
+    @FXML private TextField apptIDInput;
+    @FXML private TextField apptTitleInput;
+    @FXML private TextField apptDescInput;
+    @FXML private TextField apptLocInput;
+    @FXML private TextField apptTypeInput;
+    @FXML private Label apptTitleWarning;
+    @FXML private Label apptDescWarning;
+    @FXML private Label apptLocWarning;
+    @FXML private Label apptTypeWarning;
+    @FXML private Label apptContactWarning;
+    @FXML private Label apptCustomerWarning;
+    @FXML private Label apptUserWarning;
+    @FXML private Label apptTimeWarning;
+    @FXML private Label failureSaveWarning;
+    @FXML private DatePicker startDateInput;
+    @FXML private DatePicker endDateInput;
+    @FXML private Spinner<Integer> startTimeHoursInput, startTimeMinutesInput, endTimeHoursInput, endTimeMinutesInput;
+    @FXML private ChoiceBox<Contact> contactIDInput;
+    @FXML private ChoiceBox<Customer> custIDInput;
+    @FXML private ChoiceBox<User> userIDInput;
 
-    //Text fields
-    @FXML
-    private TextField apptIDInput;
-    @FXML
-    private TextField apptTitleInput;
-    @FXML
-    private TextField apptDescInput;
-    @FXML
-    private TextField apptLocInput;
-    @FXML
-    private TextField apptTypeInput;
-
-    //Error/Warning Labels
-    @FXML
-    private Label apptTitleWarning;
-    @FXML
-    private Label apptDescWarning;
-    @FXML
-    private Label apptLocWarning;
-    @FXML
-    private Label apptTypeWarning;
-    @FXML
-    private Label apptContactWarning;
-    @FXML
-    private Label apptCustomerWarning;
-    @FXML
-    private Label apptUserWarning;
-    @FXML
-    private Label apptTimeWarning;
-    @FXML
-    private Label failureSaveWarning;
-
-    //Date Pickers
-    @FXML
-    private DatePicker startDateInput;
-    @FXML
-    private DatePicker endDateInput;
-
-    //Spinners
-    @FXML
-    private Spinner<Integer> startTimeHoursInput, startTimeMinutesInput, endTimeHoursInput, endTimeMinutesInput;
-
-    //ChoiceBoxes
-    @FXML
-    private ChoiceBox<Contact> contactIDInput;
-    @FXML
-    private ChoiceBox<Customer> custIDInput;
-    @FXML
-    private ChoiceBox<User> userIDInput;
-
-    //Mode
-    private boolean isAddMode;
+    //Appointment object
+    private Appointment appointment;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
         //Load Choice boxes
         Utilities.loadChoiceBoxContacts(contactIDInput);
         Utilities.loadChoiceBoxCustomers(custIDInput);
@@ -100,6 +70,13 @@ public class ApptDialogController implements Initializable {
         startTimeMinutesInput.setValueFactory(new IntegerSpinnerValueFactory(0, 59, 0, 5));
         endTimeHoursInput.setValueFactory(new IntegerSpinnerValueFactory(0, 23, 12));
         endTimeMinutesInput.setValueFactory(new IntegerSpinnerValueFactory(0, 59, 0, 5));
+
+        // Verify field initialization
+        if (dialogPane == null) {
+            System.err.println("dialogPane is not initialized!");
+        } else {
+            System.out.println("dialogPane is successfully initialized.");
+        }
     }
 
     //Method to set any labels that may change between Add/Modify modes
@@ -107,49 +84,62 @@ public class ApptDialogController implements Initializable {
         topTitleLabel.setText(topTitleString);
     }
 
-    //Method to change isAddMode. If set to true, dialog pane is set for "Add Appointment". If set to false, dialog pane is set for "Modify Appointment".
-    public void setMode(boolean isAddMode) {
-        this.isAddMode = isAddMode;
+    //Retrieve auto-generated Appointment ID for new appointments
+    public void retrieveNewApptID() {
+        String newApptID = DBAppointments.readNextApptID();
+        apptIDInput.setText(newApptID);
     }
 
-    //Method to validate text fields and provide warnings if necessary
-    private boolean validateInputs() {
+
+    //Method for Save button
+    public void handleSave(boolean isAddMode) {
+        //Create a flag for the main warning message at the bottom of the dialog pane. If any errors are present, this value will be assigned as "true".
+        boolean errorsPresent = false;
+
+        //Validate: Check for any empty/blank fields
+
+        //Fetch data input from text fields
         String title = apptTitleInput.getText();
-        String description = apptDescInput.getText();
+        String desc = apptDescInput.getText();
         String location = apptLocInput.getText();
         String type = apptTypeInput.getText();
+
+        //Fetch and consolidate Dates/Times
         LocalDate startDate = startDateInput.getValue();
         LocalTime startTime = LocalTime.of(startTimeHoursInput.getValue(), startTimeMinutesInput.getValue());
         LocalDate endDate = endDateInput.getValue();
         LocalTime endTime = LocalTime.of(endTimeHoursInput.getValue(), endTimeMinutesInput.getValue());
         LocalDateTime startDateTime = LocalDateTime.of(startDate, startTime);
         LocalDateTime endDateTime = LocalDateTime.of(endDate, endTime);
-        int contactId = contactIDInput.getValue().getContactID();
-        int customerId = custIDInput.getValue().getCustID();
-        int userId = userIDInput.getValue().getUserID();
-//
-//        // Validate input here
-//        if (title.isEmpty() || description.isEmpty()) {
-//            failureSaveWarning.setText("Title and description are required.");
-//            return false;
-//        }
-//
-//        if (startDateTime.isAfter(endDateTime)) {
-//            failureSaveWarning.setText("Start time must be before end time.");
-//            return false;
-//        }
-//
-        return true;
-    }
 
-    //Method for "Add Appointment" to save new appointment to database
-    private void saveAddAppt() {
-        // Add appointment to the database
-    }
+        //Validate: Check for time/date errors
 
-    //Method for "Modify Appointment" to update appointment in database
-    private void saveModifyAppt() {
-        // Modify appointment in the database
+        //Fetch selected items from the ChoiceBoxes
+        Contact selectedContact = contactIDInput.getValue();
+        Customer selectedCustomer = custIDInput.getValue();
+        User selectedUser = userIDInput.getValue();
+        int userID = selectedUser.getUserID();
+        int contactID = selectedContact.getContactID();
+        int customerID = selectedCustomer.getCustID();
+
+        //Handle the save operation based on if the dialog pane is in Add or Modify mode.
+        if (isAddMode) {
+            //Add Appointment: Saves new appointment to the database
+            DBAppointments.addAppt(title, desc, location, type, startDateTime, endDateTime, userID, contactID, customerID);
+        } else {
+            //Modify Appointment: Saves modifications to an existing appointment
+            appointment.setApptTitle(title);
+            appointment.setApptDesc(desc);
+            appointment.setApptLocation(location);
+            appointment.setApptType(type);
+            appointment.setApptStart(startDateTime);
+            appointment.setApptEnd(endDateTime);
+            appointment.setApptUserID(userID);
+            appointment.setApptContactID(contactID);
+            appointment.setApptCustomerID(customerID);
+
+            DBAppointments.updateAppt(appointment.getApptID(), title, desc, location, type, startDateTime, endDateTime, userID, contactID, customerID);
+        }
     }
 
 }

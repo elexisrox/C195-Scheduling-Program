@@ -102,7 +102,7 @@ public class Appointment {
         this.apptStart = apptStart;
     }
 
-    public void setApptEnd(LocalDate apptEndDate) {
+    public void setApptEnd(LocalDateTime apptEnd) {
         this.apptEnd = apptEnd;
     }
 

@@ -5,10 +5,7 @@ import app.model.Appointment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -94,6 +91,7 @@ public class DBAppointments {
        }
        return apptList;
     }
+
     //SQL Query that retrieves all appointments beginning with the most recent Monday and spanning the next 7 days and adds them to an ObservableList.
     public static ObservableList<Appointment> readWeekAppts() {
         ObservableList<Appointment> apptList = FXCollections.observableArrayList();
@@ -141,16 +139,34 @@ public class DBAppointments {
         }
         return apptList;
     }
+
     //SQL Query that retrieves all appointments associated with the user in order to display alerts for appointments within 15 minutes.
     //SQL Query that retrieves all appointments by contact ID.
+
+    //SQL Query to retrieves the next available appointment ID
+    public static String readNextApptID() {
+        int nextApptID = 0;
+        try {
+            String sql = "SELECT MAX(Appointment_ID) FROM appointments";
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                nextApptID = rs.getInt(1) + 1;
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Get Next Appointment ID): " + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return String.valueOf(nextApptID);
+    }
 
     //UPDATE QUERIES
     //SQL Query that updates a selected appointment within the database.
     public static void updateAppt(int apptID, String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDateTime apptStart, LocalDateTime apptEnd, int apptUserID, int apptContactID, int apptCustomerID) {
         try {
-            String sql = APPT_BASE_SQL;
 
-            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(APPT_BASE_SQL);
 
             ps.setString(1, apptTitle);
             ps.setString(2, apptDesc);

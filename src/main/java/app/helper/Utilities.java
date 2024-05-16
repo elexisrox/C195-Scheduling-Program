@@ -7,18 +7,10 @@ import app.model.Contact;
 import app.model.Customer;
 import app.model.User;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.*;
 
-import javax.xml.transform.Result;
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
@@ -149,7 +141,7 @@ public class Utilities {
     //BUTTONS
     //Logout Button
     public static void logoutButton(Stage stage) throws IOException {
-        System.out.println("Logout button clicked.");
+        System.out.println("Logout button selected.");
 
         // Create a confirmation alert
         Optional<ButtonType> result = showConfirmationAlert(
@@ -169,7 +161,7 @@ public class Utilities {
 
     //Exit button
     public static void exitButton() {
-        System.out.println("Exit button clicked.");
+        System.out.println("Exit button selected.");
 
         // Create a confirmation alert
         Optional<ButtonType> result = showConfirmationAlert(
@@ -186,5 +178,12 @@ public class Utilities {
         } else {
             System.out.println("Exit canceled.");
         }
+    }
+
+    //Dialog box buttons
+    public static void createDialogButtons(Dialog<ButtonType> dialog) {
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
     }
 }

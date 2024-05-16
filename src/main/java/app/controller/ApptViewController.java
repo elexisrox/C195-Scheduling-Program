@@ -83,21 +83,21 @@ public class ApptViewController implements Initializable {
     //Label Setters
     @FXML
     public void onActionAddAppt(ActionEvent event) throws IOException {
-        System.out.println("Add Appointment button clicked.");
+        System.out.println("Add Appointment button selected.");
         Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
         UniversalControls.openAddApptDialog(ownerStage);
     }
 
     @FXML
     public void onActionModAppt(ActionEvent event) throws IOException {
-        System.out.println("Modify Appointment button clicked.");
+        System.out.println("Modify Appointment button selected.");
         Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
         UniversalControls.openModApptDialog(ownerStage);
     }
 
     @FXML
     public void onActionDelAppt(ActionEvent event) {
-        System.out.println("Delete Appointment button clicked.");
+        System.out.println("Delete Appointment button selected.");
     }
 
     @FXML
