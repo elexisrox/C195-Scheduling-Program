@@ -71,12 +71,6 @@ public class ApptDialogController implements Initializable {
         endTimeHoursInput.setValueFactory(new IntegerSpinnerValueFactory(0, 23, 12));
         endTimeMinutesInput.setValueFactory(new IntegerSpinnerValueFactory(0, 59, 0, 5));
 
-        // Verify field initialization
-        if (dialogPane == null) {
-            System.err.println("dialogPane is not initialized!");
-        } else {
-            System.out.println("dialogPane is successfully initialized.");
-        }
     }
 
     //Method to set any labels that may change between Add/Modify modes
@@ -113,6 +107,7 @@ public class ApptDialogController implements Initializable {
         LocalDateTime endDateTime = LocalDateTime.of(endDate, endTime);
 
         //Validate: Check for time/date errors
+        //Validate: Check for conflicts in customer's schedule
 
         //Fetch selected items from the ChoiceBoxes
         Contact selectedContact = contactIDInput.getValue();
@@ -140,6 +135,10 @@ public class ApptDialogController implements Initializable {
 
             DBAppointments.updateAppt(appointment.getApptID(), title, desc, location, type, startDateTime, endDateTime, userID, contactID, customerID);
         }
+
+        //Refresh Appointments table view in the main application
+
+
     }
 
 }

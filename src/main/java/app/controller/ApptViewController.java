@@ -85,14 +85,14 @@ public class ApptViewController implements Initializable {
     public void onActionAddAppt(ActionEvent event) throws IOException {
         System.out.println("Add Appointment button selected.");
         Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        UniversalControls.openAddApptDialog(ownerStage);
+        UniversalControls.openAddApptDialog(ownerStage, this);
     }
 
     @FXML
     public void onActionModAppt(ActionEvent event) throws IOException {
         System.out.println("Modify Appointment button selected.");
         Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        UniversalControls.openModApptDialog(ownerStage);
+        UniversalControls.openModApptDialog(ownerStage, this);
     }
 
     @FXML
@@ -170,7 +170,7 @@ public class ApptViewController implements Initializable {
     }
 
     //Update the table data based on the selected tab
-    private void updateTableData() {
+    public void updateTableData() {
         if (tabAll.isSelected()) {
             loadAllAppts();
         } else if (tabMonth.isSelected()) {

@@ -1,6 +1,7 @@
 package app.helper;
 
 import app.controller.ApptDialogController;
+import app.controller.ApptViewController;
 import app.controller.LoginController;
 import app.model.Appointment;
 import javafx.event.ActionEvent;
@@ -36,7 +37,7 @@ public class UniversalControls {
 
     //Dialog Box Transitions
     //Main method to open the Add/Modify Appointments Dialog, which is referenced by more specific methods below.
-    public static void openApptDialog(Stage ownerStage, boolean isAddMode) throws IOException {
+    public static void openApptDialog(Stage ownerStage, boolean isAddMode, ApptViewController apptMainView) throws IOException {
         //Initializes the dialog pane
         FXMLLoader fxmlLoader = new FXMLLoader(UniversalControls.class.getResource("/app/ApptDialog.fxml"));
         DialogPane apptPane = fxmlLoader.load();
@@ -67,6 +68,7 @@ public class UniversalControls {
             //Handles save operation
             System.out.println("Save button selected.");
             controller.handleSave(isAddMode);
+            apptMainView.updateTableData();
         } else {
             //Handles cancel or X button operation
             System.out.println("Cancel or close button selected.");
@@ -75,13 +77,13 @@ public class UniversalControls {
     }
 
     //Method to specifically open the Add Appointment dialog box. Sets isAddMode to true.
-    public static void openAddApptDialog(Stage ownerStage) throws IOException {
-        openApptDialog(ownerStage, true);
+    public static void openAddApptDialog(Stage ownerStage, ApptViewController apptMainView) throws IOException {
+        openApptDialog(ownerStage, true, apptMainView);
     }
 
     //Method to specifically open the Modify Appointment dialog box. Sets isAddMode to false.
-    public static void openModApptDialog(Stage ownerStage) throws IOException {
-        openApptDialog(ownerStage, false);
+    public static void openModApptDialog(Stage ownerStage, ApptViewController apptMainView) throws IOException {
+        openApptDialog(ownerStage, false, apptMainView);
     }
 }
 
