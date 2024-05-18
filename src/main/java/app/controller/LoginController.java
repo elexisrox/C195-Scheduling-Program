@@ -45,7 +45,7 @@ public class LoginController implements Initializable {
     //Detect the user's time zone
     ZoneId userLocalZone = ZoneId.systemDefault();
 
-    //Validates username and password upon login. Displays an  appropriate error/success message upon login attempt. Logs completed login attempts in login_activity.txt file.
+    //Validates username and password upon login. Displays an appropriate error/success message upon login attempt. Logs completed login attempts in login_activity.txt file.
     @FXML
     public void onActionLogin(ActionEvent event) throws IOException {
         System.out.println("Login button selected.");
@@ -55,36 +55,38 @@ public class LoginController implements Initializable {
         boolean loginSuccessful = false;
 
         //Displays error message if both username and password fields are blank or empty.
-        if ((userName.isBlank() || userName.isEmpty()) && (userPassword.isBlank() || userPassword.isEmpty())) {
-            loginErrorLbl.setText(Utilities.getErrorMsg(1));
+        if ((userName.isBlank()) && (userPassword.isBlank())) {
+            loginErrorLbl.setText("Please provide a username and password.");
         }
         //Displays error message if username field is blank or empty.
-        else if (userName.isBlank() || userName.isEmpty()) {
-            loginErrorLbl.setText(Utilities.getErrorMsg(2));
+        else if (userName.isBlank()) {
+            loginErrorLbl.setText("Please provide a username.");
         }
         //Displays error message if password field is blank or empty.
-        else if (userPassword.isBlank() || userPassword.isEmpty()) {
-            loginErrorLbl.setText(Utilities.getErrorMsg(3));
+        else if (userPassword.isBlank()) {
+            loginErrorLbl.setText("Please provide a password.");
         }
         //Displays error message if the provided username does not exist in the database. Records the login attempt.
         else if (!DBUsers.userNameValidate(userName)) {
-            loginErrorLbl.setText(Utilities.getErrorMsg(4));
+            loginErrorLbl.setText("Username not found. Please try again.");
             //TODO: LOGIN ACTIVITY
             //loginActivity();
         }
+
         //Attempts to validate that the provided username and password match.
         else {
             loginSuccessful = DBUsers.userLoginValidate(userName, userPassword);
 
             //If username and password do not match, displays an error message. Records the login attempt.
             if (!loginSuccessful) {
-                loginErrorLbl.setText(Utilities.getErrorMsg(5));
+                loginErrorLbl.setText("Username and password do not match. Please try again.");
                 //TODO
                 //loginActivity();
             }
             //If username and password are successfully validated, loads the main application Appointment view. Records the login attempt.
             else {
                 System.out.println("Login successful.");
+                //Clear any previous login warnings.
                 loginErrorLbl.setText(null);
                 //TODO
                 //loginActivity();

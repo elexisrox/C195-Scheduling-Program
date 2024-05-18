@@ -3,10 +3,12 @@ package app.helper;
 import app.DBaccess.DBContacts;
 import app.DBaccess.DBCustomers;
 import app.DBaccess.DBUsers;
+import app.controller.ApptDialogController;
 import app.model.Contact;
 import app.model.Customer;
 import app.model.User;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 
 import java.io.IOException;
@@ -29,43 +31,33 @@ public class Utilities {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    //ERRORS
-    //Error Messages
-    public static String getErrorMsg(int errorType) {
-        return switch (errorType) {
-            //Login Errors
-            case 1 -> "Please provide a username and password.";
-            case 2 -> "Please provide a username.";
-            case 3 -> "Please provide a password.";
-            case 4 -> "Username not found. Please try again.";
-            case 5 -> "Username and password do not match. Please try again.";
-            //Appointment Dialog Box Errors
-            case 7 -> "Please enter a descriptive title to continue.";
-            case 8 -> "Please enter a brief description of the appointment to continue.";
-            case 9 -> "Please enter a location to continue.";
-            case 10 -> "Please specify the type of appointment to continue.";
-            case 11 -> "Please select a Contact ID to continue.";
-            case 12 -> "Please select a Customer ID to continue.";
-            case 13 -> "Please select a User ID to continue.";
-            case 14 -> "End Date must occur after Start Date.";
-            case 15 -> "Unable to save. Please check the warnings above and try again.";
-            default -> null;
-        };
-    }
-
     //TIME
-    //Converts LocalDateTime to a formatted date string in a specific timezone
+    //Converts LocalDateTime to a formatted Date string in a specific timezone
     public static String formatDate(LocalDateTime utcDateTime, ZoneId targetZone) {
         if (utcDateTime == null) return "";
         ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
         return DATE_FORMATTER.format(zonedDateTime);
     }
 
-    //Converts UTC LocalDateTime to a formatted time string in a specific timezone
+    //Converts UTC LocalDateTime to a formatted Time string in a specific timezone
     public static String formatTime(LocalDateTime utcDateTime, ZoneId targetZone) {
         if (utcDateTime == null) return "";
         ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
         return TIME_FORMATTER.format(zonedDateTime);
+    }
+
+    //Converts LocalDateTime from the user's timezone to UTC
+    public static LocalDateTime toUTC(LocalDateTime localDateTime, ZoneId userZone) {
+        ZonedDateTime localZonedDateTime = localDateTime.atZone(userZone);
+        ZonedDateTime utcZoneDateTime = localZonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
+        return utcZoneDateTime.toLocalDateTime();
+    }
+
+    //Converts LocalDateTime from UTC to the user's timezone
+    public static LocalDateTime fromUTC(LocalDateTime utcDateTime, ZoneId userZone) {
+        ZonedDateTime utcZonedDateTime = utcDateTime.atZone(ZoneId.of("UTC"));
+        ZonedDateTime localZonedDateTime = utcZonedDateTime.withZoneSameInstant(userZone);
+        return localZonedDateTime.toLocalDateTime();
     }
 
     //Displays a confirmation alert with custom title, header, and content text.
@@ -180,10 +172,4 @@ public class Utilities {
         }
     }
 
-    //Dialog box buttons
-    public static void createDialogButtons(Dialog<ButtonType> dialog) {
-        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
-    }
 }

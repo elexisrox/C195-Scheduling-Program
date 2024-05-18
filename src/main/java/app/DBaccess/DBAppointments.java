@@ -9,6 +9,7 @@ import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 
 /**
@@ -119,8 +120,11 @@ public class DBAppointments {
     //SQL Query that retrieves all appointments in the current calendar month and adds them to an ObservableList.
     public static ObservableList<Appointment> readMonthAppts() {
         ObservableList<Appointment> apptList = FXCollections.observableArrayList();
-        LocalDate firstDayOfMonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate lastDayOfMonth = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
+        //Set the first day of the month at the start of the day
+        LocalDateTime firstDayOfMonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay();
+
+        //Set the last day of the month at the end of the day
+        LocalDateTime lastDayOfMonth = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()).atTime(LocalTime.MAX);
 
         String sql = APPT_BASE_SQL +
                 "WHERE a.Start BETWEEN ? AND ? " +
