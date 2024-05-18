@@ -2,14 +2,11 @@ package app.controller;
 
 //TODO Organize imports for clarity/readability
 import app.DBaccess.DBUsers;
-import app.helper.UniversalControls;
 import app.helper.Utilities;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
@@ -91,7 +88,7 @@ public class LoginController implements Initializable {
                 //TODO
                 //loginActivity();
                 Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-                UniversalControls.transitionApptView(stage);
+                Utilities.transitionApptView(stage);
 
                 //TODO
                 //If login is successful, checks for upcoming appointments within 15 minutes of logging in.

@@ -169,9 +169,19 @@ public class DBAppointments {
     //SQL Query that updates a selected appointment within the database.
     public static void updateAppt(int apptID, String apptTitle, String apptDesc, String apptLocation, String apptType, LocalDateTime apptStart, LocalDateTime apptEnd, int apptUserID, int apptContactID, int apptCustomerID) {
         try {
+            String sql = "UPDATE appointments SET " +
+                    "Title = ?, " +
+                    "Description = ?, " +
+                    "Location = ?, " +
+                    "Type = ?, " +
+                    "Start = ?, " +
+                    "End = ?, " +
+                    "User_ID = ?, " +
+                    "Contact_ID = ?, " +
+                    "Customer_ID = ? " +
+                    "WHERE Appointment_ID = ?";
 
-            PreparedStatement ps = JDBC.getConnection().prepareStatement(APPT_BASE_SQL);
-
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setString(1, apptTitle);
             ps.setString(2, apptDesc);
             ps.setString(3, apptLocation);
@@ -183,12 +193,12 @@ public class DBAppointments {
             ps.setInt(9, apptCustomerID);
             ps.setInt(10, apptID);
 
-            ps.execute();
-
+            ps.executeUpdate();
+            System.out.println("Appointment updated successfully.");
         } catch (SQLException e) {
-            System.out.println("SQL Exception Error (Update Appointment):" + e.getErrorCode());
+            System.out.println("SQL Exception Error (Update Appointment): " + e.getErrorCode());
         } catch (Exception e) {
-            System.out.println("Error:" + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
 

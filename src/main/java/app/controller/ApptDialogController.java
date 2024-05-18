@@ -1,7 +1,9 @@
 package app.controller;
 
 import app.DBaccess.DBAppointments;
-import app.helper.UniversalControls;
+import app.DBaccess.DBContacts;
+import app.DBaccess.DBCustomers;
+import app.DBaccess.DBUsers;
 import app.helper.Utilities;
 import app.model.Appointment;
 import app.model.Contact;
@@ -9,7 +11,6 @@ import app.model.Customer;
 import app.model.User;
 import javafx.fxml.Initializable;
 
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,11 +18,9 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ResourceBundle;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
-import javafx.stage.Stage;
 
 /** Controller class for ApptDialog.fxml. Applies to both the Add Appointment and Modify Appointment dialog boxes.
  * @author Elexis Rox
@@ -89,6 +88,33 @@ public class ApptDialogController implements Initializable {
     public void retrieveNewApptID() {
         String newApptID = DBAppointments.readNextApptID();
         apptIDInput.setText(newApptID);
+    }
+
+    // Method to set the appointment object and populate the fields
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+        apptIDInput.setText(String.valueOf(appointment.getApptID()));
+        apptTitleInput.setText(appointment.getApptTitle());
+        apptDescInput.setText(appointment.getApptDesc());
+        apptLocInput.setText(appointment.getApptLocation());
+        apptTypeInput.setText(appointment.getApptType());
+
+        // Set date and time pickers with appointment data
+        LocalDateTime startDateTime = Utilities.fromUTC(appointment.getApptStart(), userLocalZone);
+        LocalDateTime endDateTime = Utilities.fromUTC(appointment.getApptEnd(), userLocalZone);
+
+        startDateInput.setValue(startDateTime.toLocalDate());
+        startTimeHoursInput.getValueFactory().setValue(startDateTime.getHour());
+        startTimeMinutesInput.getValueFactory().setValue(startDateTime.getMinute());
+
+        endDateInput.setValue(endDateTime.toLocalDate());
+        endTimeHoursInput.getValueFactory().setValue(endDateTime.getHour());
+        endTimeMinutesInput.getValueFactory().setValue(endDateTime.getMinute());
+
+        // Set choice boxes with appointment data
+        contactIDInput.setValue(DBContacts.readContact(appointment.getApptContactID()));
+        custIDInput.setValue(DBCustomers.readCustomer(appointment.getApptCustomerID()));
+        userIDInput.setValue(DBUsers.readUser(appointment.getApptUserID()));
     }
 
     //Clears all error labels

@@ -1,10 +1,8 @@
 package app.controller;
 
 import app.DBaccess.DBAppointments;
-import app.helper.UniversalControls;
 import app.helper.Utilities;
 import app.model.Appointment;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,7 +17,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.time.ZoneId;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 /** Controller class for ApptView.fxml.
@@ -85,14 +82,19 @@ public class ApptViewController implements Initializable {
     public void onActionAddAppt(ActionEvent event) throws IOException {
         System.out.println("Add Appointment button selected.");
         Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        UniversalControls.openAddApptDialog(ownerStage, this);
+        Utilities.openAddApptDialog(ownerStage, this);
     }
 
     @FXML
     public void onActionModAppt(ActionEvent event) throws IOException {
         System.out.println("Modify Appointment button selected.");
-        Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        UniversalControls.openModApptDialog(ownerStage, this);
+        Appointment selectedAppt = apptTable.getSelectionModel().getSelectedItem();
+        if (selectedAppt != null) {
+            Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Utilities.openModApptDialog(ownerStage, this, selectedAppt);
+        } else {
+            errorMsgLbl.setText("Please select an appointment to modify.");
+        }
     }
 
     @FXML

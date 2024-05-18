@@ -46,7 +46,7 @@ public class DBContacts {
         return contactList;
     }
 
-    //SQL Query that returns a Contact's name based on the provided Contact ID.
+    //SQL Query that returns a Contact based on the provided Contact ID.
     public static Contact readContact(int contactID) {
 
         int providedContactID = 0;
@@ -54,7 +54,9 @@ public class DBContacts {
         String contactEmail = null;
 
         try {
-            String sql = "SELECT Contact_ID, Contact_Name, Email FROM contacts WHERE Contact_ID = ?";
+            String sql = "SELECT c.Contact_ID, c.Contact_Name, c.Email " +
+                    "FROM contacts as c " +
+                    "WHERE c.Contact_ID = ?";
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setInt(1, contactID);
             ResultSet rs = ps.executeQuery();

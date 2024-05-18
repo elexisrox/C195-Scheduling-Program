@@ -2,6 +2,7 @@ package app.DBaccess;
 
 import app.helper.JDBC;
 import app.model.Appointment;
+import app.model.Contact;
 import app.model.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -78,6 +79,50 @@ public class DBCustomers {
             System.out.println("Error: " + e.getMessage());
         }
         return custList;
+    }
+
+    //SQL Query that returns a Customer based on the provided Customer ID.
+    public static Customer readCustomer(int custID) {
+
+        int providedCustID = 0;
+        String custName = null;
+        String custAddress = null;
+        String custPostalCode = null;
+        String custPhone = null;
+        int custDivisionID = 0;
+        String custDivisionName = null;
+        int custCountryID = 0;
+        String custCountryName = null;
+
+        try {
+            String sql = "SELECT c.Customer_ID, c.Customer_Name, c.Address, c.Postal_Code, c.Phone, c.Division_ID, f.Division, f.Country_ID, countries.Country " +
+                    "FROM customers as c " +
+                    "JOIN first_level_divisions as f " +
+                    "ON c.Division_ID = f.Division_ID " +
+                    "JOIN countries " +
+                    "ON countries.Country_ID = f.Country_ID " +
+                    "WHERE c.Customer_ID = ?";
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ps.setInt(1, custID);
+            ResultSet rs = ps.executeQuery();
+
+            rs.next();
+
+            providedCustID = rs.getInt("Customer_ID");
+            custName = rs.getString("Customer_Name");
+            custAddress = rs.getString("Address");
+            custPostalCode = rs.getString("Postal_Code");
+            custPhone = rs.getString("Phone");
+            custDivisionID = rs.getInt("Division_ID");
+            custDivisionName = rs.getString("Division");
+            custCountryID = rs.getInt("Country_ID");
+            custCountryName = rs.getString("Country");
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Customer):" + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+        return new Customer(providedCustID, custName, custAddress, custPostalCode, custPhone, custDivisionID, custDivisionName, custCountryID, custCountryName);
     }
 
     //UPDATE QUERIES
