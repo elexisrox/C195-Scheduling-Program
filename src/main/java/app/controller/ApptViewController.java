@@ -93,6 +93,7 @@ public class ApptViewController implements Initializable {
             Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
             Utilities.openModApptDialog(ownerStage, this, selectedAppt);
         } else {
+            System.out.println("No appointment selected.");
             errorMsgLbl.setText("Please select an appointment to modify.");
         }
     }
@@ -100,6 +101,23 @@ public class ApptViewController implements Initializable {
     @FXML
     public void onActionDelAppt(ActionEvent event) {
         System.out.println("Delete Appointment button selected.");
+        Appointment selectedAppt = apptTable.getSelectionModel().getSelectedItem();
+        if (selectedAppt != null) {
+            boolean confirmed = Utilities.showConfirmationAlert(
+                    "Delete Confirmation",
+                    "Are you sure you want to delete this appointment?",
+                    "Appointment ID: " + selectedAppt.getApptID() + "\nTitle: " + selectedAppt.getApptTitle()
+            ).filter(response -> response == ButtonType.OK).isPresent();
+
+            if (confirmed) {
+                DBAppointments.deleteAppt(selectedAppt.getApptID());
+                updateTableData();
+            }
+        } else {
+            System.out.println("No appointment selected.");
+            errorMsgLbl.setText("Please select an appointment to delete.");
+        }
+
     }
 
     @FXML
