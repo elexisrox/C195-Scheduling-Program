@@ -26,7 +26,6 @@ public class MainApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoaderDialog = new FXMLLoader(MainApplication.class.getResource("Login.fxml"));
         Scene scene = new Scene(fxmlLoaderDialog.load());
-        stage.setTitle("Appointment Scheduler Login");
         stage.centerOnScreen();
         stage.setResizable(false);
         stage.setScene(scene);

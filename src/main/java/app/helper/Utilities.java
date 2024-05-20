@@ -47,7 +47,7 @@ public class Utilities {
         Parent scene = FXMLLoader.load(Utilities.class.getResource("/app/Login.fxml"));
         stage.setScene(new Scene((javafx.scene.Parent) scene));
         stage.centerOnScreen();
-        stage.setTitle("Appointment Scheduler Login");
+        stage.setTitle("");
         stage.show();
     }
 

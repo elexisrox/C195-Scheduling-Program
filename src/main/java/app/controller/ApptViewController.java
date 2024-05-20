@@ -106,11 +106,14 @@ public class ApptViewController implements Initializable {
             boolean confirmed = Utilities.showConfirmationAlert(
                     "Delete Confirmation",
                     "Are you sure you want to delete this appointment?",
-                    "Appointment ID: " + selectedAppt.getApptID() + "\nTitle: " + selectedAppt.getApptTitle()
+                    "Appointment ID: " + selectedAppt.getApptID() +
+                            "\nAppointment Type: " + selectedAppt.getApptType() +
+                            "\nAppointment Title: " + selectedAppt.getApptTitle()
             ).filter(response -> response == ButtonType.OK).isPresent();
 
             if (confirmed) {
                 DBAppointments.deleteAppt(selectedAppt.getApptID());
+                System.out.println("Appointment #" + selectedAppt.getApptID() + " deleted.");
                 updateTableData();
             }
         } else {

@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.time.ZoneId;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /** Controller class for Login.fxml.
@@ -24,6 +26,7 @@ public class LoginController implements Initializable {
     static Stage stage;
     static Parent scene;
 
+    //ComboBox
     @FXML
     private ComboBox<String> langComboBox;
 
@@ -33,14 +36,40 @@ public class LoginController implements Initializable {
     @FXML
     private PasswordField passwordField;
 
-    //Strings
+    //Labels
     @FXML
     private Label loginErrorLbl;
     @FXML
     private Label timezoneLbl;
 
+    //Translation Strings
+    @FXML
+    private Label welcomeString;
+    @FXML
+    private Label loginString;
+    @FXML
+    private Label usernameString;
+    @FXML
+    private Label passString;
+    @FXML
+    private Label langString;
+    @FXML
+    private Label zoneString;
+    @FXML
+    private Button loginButton;
+    @FXML
+    private Button exitButton;
+    @FXML
+    private Hyperlink resetString;
+
+    //Used for translations
+    private ResourceBundle rb;
+
     //Detect the user's time zone
     ZoneId userLocalZone = ZoneId.systemDefault();
+
+    //Detect users' default language
+    Locale userLocale = Locale.getDefault();
 
     //Validates username and password upon login. Displays an appropriate error/success message upon login attempt. Logs completed login attempts in login_activity.txt file.
     @FXML
@@ -53,19 +82,19 @@ public class LoginController implements Initializable {
 
         //Displays error message if both username and password fields are blank or empty.
         if ((userName.isBlank()) && (userPassword.isBlank())) {
-            loginErrorLbl.setText("Please provide a username and password.");
+            loginErrorLbl.setText(rb.getString("errorUserPass"));
         }
         //Displays error message if username field is blank or empty.
         else if (userName.isBlank()) {
-            loginErrorLbl.setText("Please provide a username.");
+            loginErrorLbl.setText(rb.getString("errorUser"));
         }
         //Displays error message if password field is blank or empty.
         else if (userPassword.isBlank()) {
-            loginErrorLbl.setText("Please provide a password.");
+            loginErrorLbl.setText(rb.getString("errorPass"));
         }
         //Displays error message if the provided username does not exist in the database. Records the login attempt.
         else if (!DBUsers.userNameValidate(userName)) {
-            loginErrorLbl.setText("Username not found. Please try again.");
+            loginErrorLbl.setText(rb.getString("errorUserNotFound"));
             //TODO: LOGIN ACTIVITY
             //loginActivity();
         }
@@ -76,7 +105,7 @@ public class LoginController implements Initializable {
 
             //If username and password do not match, displays an error message. Records the login attempt.
             if (!loginSuccessful) {
-                loginErrorLbl.setText("Username and password do not match. Please try again.");
+                loginErrorLbl.setText(rb.getString("errorNoMatch"));
                 //TODO
                 //loginActivity();
             }
@@ -100,7 +129,10 @@ public class LoginController implements Initializable {
 
     @FXML
     void onActionExit(ActionEvent event) {
-        Utilities.exitButton();
+        System.out.println("Exit button selected.");
+        app.helper.JDBC.closeConnection();
+        System.out.println("Application terminated.");
+        System.exit(0);
     }
 
     @FXML
@@ -111,42 +143,57 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    void onActionLangCombo(ActionEvent event) {
-         /*if (Objects.equals(langComboBox.getValue(), "French")) {
-             helper.Strings.updateLanguage(french);
-         } else {
-             helper.Strings.updateLanguage(english);
-         }*/
-    }
-
-
-
-    // Method to update the text of each node based on the selected language
-    /*private void updateLanguage() {
-        Utilities.updateLanguage(loginErrorWarning, timeZoneLabel, langComboBox.getSelectionModel().getSelectedItem());
-    }*/
-
-    /*
-    public TableView exampleTable;
-    public TableColumn testcolumn1;
-    public TableColumn testcolumn2;
-
-    @FXML
-    protected void onCustButtonClick() {
-
-        ObservableList<Countries> countryList = DBCountries.getAllCountries();
-        for(Countries C : countryList) {
-            System.out.println("Country Id : " + C.getID() + " Name: " + C.getName());
+    void detectUserLocale() {
+        Locale userLocale = Locale.getDefault();
+        if (userLocale.getLanguage().equals("fr")) {
+            rb = ResourceBundle.getBundle("LangBundle", Locale.FRENCH);
+        } else {
+            rb = ResourceBundle.getBundle("LangBundle", Locale.ENGLISH);
         }
+        setTextLabels();
     }
-    */
-    /**
-     *  Initializes the Login View Controller Class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+
+    private void setTextLabels() {
+        welcomeString.setText(rb.getString("welcomeString"));
+        loginString.setText(rb.getString("loginString"));
+        usernameString.setText(rb.getString("usernameString"));
+        passString.setText(rb.getString("passString"));
+        loginButton.setText(rb.getString("loginButton"));
+        exitButton.setText(rb.getString("exitButton"));
+        resetString.setText(rb.getString("resetString"));
+        langString.setText(rb.getString("langString"));
+        zoneString.setText(rb.getString("zoneString"));
+        //Clear any previous login warnings.
+        loginErrorLbl.setText(null);
         //Sets timezone label according to the user's timezone
         timezoneLbl.setText(String.valueOf(userLocalZone));
+    }
+
+    private void initializeLangComboBox() {
+        langComboBox.getItems().addAll("English", "Français");
+        Locale userLocale = Locale.getDefault();
+        if (userLocale.getLanguage().equals("fr")) {
+            langComboBox.setValue("Français");
+        } else {
+            langComboBox.setValue("English");
+        }
+
+        langComboBox.setOnAction(event -> {
+            String selectedLanguage = langComboBox.getValue();
+            if ("Français".equals(selectedLanguage)) {
+                rb = ResourceBundle.getBundle("LangBundle", Locale.FRENCH);
+            } else {
+                rb = ResourceBundle.getBundle("LangBundle", Locale.ENGLISH);
+            }
+            setTextLabels();
+        });
+    }
+
+    //Initializes the Login View Controller Class.
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        detectUserLocale();
+        initializeLangComboBox();
     }
 
 }
