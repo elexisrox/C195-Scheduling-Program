@@ -6,10 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.temporal.TemporalAdjusters;
 
 /**
@@ -140,6 +137,28 @@ public class DBAppointments {
             }
         } catch (SQLException e) {
             System.out.println("SQL Exception Error (Appointments by Month): " + e.getErrorCode());
+        }
+        return apptList;
+    }
+
+    //SQL Query that retrieves all appointments in the next 15 minutes.
+    public static ObservableList<Appointment> readNext15MinAppts() {
+        ObservableList<Appointment> apptList = FXCollections.observableArrayList();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));  // Ensure time is in UTC
+        LocalDateTime fifteenMinLater = now.plusMinutes(15);
+        String sql = APPT_BASE_SQL + "WHERE a.Start BETWEEN ? AND ? ORDER BY a.Appointment_ID";
+        try (PreparedStatement ps = JDBC.getConnection().prepareStatement(sql)) {
+            ps.setTimestamp(1, Timestamp.valueOf(now));
+            ps.setTimestamp(2, Timestamp.valueOf(fifteenMinLater));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    apptList.add(retrieveAppt(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Appointments in next 15 minutes): " + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
         return apptList;
     }

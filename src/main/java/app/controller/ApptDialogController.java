@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -58,6 +59,10 @@ public class ApptDialogController implements Initializable {
     private Appointment appointment;
     //Detect the user's time zone
     ZoneId userLocalZone = ZoneId.systemDefault();
+    //Defined business hours in ET
+    private static final ZoneId businessTimeZone = ZoneId.of("America/New_York");
+    private static final LocalTime businessStartTime = LocalTime.of(8, 0);  // 8:00 AM ET
+    private static final LocalTime businessEndTime = LocalTime.of(22, 0);   // 10:00 PM ET
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -129,6 +134,18 @@ public class ApptDialogController implements Initializable {
         apptTimeWarning.setText("");
         failureSaveWarning.setText("");
     }
+
+    //Checks if inputted times are within set business hours
+    private boolean isWithinBusinessHours(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        ZonedDateTime startZonedDateTime = startDateTime.atZone(userLocalZone).withZoneSameInstant(businessTimeZone);
+        ZonedDateTime endZonedDateTime = endDateTime.atZone(userLocalZone).withZoneSameInstant(businessTimeZone);
+
+        LocalTime startLocalTime = startZonedDateTime.toLocalTime();
+        LocalTime endLocalTime = endZonedDateTime.toLocalTime();
+
+        return !startLocalTime.isBefore(businessStartTime) && !endLocalTime.isAfter(businessEndTime);
+    }
+
     //Validates all data fields before adding/updating an appointment
     public boolean validateInputs() {
         System.out.println("validateInputs called");
@@ -195,8 +212,13 @@ public class ApptDialogController implements Initializable {
             errorsPresent = true;
         }
 
+        //Validate: Check to make sure times are within business hours
+        if (!isWithinBusinessHours(startDateTime, endDateTime)) {
+            apptTimeWarning.setText("Appointment times must be within business hours (8:00 AM to 10:00 PM ET).");
+            errorsPresent = true;
+        }
+
         //TODO Validate: Check for conflicts in customer's schedule
-        //TODO Validate: Check to make sure times are within business hours.
 
         //Set failureSaveWarning label if errors have been found.
         if (errorsPresent) {

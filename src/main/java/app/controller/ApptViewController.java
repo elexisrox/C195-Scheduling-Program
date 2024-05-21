@@ -118,6 +118,13 @@ public class ApptViewController implements Initializable {
                 DBAppointments.deleteAppt(selectedAppt.getApptID());
                 System.out.println("Appointment #" + selectedAppt.getApptID() + " deleted.");
                 updateTableData();
+                Utilities.showInfoAlert(
+                        "Delete Successful",
+                        "The following appointment has been successfully deleted/canceled:\n" +
+                                "Appointment ID: " + selectedAppt.getApptID() + "\n" +
+                                "Appointment Type: " + selectedAppt.getApptType() + "\n" +
+                                "Appointment Title: " + selectedAppt.getApptTitle()
+                );
             }
         } else {
             System.out.println("No appointment selected.");
@@ -237,17 +244,7 @@ public class ApptViewController implements Initializable {
 
     //Checks for appointments within the next 15 minutes.
     public void checkForUpcomingAppts() {
-        ObservableList<Appointment> appointments = DBAppointments.readAllAppts();
-        LocalDateTime now = LocalDateTime.now(userLocalZone);  // Use user's local time zone
-        LocalDateTime fifteenMinLater = now.plusMinutes(15);
-
-        List<Appointment> upcomingAppointments = appointments.stream()
-                .filter(appt -> {
-                    LocalDateTime apptStartLocal = appt.getApptStart().atZone(ZoneId.of("UTC")).withZoneSameInstant(userLocalZone).toLocalDateTime();
-                    return apptStartLocal.isAfter(now) && apptStartLocal.isBefore(fifteenMinLater);
-                })
-                .toList();
-
+        ObservableList<Appointment> upcomingAppointments = DBAppointments.readNext15MinAppts();
         if (!upcomingAppointments.isEmpty()) {
             StringBuilder alertContent = new StringBuilder("You have the following appointments within the next 15 minutes:\n");
             for (Appointment appt : upcomingAppointments) {
