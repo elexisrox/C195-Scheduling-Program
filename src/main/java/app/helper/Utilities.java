@@ -169,6 +169,15 @@ public class Utilities {
         return alert.showAndWait();
     }
 
+    //Displays an information alert with custom title, header, and content text.
+    public static void showInfoAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
     //CHOICE BOXES
     //Load Contacts into Contacts ChoiceBox
     public static void loadChoiceBoxContacts(ChoiceBox<Contact> choiceBox) {

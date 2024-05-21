@@ -69,9 +69,9 @@ public class ApptDialogController implements Initializable {
 
         //Initialize spinners
         startTimeHoursInput.setValueFactory(new IntegerSpinnerValueFactory(0, 23, 12));
-        startTimeMinutesInput.setValueFactory(new IntegerSpinnerValueFactory(0, 59, 0, 5));
+        startTimeMinutesInput.setValueFactory(new IntegerSpinnerValueFactory(0, 59, 0, 1));
         endTimeHoursInput.setValueFactory(new IntegerSpinnerValueFactory(0, 23, 12));
-        endTimeMinutesInput.setValueFactory(new IntegerSpinnerValueFactory(0, 59, 0, 5));
+        endTimeMinutesInput.setValueFactory(new IntegerSpinnerValueFactory(0, 59, 0, 1));
 
         //Set DatePicker default values to today's date
         LocalDate today = LocalDate.now();

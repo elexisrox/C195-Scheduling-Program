@@ -144,7 +144,6 @@ public class DBAppointments {
         return apptList;
     }
 
-    //SQL Query that retrieves all appointments associated with the user in order to display alerts for appointments within 15 minutes.
     //SQL Query that retrieves all appointments by contact ID.
 
     //SQL Query to retrieves the next available appointment ID

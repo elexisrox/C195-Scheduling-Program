@@ -16,8 +16,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /** Controller class for ApptView.fxml.
  * @author Elexis Rox
@@ -181,6 +184,8 @@ public class ApptViewController implements Initializable {
 
         //Load data based on the selected tab
         updateTableData();
+
+        checkForUpcomingAppts();
     }
 
     //Tab Selection Filtering
@@ -227,6 +232,33 @@ public class ApptViewController implements Initializable {
         if (apptTable != null) {
             ObservableList<Appointment> appointments = DBAppointments.readWeekAppts();
             apptTable.setItems(appointments);
+        }
+    }
+
+    //Checks for appointments within the next 15 minutes.
+    public void checkForUpcomingAppts() {
+        ObservableList<Appointment> appointments = DBAppointments.readAllAppts();
+        LocalDateTime now = LocalDateTime.now(userLocalZone);  // Use user's local time zone
+        LocalDateTime fifteenMinLater = now.plusMinutes(15);
+
+        List<Appointment> upcomingAppointments = appointments.stream()
+                .filter(appt -> {
+                    LocalDateTime apptStartLocal = appt.getApptStart().atZone(ZoneId.of("UTC")).withZoneSameInstant(userLocalZone).toLocalDateTime();
+                    return apptStartLocal.isAfter(now) && apptStartLocal.isBefore(fifteenMinLater);
+                })
+                .toList();
+
+        if (!upcomingAppointments.isEmpty()) {
+            StringBuilder alertContent = new StringBuilder("You have the following appointments within the next 15 minutes:\n");
+            for (Appointment appt : upcomingAppointments) {
+                alertContent.append("ID: ").append(appt.getApptID())
+                        .append(", Date: ").append(appt.getApptStart().toLocalDate())
+                        .append(", Time: ").append(appt.getApptStart().toLocalTime())
+                        .append("\n");
+            }
+            Utilities.showInfoAlert("Upcoming Appointments", alertContent.toString());
+        } else {
+            Utilities.showInfoAlert("No Upcoming Appointments", "You have no appointments within the next 15 minutes.");
         }
     }
 }
