@@ -149,13 +149,22 @@ public class ApptDialogController implements Initializable {
 
     // Checks if the given time range conflicts with any of the existing appointments for the customer.
     private boolean hasConflictingAppointments(int customerID, LocalDateTime newStart, LocalDateTime newEnd) {
-        ObservableList<Appointment> conflictingAppointments = DBAppointments.readOverlappingApptsByCustID(customerID, newStart, newEnd);
+        //Pass along current appointment ID if modifying an existing appointment
+        // Use -1 if there is no appointment to exclude
+        int excludeApptID = (appointment != null) ? appointment.getApptID() : -1;
+
+        ObservableList<Appointment> conflictingAppointments = DBAppointments.readOverlappingApptsByCustID(customerID, newStart, newEnd, userLocalZone, excludeApptID);
+
+        //Debugging print statements
         if (!conflictingAppointments.isEmpty()) {
             System.out.println("Conflicting appointments found:");
             for (Appointment appt : conflictingAppointments) {
                 System.out.println("Appointment ID: " + appt.getApptID());
-                System.out.println("Start: " + appt.getApptStart());
-                System.out.println("End: " + appt.getApptEnd());
+                System.out.println("\tStart: " + appt.getApptStart() +
+                                    ", End: " + appt.getApptEnd());
+                System.out.println("\tConflicting Inputs:" +
+                                    "\n\tStart (UTC): " + Utilities.toUTC(newStart, userLocalZone) +
+                                    ", End (UTC): " + Utilities.toUTC(newEnd, userLocalZone));
             }
             return true;
         }
@@ -164,7 +173,7 @@ public class ApptDialogController implements Initializable {
 
     //Validates all data fields before adding/updating an appointment
     public boolean validateInputs() {
-        System.out.println("validateInputs called");
+        System.out.println("Validating all inputs.");
 
         //Clear all Error Labels
         clearErrorLbls();
@@ -249,7 +258,6 @@ public class ApptDialogController implements Initializable {
 
     //Method for Save button
     public void handleSave() {
-        System.out.println("handleSave called");
         //Fetch data input from text fields
         String title = apptTitleInput.getText();
         String desc = apptDescInput.getText();

@@ -101,7 +101,7 @@ public class Utilities {
         Button saveButton = (Button) dialog.getDialogPane().lookupButton(saveButtonType);
         if (saveButton != null) {
             saveButton.addEventFilter(ActionEvent.ACTION, event -> {
-                System.out.println("Save button clicked");
+                System.out.println("Save button selected.");
                 if (!dialogController.validateInputs()) {
                     System.out.println("Validation failed.");
                     event.consume(); // Prevents the dialog from closing
@@ -111,7 +111,7 @@ public class Utilities {
                 }
             });
         } else {
-            System.out.println("Save button is null, unable to add event filter.");
+            System.out.println("ERROR: Save button is null.");
         }
 
         //Shows the dialog and handles the buttons being selected.

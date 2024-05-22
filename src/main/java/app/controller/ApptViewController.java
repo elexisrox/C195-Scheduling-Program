@@ -84,13 +84,19 @@ public class ApptViewController implements Initializable {
     @FXML
     public void onActionAddAppt(ActionEvent event) throws IOException {
         System.out.println("Add Appointment button selected.");
+        clearErrorLbl();
         Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Utilities.openAddApptDialog(ownerStage, this);
     }
 
+    //Clear Error Label
+    public void clearErrorLbl() {
+        errorMsgLbl.setText(" ");
+    }
     @FXML
     public void onActionModAppt(ActionEvent event) throws IOException {
         System.out.println("Modify Appointment button selected.");
+        clearErrorLbl();
         Appointment selectedAppt = apptTable.getSelectionModel().getSelectedItem();
         if (selectedAppt != null) {
             Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -104,6 +110,7 @@ public class ApptViewController implements Initializable {
     @FXML
     public void onActionDelAppt(ActionEvent event) {
         System.out.println("Delete Appointment button selected.");
+        clearErrorLbl();
         Appointment selectedAppt = apptTable.getSelectionModel().getSelectedItem();
         if (selectedAppt != null) {
             boolean confirmed = Utilities.showConfirmationAlert(
@@ -135,12 +142,14 @@ public class ApptViewController implements Initializable {
 
     @FXML
     public void onActionLogout(ActionEvent event) throws IOException {
+        clearErrorLbl();
         Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
         Utilities.logoutButton(stage);
     }
 
     @FXML
     public void onActionExit(ActionEvent event) {
+        clearErrorLbl();
         Utilities.exitButton();
     }
 

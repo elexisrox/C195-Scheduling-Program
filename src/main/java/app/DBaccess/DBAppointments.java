@@ -164,42 +164,37 @@ public class DBAppointments {
     }
 
     //SQL Query that retrieves all appointments by customer ID that overlap the inputted start and end times.
-    public static ObservableList<Appointment> readOverlappingApptsByCustID(int customerID, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public static ObservableList<Appointment> readOverlappingApptsByCustID(int customerID, LocalDateTime startDateTime, LocalDateTime endDateTime, ZoneId userLocalZone, int excludeApptID) {
         ObservableList<Appointment> apptList = FXCollections.observableArrayList();
+
+        //Convert the provided start and end times to UTC
+        LocalDateTime startDateTimeUTC = startDateTime.atZone(userLocalZone).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime();
+        LocalDateTime endDateTimeUTC = endDateTime.atZone(userLocalZone).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime();
+
         try {
             String sql = APPT_BASE_SQL +
-                    "WHERE a.Customer_ID = ? ";
-//                    +
-//                    "AND (" +
-//                    "(a.Start < ? AND a.End > ?) OR " +  // Overlap: newStart is before existingEnd and newEnd is after existingStart
-//                    "(a.Start < ? AND a.End > ?) OR " +  // Overlap: newStart is before existingStart and newEnd is after existingStart
-//                    "(a.Start >= ? AND a.Start < ?) OR " + // Overlap: newStart is equal to existingStart or within existingStart and existingEnd
-//                    "(a.End > ? AND a.End <= ?)" +      // Overlap: newEnd is equal to existingEnd or within existingStart and existingEnd
-//                    ") " +
-//                    "ORDER BY a.Start";
+                    "WHERE a.Customer_ID = ? " +
+                    "AND a.Appointment_ID <> ? " +  //Exclude the appointment with the same ID as the one being modified
+                    "AND (" +
+                    "(a.Start <= ? AND a.End >= ?) OR " +  //Overlap: newEnd is after or equal to existingStart, and newStart is before or equal to existingEnd.
+                    "(a.Start < ? AND a.End > ?) OR " +  //Overlap: newStart is before existingStart and newEnd is after existingStart
+                    "(a.Start >= ? AND a.Start < ?) OR " + //Overlap: newStart is equal to existingStart or within existingStart and existingEnd
+                    "(a.End > ? AND a.End <= ?)" +      //Overlap: newEnd is equal to existingEnd or within existingStart and existingEnd
+                    ") ORDER BY a.Start";
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setInt(1, customerID);
-//            ps.setTimestamp(2, Timestamp.valueOf(endDateTime));
-//            ps.setTimestamp(3, Timestamp.valueOf(startDateTime));
-//            ps.setTimestamp(4, Timestamp.valueOf(startDateTime));
-//            ps.setTimestamp(5, Timestamp.valueOf(endDateTime));
-//            ps.setTimestamp(6, Timestamp.valueOf(startDateTime));
-//            ps.setTimestamp(7, Timestamp.valueOf(endDateTime));
-//            ps.setTimestamp(8, Timestamp.valueOf(startDateTime));
-//            ps.setTimestamp(9, Timestamp.valueOf(endDateTime));
+            ps.setInt(2, excludeApptID);
+            ps.setTimestamp(3, Timestamp.valueOf(endDateTimeUTC));
+            ps.setTimestamp(4, Timestamp.valueOf(startDateTimeUTC));
+            ps.setTimestamp(5, Timestamp.valueOf(startDateTimeUTC));
+            ps.setTimestamp(6, Timestamp.valueOf(endDateTimeUTC));
+            ps.setTimestamp(7, Timestamp.valueOf(startDateTimeUTC));
+            ps.setTimestamp(8, Timestamp.valueOf(endDateTimeUTC));
+            ps.setTimestamp(9, Timestamp.valueOf(startDateTimeUTC));
+            ps.setTimestamp(10, Timestamp.valueOf(endDateTimeUTC));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Appointment appt = retrieveAppt(rs);
-                System.out.println("Checking appointment ID: " + appt.getApptID());
-                System.out.println("Title: " + appt.getApptTitle());
-                System.out.println("Description: " + appt.getApptDesc());
-                System.out.println("Location: " + appt.getApptLocation());
-                System.out.println("Type: " + appt.getApptType());
-                System.out.println("Start: " + appt.getApptStart());
-                System.out.println("End: " + appt.getApptEnd());
-                System.out.println("User ID: " + appt.getApptUserID());
-                System.out.println("Contact ID: " + appt.getApptContactID());
-                System.out.println("Customer ID: " + appt.getApptCustomerID());
                 apptList.add(appt);
             }
         } catch (SQLException e) {
@@ -209,6 +204,7 @@ public class DBAppointments {
         }
         return apptList;
     }
+
 
     //SQL Query to retrieves the next available appointment ID
     public static String readNextApptID() {
