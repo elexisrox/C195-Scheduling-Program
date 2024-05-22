@@ -286,10 +286,10 @@ public class ApptDialogController implements Initializable {
 
         //If the appointment object is null, add a new appointment to the database. If it is not null, update the fields and save the changes to the appointment.
         if (appointment == null) {
-            System.out.println("Adding new appointment to the database.");
+            System.out.println("\tAdding new appointment to the database.");
             DBAppointments.addAppt(title, desc, location, type, startDateTimeUTC, endDateTimeUTC, userID, contactID, customerID);
         } else {
-            System.out.println("Updating existing appointment in the database.");
+            System.out.println("\tUpdating existing appointment in the database.");
             //TODO reassess code below
             appointment.setApptTitle(title);
             appointment.setApptDesc(desc);

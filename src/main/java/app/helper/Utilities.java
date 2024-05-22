@@ -12,6 +12,7 @@ import app.model.User;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 
@@ -33,7 +34,7 @@ import javafx.util.StringConverter;
 public class Utilities {
 
     //Scene Transitions
-    //Method to transition to the Appointment View in the main application.
+    //TODO Method to transition to the Appointment View in the main application.
     public static <Parent> void transitionApptView(Stage stage) throws IOException {
         Parent scene = FXMLLoader.load(Utilities.class.getResource("/app/ApptView.fxml"));
         stage.setScene(new Scene((javafx.scene.Parent) scene));
@@ -42,13 +43,43 @@ public class Utilities {
         stage.show();
     }
 
-    //Method to transition to the Login screen in the main application.
+    //TODO Method to transition to the Login screen in the main application.
     public static <Parent> void transitionLoginView(Stage stage) throws IOException {
         Parent scene = FXMLLoader.load(Utilities.class.getResource("/app/Login.fxml"));
         stage.setScene(new Scene((javafx.scene.Parent) scene));
         stage.centerOnScreen();
         stage.setTitle("");
         stage.show();
+    }
+
+    //Reusable scene transition method
+    private static <Parent> void transitionToView(Stage stage, String fxmlPath, String title) throws IOException {
+        Parent scene = FXMLLoader.load(Utilities.class.getResource(fxmlPath));
+        stage.setScene(new Scene((javafx.scene.Parent) scene));
+        stage.centerOnScreen();
+        stage.setTitle(title);
+        stage.show();
+    }
+
+    //Toggle group for scene transitions between Main application views
+    public static void onRadioButtonSelected(ToggleGroup toggleGroup, Stage stage) throws IOException {
+        RadioButton selectedRadioButton = (RadioButton) toggleGroup.getSelectedToggle();
+        if (selectedRadioButton != null) {
+            String toggleGroupValue = selectedRadioButton.getText();
+            switch (toggleGroupValue) {
+                case "Appointments":
+                    transitionToView(stage, "/app/ApptView.fxml", "View Appointments");
+                    break;
+                case "Customers":
+                    transitionToView(stage, "/app/CustView.fxml", "View Customers");
+                    break;
+                case "Reports":
+                    transitionToView(stage, "/app/ReportView.fxml", "View Reports");
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unexpected value: " + toggleGroupValue);
+            }
+        }
     }
 
     //Dialog Box Transitions
@@ -103,10 +134,10 @@ public class Utilities {
             saveButton.addEventFilter(ActionEvent.ACTION, event -> {
                 System.out.println("Save button selected.");
                 if (!dialogController.validateInputs()) {
-                    System.out.println("Validation failed.");
+                    System.out.println("\tValidation failed.");
                     event.consume(); // Prevents the dialog from closing
                 } else {
-                    System.out.println("Validation succeeded, saving data.");
+                    System.out.println("\tValidation succeeded, saving data.");
                     dialogController.handleSave();
                 }
             });
@@ -117,7 +148,6 @@ public class Utilities {
         //Shows the dialog and handles the buttons being selected.
         dialog.showAndWait().ifPresent(result -> {
             if (result.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-                System.out.println("Save button selected.");
                 apptMainView.updateTableData();
             } else {
                 System.out.println("Cancel or close button selected.");

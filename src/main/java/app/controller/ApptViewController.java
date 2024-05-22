@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.scene.control.ToggleGroup;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,12 +29,12 @@ import java.util.stream.Collectors;
 
 //TODO Possibly rename MainViewController depending on how I handle the other views
 public class ApptViewController implements Initializable {
-    /**
-     *  Initializes the Appointment View Controller Class.
-     */
+
+    //Top navigation toggle group
     @FXML
     private ToggleGroup topMenuToggle;
 
+    //Main table view
     @FXML
     private TableView<Appointment> apptTable;
 
@@ -189,21 +190,6 @@ public class ApptViewController implements Initializable {
         apptCustIDCol.setCellValueFactory(new PropertyValueFactory<>("apptCustomerID"));
     }
 
-    //Initializes the appointment table data.
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        //Sets timezone label according to the user's timezone
-        timezoneLbl.setText(String.valueOf(userLocalZone));
-
-        //Initialize the table columns first without loading data
-        setApptColumns();
-
-        //Load data based on the selected tab
-        updateTableData();
-
-        checkForUpcomingAppts();
-    }
-
     //Tab Selection Filtering
     //Event fires when a tab is selected. "View All" tab is selected by default on application load
     @FXML
@@ -266,5 +252,33 @@ public class ApptViewController implements Initializable {
         } else {
             Utilities.showInfoAlert("No Upcoming Appointments", "You have no appointments within the next 15 minutes.");
         }
+    }
+
+    //Initializes the Main Appointment View.
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        //Set up the toggle navigation menu
+        topMenuToggle.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                try {
+                    RadioButton selectedRadioButton = (RadioButton) newValue;
+                    Stage stage = (Stage) selectedRadioButton.getScene().getWindow();
+                    Utilities.onRadioButtonSelected(topMenuToggle, stage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //Sets timezone label according to the user's timezone
+        timezoneLbl.setText(String.valueOf(userLocalZone));
+
+        //Initialize the table columns first without loading data
+        setApptColumns();
+
+        //Load data based on the selected tab
+        updateTableData();
+
+        checkForUpcomingAppts();
     }
 }
