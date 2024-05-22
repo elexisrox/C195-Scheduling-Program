@@ -9,6 +9,7 @@ import app.model.Appointment;
 import app.model.Contact;
 import app.model.Customer;
 import app.model.User;
+import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
@@ -146,6 +147,21 @@ public class ApptDialogController implements Initializable {
         return !startLocalTime.isBefore(businessStartTime) && !endLocalTime.isAfter(businessEndTime);
     }
 
+    // Checks if the given time range conflicts with any of the existing appointments for the customer.
+    private boolean hasConflictingAppointments(int customerID, LocalDateTime newStart, LocalDateTime newEnd) {
+        ObservableList<Appointment> conflictingAppointments = DBAppointments.readOverlappingApptsByCustID(customerID, newStart, newEnd);
+        if (!conflictingAppointments.isEmpty()) {
+            System.out.println("Conflicting appointments found:");
+            for (Appointment appt : conflictingAppointments) {
+                System.out.println("Appointment ID: " + appt.getApptID());
+                System.out.println("Start: " + appt.getApptStart());
+                System.out.println("End: " + appt.getApptEnd());
+            }
+            return true;
+        }
+        return false;
+    }
+
     //Validates all data fields before adding/updating an appointment
     public boolean validateInputs() {
         System.out.println("validateInputs called");
@@ -218,7 +234,11 @@ public class ApptDialogController implements Initializable {
             errorsPresent = true;
         }
 
-        //TODO Validate: Check for conflicts in customer's schedule
+        //Validate: Check for conflicts in customer's schedule
+        if (selectedCustomer != null && hasConflictingAppointments(selectedCustomer.getCustID(), startDateTime, endDateTime)) {
+            apptTimeWarning.setText("This customer already has an appointment during the selected time.");
+            errorsPresent = true;
+        }
 
         //Set failureSaveWarning label if errors have been found.
         if (errorsPresent) {
