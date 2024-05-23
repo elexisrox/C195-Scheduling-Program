@@ -55,19 +55,18 @@ public class ApptViewController implements Initializable {
     //Detect the user's time zone
     ZoneId userLocalZone = ZoneId.systemDefault();
 
-    //Label Setters
+    //Clear Error Label
+    public void clearErrorLbl() {
+        errorMsgLbl.setText(" ");
+    }
     @FXML
     public void onActionAddAppt(ActionEvent event) throws IOException {
         System.out.println("Add Appointment button selected.");
         clearErrorLbl();
         Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        Utilities.openAddApptDialog(ownerStage, this);
+        Utilities.openApptDialog(ownerStage, true, this, null);
     }
 
-    //Clear Error Label
-    public void clearErrorLbl() {
-        errorMsgLbl.setText(" ");
-    }
     @FXML
     public void onActionModAppt(ActionEvent event) throws IOException {
         System.out.println("Modify Appointment button selected.");
@@ -75,7 +74,7 @@ public class ApptViewController implements Initializable {
         Appointment selectedAppt = apptTable.getSelectionModel().getSelectedItem();
         if (selectedAppt != null) {
             Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            Utilities.openModApptDialog(ownerStage, this, selectedAppt);
+            Utilities.openApptDialog(ownerStage, false, this, selectedAppt);
         } else {
             System.out.println("No appointment selected.");
             errorMsgLbl.setText("Please select an appointment to modify.");

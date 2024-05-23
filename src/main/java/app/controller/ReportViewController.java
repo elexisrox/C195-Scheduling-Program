@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.ZoneId;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 
@@ -18,6 +19,9 @@ public class ReportViewController implements Initializable {
     //Top navigation toggle group
     @FXML
     private ToggleGroup topMenuToggle;
+
+    //Detect the user's time zone
+    ZoneId userLocalZone = ZoneId.systemDefault();
 
     @FXML
     private Label choiceBoxLbl;
@@ -47,13 +51,14 @@ public class ReportViewController implements Initializable {
     private Label timezoneLbl;
 
     @FXML
-    void onActionExit(ActionEvent event) {
-
+    void onActionLogout(ActionEvent event) throws IOException {
+        Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+        Utilities.logoutButton(stage);
     }
 
     @FXML
-    void onActionLogout(ActionEvent event) {
-
+    void onActionExit(ActionEvent event) {
+        Utilities.exitButton();
     }
 
     @FXML
@@ -76,5 +81,8 @@ public class ReportViewController implements Initializable {
                 }
             }
         });
+
+        //Sets timezone label according to the user's timezone
+        timezoneLbl.setText(String.valueOf(userLocalZone));
     }
 }

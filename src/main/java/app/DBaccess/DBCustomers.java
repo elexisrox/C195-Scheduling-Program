@@ -125,6 +125,24 @@ public class DBCustomers {
         return new Customer(providedCustID, custName, custAddress, custPostalCode, custPhone, custDivisionID, custDivisionName, custCountryID, custCountryName);
     }
 
+    //SQL Query to retrieves the next available customer ID
+    public static String readNextCustID() {
+        int nextCustID = 0;
+        try {
+            String sql = "SELECT MAX(Customer_ID) FROM customers";
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                nextCustID = rs.getInt(1) + 1;
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Get Next Customer ID): " + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return String.valueOf(nextCustID);
+    }
+
     //UPDATE QUERIES
     //SQL Query that updates a selected customer within the database.
     public static void updateCustomer(int custID, String custName, String custAddress, String custPostalCode, String custPhone, int custDivisionID) {

@@ -35,11 +35,21 @@ public class ApptDialogController implements Initializable {
 
     @FXML public DialogPane dialogPane;
     @FXML private Label topTitleLabel;
+
+    //Input Fields
     @FXML private TextField apptIDInput;
     @FXML private TextField apptTitleInput;
     @FXML private TextField apptDescInput;
     @FXML private TextField apptLocInput;
     @FXML private TextField apptTypeInput;
+    @FXML private DatePicker startDateInput;
+    @FXML private DatePicker endDateInput;
+    @FXML private Spinner<Integer> startTimeHoursInput, startTimeMinutesInput, endTimeHoursInput, endTimeMinutesInput;
+    @FXML private ChoiceBox<Contact> contactIDInput;
+    @FXML private ChoiceBox<Customer> custIDInput;
+    @FXML private ChoiceBox<User> userIDInput;
+
+    //Warning Labels
     @FXML private Label apptTitleWarning;
     @FXML private Label apptDescWarning;
     @FXML private Label apptLocWarning;
@@ -49,22 +59,19 @@ public class ApptDialogController implements Initializable {
     @FXML private Label apptUserWarning;
     @FXML private Label apptTimeWarning;
     @FXML private Label failureSaveWarning;
-    @FXML private DatePicker startDateInput;
-    @FXML private DatePicker endDateInput;
-    @FXML private Spinner<Integer> startTimeHoursInput, startTimeMinutesInput, endTimeHoursInput, endTimeMinutesInput;
-    @FXML private ChoiceBox<Contact> contactIDInput;
-    @FXML private ChoiceBox<Customer> custIDInput;
-    @FXML private ChoiceBox<User> userIDInput;
 
     //Appointment object
     private Appointment appointment;
+
     //Detect the user's time zone
     ZoneId userLocalZone = ZoneId.systemDefault();
+
     //Defined business hours in ET
     private static final ZoneId businessTimeZone = ZoneId.of("America/New_York");
     private static final LocalTime businessStartTime = LocalTime.of(8, 0);  // 8:00 AM ET
     private static final LocalTime businessEndTime = LocalTime.of(22, 0);   // 10:00 PM ET
 
+    //Initialize the content in the dialog pane
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 

@@ -89,7 +89,7 @@ public class Customer {
         this.custAddress = custAddress;
     }
 
-    public void setCustPostalCode(String custPostalCode) {
+    public void getCustPostalCodeCode(String custPostalCode) {
         this.custPostalCode = custPostalCode;
     }
 

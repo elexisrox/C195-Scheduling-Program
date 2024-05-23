@@ -5,6 +5,7 @@ import app.DBaccess.DBCustomers;
 import app.DBaccess.DBUsers;
 import app.controller.ApptDialogController;
 import app.controller.ApptViewController;
+import app.controller.CustDialogController;
 import app.controller.CustViewController;
 import app.model.Appointment;
 import app.model.Contact;
@@ -79,69 +80,49 @@ public class Utilities {
     }
 
     //Dialog Box Transitions
-    //Method to specifically open the Add Appointment dialog box.
-    public static void openAddApptDialog(Stage ownerStage, ApptViewController apptMainView) throws IOException {
-        openApptDialog(ownerStage, true, apptMainView, null);
-    }
-
-    //Method to specifically open the Modify Appointment dialog box.
-    public static void openModApptDialog(Stage ownerStage, ApptViewController apptMainView, Appointment selectedAppt) throws IOException {
-        openApptDialog(ownerStage, false, apptMainView, selectedAppt);
-    }
-
-    //Main method to open the Add/Modify Appointments Dialog, which is referenced by more specific methods below.
+    //Main method to open the Add/Modify Appointments Dialog.
     public static void openApptDialog(Stage ownerStage, boolean isAddMode, ApptViewController apptMainView, Appointment selectedAppt) throws IOException {
-        //Initializes and creates the dialog pane
+        // Initialize and create the dialog pane
         FXMLLoader fxmlLoader = new FXMLLoader(Utilities.class.getResource("/app/ApptDialog.fxml"));
         DialogPane apptPane = fxmlLoader.load();
         ApptDialogController dialogController = fxmlLoader.getController();
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setDialogPane(apptPane);
 
-        //Sets the owner to ensure modality and proper event dispatch
+        // Set owner and modality
         dialog.initOwner(ownerStage);
         dialog.initModality(Modality.APPLICATION_MODAL);
 
-        //Determines if dialog pane is in Add or Modify mode and set the labels accordingly.
+        // Set dialog title and labels
         String modeString = isAddMode ? "Add Appointment" : "Modify Appointment";
         dialog.setTitle(modeString);
         dialogController.setApptLabels(modeString);
 
-        //Populate fields with the selected appointment's data if modifying
-        if (!isAddMode && selectedAppt != null) {
-            dialogController.setAppointment(selectedAppt);
-        } else if (isAddMode) {
-            //For new appointments, retrieves auto-generated AppointmentID from the database.
-            dialogController.retrieveNewApptID();
-        }
-
+        // Populate fields if modifying, else retrieve new appointment ID
         if (isAddMode) {
             dialogController.retrieveNewApptID();
+        } else if (selectedAppt != null) {
+            dialogController.setAppointment(selectedAppt);
         }
 
-        //Creates Save/Cancel buttons
+        // Create Save/Cancel buttons
         ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
 
-        //Gets the save button and adds a manual event handler.
-        Button saveButton = (Button) dialog.getDialogPane().lookupButton(saveButtonType);
-        if (saveButton != null) {
-            saveButton.addEventFilter(ActionEvent.ACTION, event -> {
-                System.out.println("Save button selected.");
-                if (!dialogController.validateInputs()) {
-                    System.out.println("\tValidation failed.");
-                    event.consume(); // Prevents the dialog from closing
-                } else {
-                    System.out.println("\tValidation succeeded, saving data.");
-                    dialogController.handleSave();
-                }
-            });
-        } else {
-            System.out.println("ERROR: Save button is null.");
-        }
+        // Add validation and save handling for the Save button
+        dialog.getDialogPane().lookupButton(saveButtonType).addEventFilter(ActionEvent.ACTION, event -> {
+            System.out.println("Save button selected.");
+            if (!dialogController.validateInputs()) {
+                System.out.println("\tValidation failed.");
+                event.consume(); // Prevents the dialog from closing
+            } else {
+                System.out.println("\tValidation succeeded, saving data.");
+                dialogController.handleSave();
+            }
+        });
 
-        //Shows the dialog and handles the buttons being selected.
+        // Show the dialog and handle the result
         dialog.showAndWait().ifPresent(result -> {
             if (result.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
                 apptMainView.updateTableData();
@@ -149,81 +130,59 @@ public class Utilities {
                 System.out.println("Cancel or close button selected.");
             }
         });
-
     }
 
-//    //Method to specifically open the Add Customer dialog box.
-//    public static void openAddCustDialog(Stage ownerStage, CustViewController custMainView) throws IOException {
-//        openCustDialog(ownerStage, true, custMainView, null);
-//    }
-//
-//    //Method to specifically open the Modify Customer dialog box.
-//    public static void openModCustDialog(Stage ownerStage, CustViewController custMainView, Appointment selectedAppt) throws IOException {
-//        openCustDialog(ownerStage, false, custMainView, selectedAppt);
-//    }
-//
-//    //Main method to open the Add/Modify Customers Dialog, which is referenced by more specific methods below.
-//    public static void openCustDialog(Stage ownerStage, boolean isAddMode, CustViewController custMainView, Appointment selectedAppt) throws IOException {
-//        //Initializes and creates the dialog pane
-//        FXMLLoader fxmlLoader = new FXMLLoader(Utilities.class.getResource("/app/ApptDialog.fxml"));
-//        DialogPane apptPane = fxmlLoader.load();
-//        ApptDialogController dialogController = fxmlLoader.getController();
-//        Dialog<ButtonType> dialog = new Dialog<>();
-//        dialog.setDialogPane(apptPane);
-//
-//        //Sets the owner to ensure modality and proper event dispatch
-//        dialog.initOwner(ownerStage);
-//        dialog.initModality(Modality.APPLICATION_MODAL);
-//
-//        //Determines if dialog pane is in Add or Modify mode and set the labels accordingly.
-//        String modeString = isAddMode ? "Add Appointment" : "Modify Appointment";
-//        dialog.setTitle(modeString);
-//        dialogController.setApptLabels(modeString);
-//
-//        //Populate fields with the selected appointment's data if modifying
-//        if (!isAddMode && selectedAppt != null) {
-//            dialogController.setAppointment(selectedAppt);
-//        } else if (isAddMode) {
-//            //For new appointments, retrieves auto-generated AppointmentID from the database.
-//            dialogController.retrieveNewApptID();
-//        }
-//
-//        if (isAddMode) {
-//            dialogController.retrieveNewApptID();
-//        }
-//
-//        //Creates Save/Cancel buttons
-//        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-//        ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-//        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
-//
-//        //Gets the save button and adds a manual event handler.
-//        Button saveButton = (Button) dialog.getDialogPane().lookupButton(saveButtonType);
-//        if (saveButton != null) {
-//            saveButton.addEventFilter(ActionEvent.ACTION, event -> {
-//                System.out.println("Save button selected.");
-//                if (!dialogController.validateInputs()) {
-//                    System.out.println("\tValidation failed.");
-//                    event.consume(); // Prevents the dialog from closing
-//                } else {
-//                    System.out.println("\tValidation succeeded, saving data.");
-//                    dialogController.handleSave();
-//                }
-//            });
-//        } else {
-//            System.out.println("ERROR: Save button is null.");
-//        }
-//
-//        //Shows the dialog and handles the buttons being selected.
-//        dialog.showAndWait().ifPresent(result -> {
-//            if (result.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-//                custMainView.updateTableData();
-//            } else {
-//                System.out.println("Cancel or close button selected.");
-//            }
-//        });
-//
-//    }
+    //Main method to open the Add/Modify Customers Dialog.
+    public static void openCustDialog(Stage ownerStage, boolean isAddMode, CustViewController custMainView, Customer selectedCust) throws IOException {
+        // Initialize and create the dialog pane
+        FXMLLoader fxmlLoader = new FXMLLoader(Utilities.class.getResource("/app/CustDialog.fxml"));
+        DialogPane custPane = fxmlLoader.load();
+        CustDialogController dialogController = fxmlLoader.getController();
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setDialogPane(custPane);
+
+        // Set owner and modality
+        dialog.initOwner(ownerStage);
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        // Set dialog title and labels
+        String modeString = isAddMode ? "Add Customer" : "Modify Customer";
+        dialog.setTitle(modeString);
+        dialogController.setCustLabels(modeString);
+
+        // Populate fields if modifying, else retrieve new appointment ID
+        if (isAddMode) {
+            dialogController.retrieveNewCustID();
+        } else if (selectedCust != null) {
+            dialogController.setCustomer(selectedCust);
+        }
+
+        // Create Save/Cancel buttons
+        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
+
+        // Add validation and save handling for the Save button
+        dialog.getDialogPane().lookupButton(saveButtonType).addEventFilter(ActionEvent.ACTION, event -> {
+            System.out.println("Save button selected.");
+            if (!dialogController.validateInputs()) {
+                System.out.println("\tValidation failed.");
+                event.consume(); // Prevents the dialog from closing
+            } else {
+                System.out.println("\tValidation succeeded, saving data.");
+                dialogController.handleSave();
+            }
+        });
+
+        // Show the dialog and handle the result
+        dialog.showAndWait().ifPresent(result -> {
+            if (result.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+                custMainView.updateTableData();
+            } else {
+                System.out.println("Cancel or close button selected.");
+            }
+        });
+    }
 
     //Used for LocalDateTime formatting methods
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");

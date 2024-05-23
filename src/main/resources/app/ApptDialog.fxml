@@ -146,11 +146,6 @@
                      <Insets bottom="5.0" />
                  </VBox.margin>
              </Label>
-            <HBox alignment="BOTTOM_RIGHT" spacing="10.0">
-                <VBox.margin>
-                    <Insets bottom="5.0" />
-                </VBox.margin>
-            </HBox>
         </VBox>
     </content>
 </DialogPane>

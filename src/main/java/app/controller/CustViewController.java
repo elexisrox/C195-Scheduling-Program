@@ -53,13 +53,14 @@ public class CustViewController implements Initializable {
     }
 
     @FXML
-    void onActionExit(ActionEvent event) {
-
+    void onActionLogout(ActionEvent event) throws IOException {
+        Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+        Utilities.logoutButton(stage);
     }
 
     @FXML
-    void onActionLogout(ActionEvent event) {
-
+    void onActionExit(ActionEvent event) {
+        Utilities.exitButton();
     }
 
     @FXML
