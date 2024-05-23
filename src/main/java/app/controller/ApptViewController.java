@@ -175,7 +175,7 @@ public class ApptViewController implements Initializable {
         }
     }
 
-    //Initializes the Main Appointment View.
+    //Initializes the Main Appointment View
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //Set up the toggle navigation menu
@@ -190,8 +190,6 @@ public class ApptViewController implements Initializable {
                 }
             }
         });
-
-
 
         //Sets timezone label according to the user's timezone
         timezoneLbl.setText(String.valueOf(userLocalZone));

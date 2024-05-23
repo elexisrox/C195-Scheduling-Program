@@ -1,8 +1,10 @@
 package app.controller;
 
 import app.DBaccess.DBAppointments;
+import app.DBaccess.DBCustomers;
 import app.helper.Utilities;
 import app.model.Appointment;
+import app.model.Customer;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,26 +30,11 @@ public class CustViewController implements Initializable {
     @FXML
     private ToggleGroup topMenuToggle;
 
-    @FXML
-    private TableColumn<?, ?> custAddressCol;
+    //Detect the user's time zone
+    ZoneId userLocalZone = ZoneId.systemDefault();
 
     @FXML
-    private TableColumn<?, ?> custDivisionCol;
-
-    @FXML
-    private TableColumn<?, ?> custIDCol;
-
-    @FXML
-    private TableColumn<?, ?> custNameCol;
-
-    @FXML
-    private TableColumn<?, ?> custPhoneCol;
-
-    @FXML
-    private TableColumn<?, ?> custPostalCol;
-
-    @FXML
-    private TableView<?> custTable;
+    private TableView<Customer> custTable;
 
     @FXML
     private Label errorMsgLbl;
@@ -80,7 +67,15 @@ public class CustViewController implements Initializable {
 
     }
 
-    //Initializes the Main Customer View.
+    //Update the table data based on the selected tab
+    public void updateTableData() {
+        if (custTable != null) {
+            ObservableList<Customer> customers = DBCustomers.readAllCustomers();
+            custTable.setItems(customers);
+        }
+    }
+
+    //Initializes the Main Customer View
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //Set up the toggle navigation menu
@@ -95,5 +90,14 @@ public class CustViewController implements Initializable {
                 }
             }
         });
+
+        //Sets timezone label according to the user's timezone
+        timezoneLbl.setText(String.valueOf(userLocalZone));
+
+        //Initialize the Appointments table and set up the columns
+        custTable.getColumns().setAll(Utilities.createCustomerTable().getColumns());
+
+        //Load data based on the selected tab
+        updateTableData();
     }
 }

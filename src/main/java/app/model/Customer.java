@@ -29,6 +29,16 @@ public class Customer {
         this.custCountryName = custCountryName;
     }
 
+    //Additional Constructor for Customer that matches database fields
+    public Customer(int custID, String custName, String custAddress, String custPostalCode, String custPhone, int custDivisionID) {
+        this.custID = custID;
+        this.custName = custName;
+        this.custAddress = custAddress;
+        this.custPostalCode = custPostalCode;
+        this.custPhone = custPhone;
+        this.custDivisionID = custDivisionID;
+    }
+
     // Getters
     public int getCustID() {
         return custID;
