@@ -180,7 +180,7 @@ public class ApptDialogController implements Initializable {
 
     //Validates all data fields before adding/updating an appointment
     public boolean validateInputs() {
-        System.out.println("Validating all inputs.");
+        System.out.println("\tValidating all inputs.");
 
         //Clear all Error Labels
         clearErrorLbls();

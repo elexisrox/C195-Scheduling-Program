@@ -42,9 +42,18 @@ public class CustViewController implements Initializable {
     @FXML
     private Label timezoneLbl;
 
-    @FXML
-    void onActionAddCust(ActionEvent event) {
+    //Clear Error Label
+    public void clearErrorLbl() {
+        errorMsgLbl.setText(" ");
+    }
 
+    //BUTTONS
+    @FXML
+    void onActionAddCust(ActionEvent event) throws IOException {
+        System.out.println("Add Customer button selected.");
+        clearErrorLbl();
+        Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Utilities.openCustDialog(ownerStage, true, this, null);
     }
 
     @FXML

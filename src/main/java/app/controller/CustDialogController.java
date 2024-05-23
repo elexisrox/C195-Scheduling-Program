@@ -1,10 +1,14 @@
 package app.controller;
 
 import app.DBaccess.DBAppointments;
+import app.DBaccess.DBCountries;
 import app.DBaccess.DBCustomers;
+import app.DBaccess.DBDivisions;
 import app.DBaccess.DBUsers;
 import app.helper.Utilities;
 import app.model.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
@@ -15,6 +19,7 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.util.StringConverter;
 
 public class CustDialogController implements Initializable {
 
@@ -59,9 +64,61 @@ public class CustDialogController implements Initializable {
     //Initialize the content in the dialog pane
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //Load Choice boxes
-        //Utilities.loadChoiceBoxCountries(custCountryInput);
-        //Utilities.loadChoiceBoxDivisions(custDivisionInput);
+        // Load Choice boxes
+        loadCountries();
+        custDivisionInput.setDisable(true);
+
+        // Add listener to country choice box
+        custCountryInput.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Country>() {
+            @Override
+            public void changed(ObservableValue<? extends Country> observable, Country oldValue, Country newValue) {
+                if (newValue != null) {
+                    loadDivisions(newValue.getCountryID());
+                    custDivisionInput.setDisable(false);
+                } else {
+                    custDivisionInput.setDisable(true);
+                }
+            }
+        });
+    }
+
+    //ChoiceBoxes
+    // Load countries into the country choice box
+    public void loadCountries() {
+        custCountryInput.setItems(DBCountries.readAllCountries());
+        custCountryInput.setConverter(new StringConverter<Country>() {
+            @Override
+            public String toString(Country country) {
+                return country == null ? null : country.getCountryID() + " - " + country.getCountryName();
+            }
+
+            @Override
+            public Country fromString(String string) {
+                return custCountryInput.getItems().stream()
+                        .filter(country -> (country.getCountryID() + " - " + country.getCountryName()).equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+    }
+
+    // Load divisions into the division choice box based on the selected country
+    private void loadDivisions(int countryID) {
+        custDivisionInput.setItems(DBDivisions.readDivisionsByCountry(countryID));
+        custDivisionInput.setConverter(new StringConverter<Division>() {
+            @Override
+            public String toString(Division division) {
+                return division == null ? null : division.getDivID() + " - " + division.getDivName();
+            }
+
+            @Override
+            public Division fromString(String string) {
+                return custDivisionInput.getItems().stream()
+                        .filter(division -> (division.getDivID() + " - " + division.getDivName()).equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
     }
 
     //Sets any labels that may change between Add/Modify modes
@@ -102,7 +159,7 @@ public class CustDialogController implements Initializable {
 
     //Validates all data fields before adding/updating an appointment
     public boolean validateInputs() {
-        System.out.println("Validating all inputs.");
+        System.out.println("\tValidating all inputs.");
 
         //Clear all Error Labels
         clearErrorLbls();

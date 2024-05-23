@@ -59,6 +59,8 @@ public class ApptViewController implements Initializable {
     public void clearErrorLbl() {
         errorMsgLbl.setText(" ");
     }
+
+    //BUTTONS
     @FXML
     public void onActionAddAppt(ActionEvent event) throws IOException {
         System.out.println("Add Appointment button selected.");

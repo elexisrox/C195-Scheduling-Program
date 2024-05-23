@@ -33,6 +33,8 @@ public class DBCustomers {
             ps.setString(4, custPhone);
             ps.setInt(5, custDivisionID);
 
+            ps.executeUpdate();
+
         } catch (SQLException e) {
             System.out.println("SQL Exception Error (Add Customer): " + e.getErrorCode());
         } catch(Exception e) {

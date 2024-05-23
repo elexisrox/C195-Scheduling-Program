@@ -48,7 +48,7 @@ public class DBDivisions {
         return divList;
     }
 
-    //SQL Query that returns a first level division's name from the database by its correlating division ID.
+    //TODO: Need?? SQL Query that returns a first level division's name from the database by its correlating division ID.
     public static Division returnDivisionName(int divID) {
         Division d = null;
         try {
@@ -76,5 +76,28 @@ public class DBDivisions {
         return d;
     }
 
-    //TODO: SQL Query that selects a divisionID/Name based on country for combo box dropdown
+    //SQL Query that selects a list of divisions based on the correlating country for ChoiceBox dropdown
+    public static ObservableList<Division> readDivisionsByCountry(int countryID) {
+        ObservableList<Division> divList = FXCollections.observableArrayList();
+        try {
+            String sql = "SELECT f.Division_ID, f.Division, f.Country_ID " +
+                    "FROM first_level_divisions as f " +
+                    "WHERE f.Country_ID = ?";
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ps.setInt(1, countryID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int divID = rs.getInt("Division_ID");
+                String divName = rs.getString("Division");
+                int divCountryID = rs.getInt("Country_ID");
+                Division d = new Division(divID, divName, divCountryID);
+                divList.add(d);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Divisions): " + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return divList;
+    }
 }
