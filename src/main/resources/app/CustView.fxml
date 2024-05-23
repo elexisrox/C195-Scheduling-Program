@@ -6,7 +6,6 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
@@ -83,16 +82,7 @@
                     <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionExit" text="Exit" textAlignment="CENTER" />
                 </VBox>
             </GridPane>
-            <TableView fx:id="custTable" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                <columns>
-                    <TableColumn fx:id="custIDCol" prefWidth="100.0" text="Customer ID" />
-                    <TableColumn fx:id="custNameCol" prefWidth="200.0" text="Name" />
-                    <TableColumn fx:id="custAddressCol" prefWidth="250.0" text="Address" />
-                    <TableColumn fx:id="custPostalCol" prefWidth="100.0" text="Postal Code" />
-                    <TableColumn fx:id="custPhoneCol" prefWidth="155.0" text="Phone" />
-                    <TableColumn fx:id="custDivisionCol" prefWidth="90.0" text="Division ID" />
-                </columns>
-            </TableView>
+            <TableView fx:id="custTable" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <VBox.margin>
                 <Insets />
             </VBox.margin>

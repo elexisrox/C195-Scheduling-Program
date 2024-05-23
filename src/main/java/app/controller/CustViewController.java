@@ -90,8 +90,8 @@ public class CustViewController implements Initializable {
                     RadioButton selectedRadioButton = (RadioButton) newValue;
                     Stage stage = (Stage) selectedRadioButton.getScene().getWindow();
                     Utilities.onRadioButtonSelected(topMenuToggle, stage);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    System.out.println("Error (Navigation Radio Buttons): " + e.getMessage());
                 }
             }
         });

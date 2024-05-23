@@ -8,7 +8,6 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
@@ -90,22 +89,7 @@
                 <Tab fx:id="tabMonth" onSelectionChanged="#onTabChanged" text="View by Month" />
                 <Tab fx:id="tabWeek" onSelectionChanged="#onTabChanged" text="View by Week" />
             </TabPane>
-            <TableView fx:id="apptTable" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                <columns>
-                    <TableColumn fx:id="apptIDCol" prefWidth="75.0" text="Appt ID" />
-                    <TableColumn fx:id="apptTitleCol" prefWidth="75.0" text="Title" />
-                    <TableColumn fx:id="apptDescCol" prefWidth="75.0" text="Description" />
-                    <TableColumn fx:id="apptLocCol" prefWidth="75.0" text="Location" />
-                    <TableColumn fx:id="apptTypeCol" prefWidth="75.0" text="Type" />
-                    <TableColumn fx:id="apptStartDateCol" prefWidth="75.0" text="Start Date" />
-                    <TableColumn fx:id="apptStartTimeCol" prefWidth="75.0" text="Start Time" />
-                    <TableColumn fx:id="apptEndDateCol" prefWidth="75.0" text="End Date" />
-                    <TableColumn fx:id="apptEndTimeCol" prefWidth="75.0" text="End Time" />
-                    <TableColumn fx:id="apptContactCol" prefWidth="75.0" text="Contact ID" />
-                    <TableColumn fx:id="apptCustIDCol" prefWidth="75.0" text="Customer ID" />
-                    <TableColumn fx:id="apptUserIDCol" prefWidth="75.0" text="User ID" />
-                </columns>
-            </TableView>
+            <TableView fx:id="apptTable" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          <VBox.margin>
             <Insets />
          </VBox.margin>

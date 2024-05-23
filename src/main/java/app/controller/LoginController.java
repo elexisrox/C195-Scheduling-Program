@@ -1,8 +1,11 @@
 package app.controller;
 
 //TODO Organize imports for clarity/readability
+import app.DBaccess.DBAppointments;
 import app.DBaccess.DBUsers;
 import app.helper.Utilities;
+import app.model.Appointment;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -119,10 +122,8 @@ public class LoginController implements Initializable {
                 Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
                 Utilities.transitionApptView(stage);
 
-                //TODO
-                //If login is successful, checks for upcoming appointments within 15 minutes of logging in.
-                //TODO
-                //Displays a message if there are no upcoming appointments within 15 minutes of logging in.
+                //Check for upcoming appointments within 15 minutes of logging in.
+                checkForUpcomingAppts();
             }
         }
     }
@@ -194,6 +195,23 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         detectUserLocale();
         initializeLangComboBox();
+    }
+
+    //Checks for appointments within the next 15 minutes.
+    public void checkForUpcomingAppts() {
+        ObservableList<Appointment> upcomingAppointments = DBAppointments.readNext15MinAppts();
+        if (!upcomingAppointments.isEmpty()) {
+            StringBuilder alertContent = new StringBuilder("You have the following appointments within the next 15 minutes:\n");
+            for (Appointment appt : upcomingAppointments) {
+                alertContent.append("ID: ").append(appt.getApptID())
+                        .append(", Date: ").append(appt.getApptStart().toLocalDate())
+                        .append(", Time: ").append(appt.getApptStart().toLocalTime())
+                        .append("\n");
+            }
+            Utilities.showInfoAlert("Upcoming Appointments", alertContent.toString());
+        } else {
+            Utilities.showInfoAlert("No Upcoming Appointments", "You have no appointments within the next 15 minutes.");
+        }
     }
 
 }

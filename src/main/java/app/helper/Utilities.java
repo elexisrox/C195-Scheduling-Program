@@ -9,6 +9,7 @@ import app.model.Appointment;
 import app.model.Contact;
 import app.model.Customer;
 import app.model.User;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -21,8 +22,10 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -311,4 +314,112 @@ public class Utilities {
         }
     }
 
+    //TABLES
+    //Method to create Appointments table and corresponding columns
+    public static TableView<Appointment> createAppointmentTable(ZoneId userLocalZone) {
+        TableView<Appointment> appointmentTable = new TableView<>();
+
+        TableColumn<Appointment, Integer> apptIDCol = new TableColumn<>("Appt ID");
+        apptIDCol.setCellValueFactory(new PropertyValueFactory<>("apptID"));
+        apptIDCol.setPrefWidth(75);
+
+        TableColumn<Appointment, String> apptTitleCol = new TableColumn<>("Title");
+        apptTitleCol.setCellValueFactory(new PropertyValueFactory<>("apptTitle"));
+        apptTitleCol.setPrefWidth(75);
+
+        TableColumn<Appointment, String> apptDescCol = new TableColumn<>("Description");
+        apptDescCol.setCellValueFactory(new PropertyValueFactory<>("apptDesc"));
+        apptDescCol.setPrefWidth(75);
+
+        TableColumn<Appointment, String> apptLocCol = new TableColumn<>("Location");
+        apptLocCol.setCellValueFactory(new PropertyValueFactory<>("apptLocation"));
+        apptLocCol.setPrefWidth(75);
+
+        TableColumn<Appointment, String> apptTypeCol = new TableColumn<>("Type");
+        apptTypeCol.setCellValueFactory(new PropertyValueFactory<>("apptType"));
+        apptTypeCol.setPrefWidth(75);
+
+        TableColumn<Appointment, String> apptStartDateCol = new TableColumn<>("Start Date");
+        apptStartDateCol.setCellValueFactory(cellData ->
+                new SimpleStringProperty(
+                        Utilities.formatDate(cellData.getValue().getApptStart(), userLocalZone)
+                )
+        );
+        apptStartDateCol.setPrefWidth(75);
+
+        TableColumn<Appointment, String> apptStartTimeCol = new TableColumn<>("Start Time");
+        apptStartTimeCol.setCellValueFactory(cellData ->
+                new SimpleStringProperty(
+                        Utilities.formatTime(cellData.getValue().getApptStart(), userLocalZone)
+                )
+        );
+        apptStartTimeCol.setPrefWidth(75);
+
+        TableColumn<Appointment, String> apptEndDateCol = new TableColumn<>("End Date");
+        apptEndDateCol.setCellValueFactory(cellData ->
+                new SimpleStringProperty(
+                        Utilities.formatDate(cellData.getValue().getApptEnd(), userLocalZone)
+                )
+        );
+        apptEndDateCol.setPrefWidth(75);
+
+        TableColumn<Appointment, String> apptEndTimeCol = new TableColumn<>("End Time");
+        apptEndTimeCol.setCellValueFactory(cellData ->
+                new SimpleStringProperty(
+                        Utilities.formatTime(cellData.getValue().getApptEnd(), userLocalZone)
+                )
+        );
+        apptEndTimeCol.setPrefWidth(75);
+
+        TableColumn<Appointment, Integer> apptContactIDCol = new TableColumn<>("Contact ID");
+        apptContactIDCol.setCellValueFactory(new PropertyValueFactory<>("apptContactID"));
+        apptContactIDCol.setPrefWidth(75);
+
+        TableColumn<Appointment, Integer> apptCustIDCol = new TableColumn<>("Customer ID");
+        apptCustIDCol.setCellValueFactory(new PropertyValueFactory<>("apptCustomerID"));
+        apptCustIDCol.setPrefWidth(75);
+
+        TableColumn<Appointment, Integer> apptUserIDCol = new TableColumn<>("User ID");
+        apptUserIDCol.setCellValueFactory(new PropertyValueFactory<>("apptUserID"));
+        apptUserIDCol.setPrefWidth(75);
+
+        Collections.addAll(appointmentTable.getColumns(),
+                apptIDCol, apptTitleCol, apptDescCol, apptLocCol,
+                apptTypeCol, apptStartDateCol, apptStartTimeCol,
+                apptEndDateCol, apptEndTimeCol, apptContactIDCol, apptCustIDCol, apptUserIDCol
+        );
+
+        return appointmentTable;
+    }
+
+    //Method to create Customers table and corresponding columns
+    public static TableView<Customer> createCustomerTable() {
+        TableView<Customer> customerTable = new TableView<>();
+
+        TableColumn<Customer, Integer> custIDCol = new TableColumn<>("Customer ID");
+        custIDCol.setCellValueFactory(new PropertyValueFactory<>("custID"));
+        custIDCol.setPrefWidth(100);
+
+        TableColumn<Customer, String> custNameCol = new TableColumn<>("Name");
+        custNameCol.setCellValueFactory(new PropertyValueFactory<>("custName"));
+        custNameCol.setPrefWidth(200);
+
+        TableColumn<Customer, String> custAddressCol = new TableColumn<>("Address");
+        custAddressCol.setCellValueFactory(new PropertyValueFactory<>("custAddress"));
+        custAddressCol.setPrefWidth(250);
+
+        TableColumn<Customer, String> custPhoneCol = new TableColumn<>("Phone");
+        custPhoneCol.setCellValueFactory(new PropertyValueFactory<>("custPhone"));
+        custPhoneCol.setPrefWidth(100);
+
+        TableColumn<Customer, String> custTypeCol = new TableColumn<>("Type");
+        custTypeCol.setCellValueFactory(new PropertyValueFactory<>("custType"));
+        custTypeCol.setPrefWidth(155);
+
+        Collections.addAll(customerTable.getColumns(),
+                custIDCol, custNameCol, custAddressCol, custPhoneCol, custTypeCol
+        );
+
+        return customerTable;
+    }
 }

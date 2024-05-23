@@ -52,32 +52,6 @@ public class ApptViewController implements Initializable {
     @FXML
     private Label timezoneLbl;
 
-    //Appointment Table Columns
-    @FXML
-    private TableColumn<Appointment, Integer> apptIDCol;
-    @FXML
-    private TableColumn<Appointment, String> apptTitleCol;
-    @FXML
-    private TableColumn<Appointment, String> apptDescCol;
-    @FXML
-    private TableColumn<Appointment, String> apptLocCol;
-    @FXML
-    private TableColumn<Appointment, Integer> apptContactCol;
-    @FXML
-    private TableColumn<Appointment, String> apptTypeCol;
-    @FXML
-    private TableColumn<Appointment, String> apptStartDateCol;
-    @FXML
-    private TableColumn<Appointment, String> apptStartTimeCol;
-    @FXML
-    private TableColumn<Appointment, String> apptEndDateCol;
-    @FXML
-    private TableColumn<Appointment, String> apptEndTimeCol;
-    @FXML
-    private TableColumn<Appointment, Integer> apptCustIDCol;
-    @FXML
-    private TableColumn<Appointment, Integer> apptUserIDCol;
-
     //Detect the user's time zone
     ZoneId userLocalZone = ZoneId.systemDefault();
 
@@ -154,42 +128,6 @@ public class ApptViewController implements Initializable {
         Utilities.exitButton();
     }
 
-    //Sets all columns in the Appointments table
-    private void setApptColumns() {
-        //Set Time/Date Columns
-        apptStartDateCol.setCellValueFactory(cellData ->
-                new SimpleStringProperty(
-                        Utilities.formatDate(cellData.getValue().getApptStart(), userLocalZone)
-                )
-        );
-        apptStartTimeCol.setCellValueFactory(cellData ->
-                new SimpleStringProperty(
-                        Utilities.formatTime(cellData.getValue().getApptStart(), userLocalZone)
-                )
-        );
-        apptEndDateCol.setCellValueFactory(cellData ->
-                new SimpleStringProperty(
-                        Utilities.formatDate(cellData.getValue().getApptEnd(), userLocalZone)
-                )
-        );
-        apptEndTimeCol.setCellValueFactory(cellData ->
-                new SimpleStringProperty(
-                        Utilities.formatTime(cellData.getValue().getApptEnd(), userLocalZone)
-                )
-        );
-
-        //Set all remaining columns
-        //Initialize each column to use the property from the Appointment model
-        apptIDCol.setCellValueFactory(new PropertyValueFactory<>("apptID"));
-        apptTitleCol.setCellValueFactory(new PropertyValueFactory<>("apptTitle"));
-        apptDescCol.setCellValueFactory(new PropertyValueFactory<>("apptDesc"));
-        apptLocCol.setCellValueFactory(new PropertyValueFactory<>("apptLocation"));
-        apptTypeCol.setCellValueFactory(new PropertyValueFactory<>("apptType"));
-        apptUserIDCol.setCellValueFactory(new PropertyValueFactory<>("apptUserID"));
-        apptContactCol.setCellValueFactory(new PropertyValueFactory<>("apptContactID"));
-        apptCustIDCol.setCellValueFactory(new PropertyValueFactory<>("apptCustomerID"));
-    }
-
     //Tab Selection Filtering
     //Event fires when a tab is selected. "View All" tab is selected by default on application load
     @FXML
@@ -237,23 +175,6 @@ public class ApptViewController implements Initializable {
         }
     }
 
-    //Checks for appointments within the next 15 minutes.
-    public void checkForUpcomingAppts() {
-        ObservableList<Appointment> upcomingAppointments = DBAppointments.readNext15MinAppts();
-        if (!upcomingAppointments.isEmpty()) {
-            StringBuilder alertContent = new StringBuilder("You have the following appointments within the next 15 minutes:\n");
-            for (Appointment appt : upcomingAppointments) {
-                alertContent.append("ID: ").append(appt.getApptID())
-                        .append(", Date: ").append(appt.getApptStart().toLocalDate())
-                        .append(", Time: ").append(appt.getApptStart().toLocalTime())
-                        .append("\n");
-            }
-            Utilities.showInfoAlert("Upcoming Appointments", alertContent.toString());
-        } else {
-            Utilities.showInfoAlert("No Upcoming Appointments", "You have no appointments within the next 15 minutes.");
-        }
-    }
-
     //Initializes the Main Appointment View.
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -264,21 +185,22 @@ public class ApptViewController implements Initializable {
                     RadioButton selectedRadioButton = (RadioButton) newValue;
                     Stage stage = (Stage) selectedRadioButton.getScene().getWindow();
                     Utilities.onRadioButtonSelected(topMenuToggle, stage);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    System.out.println("Error (Navigation Radio Buttons): " + e.getMessage());
                 }
             }
         });
 
+
+
         //Sets timezone label according to the user's timezone
         timezoneLbl.setText(String.valueOf(userLocalZone));
 
-        //Initialize the table columns first without loading data
-        setApptColumns();
+        //Initialize the Appointments table and set up the columns
+        apptTable.getColumns().setAll(Utilities.createAppointmentTable(userLocalZone).getColumns());
 
         //Load data based on the selected tab
         updateTableData();
 
-        checkForUpcomingAppts();
     }
 }
