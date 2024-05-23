@@ -37,24 +37,6 @@ import javafx.util.StringConverter;
 public class Utilities {
 
     //Scene Transitions
-    //TODO Method to transition to the Appointment View in the main application.
-    public static <Parent> void transitionApptView(Stage stage) throws IOException {
-        Parent scene = FXMLLoader.load(Utilities.class.getResource("/app/ApptView.fxml"));
-        stage.setScene(new Scene((javafx.scene.Parent) scene));
-        stage.centerOnScreen();
-        stage.setTitle("View Appointments");
-        stage.show();
-    }
-
-    //TODO Method to transition to the Login screen in the main application.
-    public static <Parent> void transitionLoginView(Stage stage) throws IOException {
-        Parent scene = FXMLLoader.load(Utilities.class.getResource("/app/Login.fxml"));
-        stage.setScene(new Scene((javafx.scene.Parent) scene));
-        stage.centerOnScreen();
-        stage.setTitle("");
-        stage.show();
-    }
-
     //Reusable scene transition method
     private static <Parent> void transitionToView(Stage stage, String fxmlPath, String title) throws IOException {
         Parent scene = FXMLLoader.load(Utilities.class.getResource(fxmlPath));
@@ -62,6 +44,16 @@ public class Utilities {
         stage.centerOnScreen();
         stage.setTitle(title);
         stage.show();
+    }
+
+    //Method to transition to the Appointment View in the main application.
+    public static void transitionApptView(Stage stage) throws IOException {
+        transitionToView(stage, "/app/ApptView.fxml", "View Appointments");
+    }
+
+    //Method to transition to the Login screen in the main application.
+    public static void transitionLoginView(Stage stage) throws IOException {
+        transitionToView(stage, "/app/Login.fxml", "");
     }
 
     //Toggle group for scene transitions between Main application views
