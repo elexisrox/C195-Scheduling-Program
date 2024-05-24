@@ -57,8 +57,47 @@ public class CustViewController implements Initializable {
     }
 
     @FXML
-    void onActionDelCust(ActionEvent event) {
+    void onActionModCust(ActionEvent event) throws IOException {
+        System.out.println("Modify Customer button selected.");
+        clearErrorLbl();
+        Customer selectedCust = custTable.getSelectionModel().getSelectedItem();
+        if (selectedCust != null) {
+            Stage ownerStage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Utilities.openCustDialog(ownerStage, false, this, selectedCust);
+        } else {
+            System.out.println("No customer selected.");
+            errorMsgLbl.setText("Please select a customer to modify.");
+        }
+    }
 
+    @FXML
+    void onActionDelCust(ActionEvent event) {
+        System.out.println("Delete Appointment button selected.");
+        clearErrorLbl();
+        Customer selectedCust = custTable.getSelectionModel().getSelectedItem();
+        if (selectedCust != null) {
+            boolean confirmed = Utilities.showConfirmationAlert(
+                    "Delete Confirmation",
+                    "Are you sure you want to delete this customer?",
+                    "Customer ID: " + selectedCust.getCustID() +
+                            "\nCustomer Name: " + selectedCust.getCustName()
+            ).filter(response -> response == ButtonType.OK).isPresent();
+
+            if (confirmed) {
+                DBAppointments.deleteAppt(selectedCust.getCustID());
+                System.out.println("Customer #" + selectedCust.getCustID() + " deleted.");
+                updateTableData();
+                Utilities.showInfoAlert(
+                        "Delete Successful",
+                        "The following customer has been successfully deleted/canceled:\n" +
+                                "Customer ID: " + selectedCust.getCustID() +
+                                "\nCustomer Name: " + selectedCust.getCustName()
+                );
+            }
+        } else {
+            System.out.println("No customer selected.");
+            errorMsgLbl.setText("Please select a customer to delete.");
+        }
     }
 
     @FXML
@@ -70,11 +109,6 @@ public class CustViewController implements Initializable {
     @FXML
     void onActionExit(ActionEvent event) {
         Utilities.exitButton();
-    }
-
-    @FXML
-    void onActionModCust(ActionEvent event) {
-
     }
 
     //Update the table data based on the selected tab

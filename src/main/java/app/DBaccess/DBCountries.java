@@ -45,7 +45,7 @@ public class DBCountries {
     }
 
     //SQL Query that returns a country's name based on the provided country ID.
-    public static Country readCountry(int countryID) {
+    public static Country retrieveCountry(int countryID) {
 
         int providedCountryID = 0;
         String countryName = null;

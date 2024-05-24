@@ -1,17 +1,13 @@
 package app.DBaccess;
 
 import app.helper.JDBC;
-import app.model.Appointment;
 import app.model.Division;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * DBDivisions class contains all queries for the first level divisions table in the database.
@@ -48,36 +44,34 @@ public class DBDivisions {
         return divList;
     }
 
-    //TODO: Need?? SQL Query that returns a first level division's name from the database by its correlating division ID.
-    public static Division returnDivisionName(int divID) {
-        Division d = null;
+    //SQL Query that returns a first level division from the database by its correlating division ID.
+    public static Division retrieveDiv(int divID) {
+        Division newDiv = null;
         try {
-            String sql = "SELECT f.Division_ID, f.Division " +
-                    "FROM first_level_divisions as f" +
+            String sql = "SELECT Division_ID, Division, Country_ID " +
+                    "FROM first_level_divisions " +
                     "WHERE Division_ID = ?";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
             ps.setInt(1, divID);
-            ps.execute();
-
-            ResultSet rs = ps.getResultSet();
-
-            rs.next();
-            int providedDivID = rs.getInt("Division_ID");
-            String divName = rs.getString("Division");
-
-            d = new Division(providedDivID, divName);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int providedDivID = rs.getInt("Division_ID");
+                String divName = rs.getString("Division");
+                int countryID = rs.getInt("Country_ID");
+                newDiv = new Division(providedDivID, divName, countryID);
+            }
         } catch (SQLException e) {
             System.out.println("SQL Exception Error (Division ID Search): " + e.getErrorCode());
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
-        return d;
+        return newDiv;
     }
 
     //SQL Query that selects a list of divisions based on the correlating country for ChoiceBox dropdown
-    public static ObservableList<Division> readDivisionsByCountry(int countryID) {
+    public static ObservableList<Division> returnDivsByCountry(int countryID) {
         ObservableList<Division> divList = FXCollections.observableArrayList();
         try {
             String sql = "SELECT f.Division_ID, f.Division, f.Country_ID " +

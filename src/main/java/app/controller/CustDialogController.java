@@ -1,20 +1,12 @@
 package app.controller;
 
-import app.DBaccess.DBAppointments;
-import app.DBaccess.DBCountries;
-import app.DBaccess.DBCustomers;
-import app.DBaccess.DBDivisions;
-import app.DBaccess.DBUsers;
-import app.helper.Utilities;
+import app.DBaccess.*;
 import app.model.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.Initializable;
 
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -61,28 +53,21 @@ public class CustDialogController implements Initializable {
     //Customer object
     private Customer customer;
 
+
     //Initialize the content in the dialog pane
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Load Choice boxes
+        // Load the Countries ChoiceBox
         loadCountries();
-        custDivisionInput.setDisable(true);
 
-        // Add listener to country choice box
-        custCountryInput.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Country>() {
-            @Override
-            public void changed(ObservableValue<? extends Country> observable, Country oldValue, Country newValue) {
-                if (newValue != null) {
-                    loadDivisions(newValue.getCountryID());
-                    custDivisionInput.setDisable(false);
-                } else {
-                    custDivisionInput.setDisable(true);
-                }
-            }
-        });
     }
 
     //ChoiceBoxes
+    //Method to enable/disable the Division ChoiceBox
+    public void blockDivBox(boolean isBlocked) {
+        custDivisionInput.setDisable(isBlocked);
+    }
+
     // Load countries into the country choice box
     public void loadCountries() {
         custCountryInput.setItems(DBCountries.readAllCountries());
@@ -104,7 +89,8 @@ public class CustDialogController implements Initializable {
 
     // Load divisions into the division choice box based on the selected country
     private void loadDivisions(int countryID) {
-        custDivisionInput.setItems(DBDivisions.readDivisionsByCountry(countryID));
+        custDivisionInput.setValue(null);
+        custDivisionInput.setItems(DBDivisions.returnDivsByCountry(countryID));
         custDivisionInput.setConverter(new StringConverter<Division>() {
             @Override
             public String toString(Division division) {
@@ -135,15 +121,40 @@ public class CustDialogController implements Initializable {
     // Method to set the customer object and populate the fields
     public void setCustomer(Customer customer) {
         this.customer = customer;
+
+        //Fetch and populate the data in the text fields
         custIDInput.setText(String.valueOf(customer.getCustID()));
         custNameInput.setText(customer.getCustName());
         custAddressInput.setText(customer.getCustAddress());
         custPostalInput.setText(customer.getCustPostalCode());
         custPhoneInput.setText(customer.getCustPhone());
 
-        //TODO: Set choice boxes with appointment data
-        //custCountryInput.setValue();
-        //custDivisionInput.setValue();
+        //Fetch data for First Level Division and Country
+        int custDivID = customer.getCustDivisionID();
+        Division custDiv = DBDivisions.retrieveDiv(custDivID);
+        Country custCountry = DBCountries.retrieveCountry(custDiv.getDivCountryID());
+
+        //Set Country Input
+        custCountryInput.setValue(custCountry);
+
+        // Load the correlating divisions and set the correct division in the input field
+        loadDivisions(customer.getCustCountryID());
+        custDivisionInput.setValue(custDiv);
+    }
+
+    // Method to add listeners after setting initial data
+    public void addListeners() {
+        custCountryInput.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Country>() {
+            @Override
+            public void changed(ObservableValue<? extends Country> observable, Country oldValue, Country newValue) {
+                if (newValue != null) {
+                    loadDivisions(newValue.getCountryID());
+                    blockDivBox(false);
+                } else {
+                    blockDivBox(true);
+                }
+            }
+        });
     }
 
     //Clears all error labels
@@ -229,7 +240,7 @@ public class CustDialogController implements Initializable {
             //TODO reassess code below
             customer.setCustName(name);
             customer.setCustAddress(address);
-            customer.getCustPostalCodeCode(postal);
+            customer.setCustPostalCode(postal);
             customer.setCustPhone(phone);
             customer.setCustDivisionID(divID);
 

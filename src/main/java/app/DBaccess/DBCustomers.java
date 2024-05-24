@@ -160,6 +160,8 @@ public class DBCustomers {
             ps.setString(4, custPhone);
             ps.setInt(5, custDivisionID);
             ps.setInt(6, custID);
+
+            ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println("SQL Exception Error (Update Customer):" + e.getErrorCode());
         } catch (Exception e) {
