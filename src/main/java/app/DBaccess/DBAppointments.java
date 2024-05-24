@@ -162,6 +162,36 @@ public class DBAppointments {
         }
         return apptList;
     }
+    //SQL Query that retrieves all appointments by contact ID
+    public static ObservableList<Appointment> readAppointmentsByContact(int contactID) {
+        ObservableList<Appointment> apptList = FXCollections.observableArrayList();
+        try {
+            String sql = "SELECT * FROM appointments WHERE Contact_ID = ?";
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ps.setInt(1, contactID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int apptID = rs.getInt("Appointment_ID");
+                String apptTitle = rs.getString("Title");
+                String apptDesc = rs.getString("Description");
+                String apptLocation = rs.getString("Location");
+                String apptType = rs.getString("Type");
+                LocalDateTime apptStart = rs.getTimestamp("Start").toLocalDateTime();
+                LocalDateTime apptEnd = rs.getTimestamp("End").toLocalDateTime();
+                int apptUserID = rs.getInt("User_ID");
+                int apptContactID = rs.getInt("Contact_ID");
+                int apptCustomerID = rs.getInt("Customer_ID");
+                Appointment appointment = new Appointment(apptID, apptTitle, apptDesc, apptLocation, apptType,
+                        apptStart, apptEnd, apptUserID, apptContactID, apptCustomerID);
+                apptList.add(appointment);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Appointments by Contact): " + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return apptList;
+    }
 
     //SQL Query that retrieves all appointments by customer ID.
     public static ObservableList<Appointment> readApptsByCustID(int customerID) {

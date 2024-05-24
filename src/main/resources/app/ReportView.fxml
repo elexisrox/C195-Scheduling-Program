@@ -9,9 +9,9 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -97,10 +97,7 @@
                 <Tab fx:id="tabMonthReport" onSelectionChanged="#onReportsTabChanged" text="Customers by Month" />
             <Tab fx:id="tabCountryReport" onSelectionChanged="#onReportsTabChanged" text="Customers by Country" />
             </TabPane>
-            <TableView fx:id="reportsTable" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <VBox.margin>
-                <Insets />
-            </VBox.margin>
+         <AnchorPane fx:id="reportsTablePane" minHeight="400.0" minWidth="903.0" prefHeight="400.0" prefWidth="903.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         </GridPane>
     </VBox>
 </ScrollPane>
