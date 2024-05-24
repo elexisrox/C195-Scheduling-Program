@@ -163,6 +163,30 @@ public class DBAppointments {
         return apptList;
     }
 
+    //SQL Query that retrieves all appointments by customer ID.
+    public static ObservableList<Appointment> readApptsByCustID(int customerID) {
+        ObservableList<Appointment> apptList = FXCollections.observableArrayList();
+
+        try {
+            String sql = APPT_BASE_SQL +
+                    "WHERE a.Customer_ID = ? " +
+                    "ORDER BY a.Appointment_ID";
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ps.setInt(1, customerID);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Appointment appt = retrieveAppt(rs);
+                apptList.add(appt);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (All Appointments by Customer ID): " + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return apptList;
+    }
+
     //SQL Query that retrieves all appointments by customer ID that overlap the inputted start and end times.
     public static ObservableList<Appointment> readOverlappingApptsByCustID(int customerID, LocalDateTime startDateTime, LocalDateTime endDateTime, ZoneId userLocalZone, int excludeApptID) {
         ObservableList<Appointment> apptList = FXCollections.observableArrayList();

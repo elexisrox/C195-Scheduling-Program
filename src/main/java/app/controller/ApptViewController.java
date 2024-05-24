@@ -91,10 +91,10 @@ public class ApptViewController implements Initializable {
         if (selectedAppt != null) {
             boolean confirmed = Utilities.showConfirmationAlert(
                     "Delete Confirmation",
-                    "Are you sure you want to delete this appointment?",
-                    "Appointment ID: " + selectedAppt.getApptID() +
-                            "\nAppointment Type: " + selectedAppt.getApptType() +
-                            "\nAppointment Title: " + selectedAppt.getApptTitle()
+                    "Are you sure you want to delete this appointment?\n",
+                    "\n\tAppointment ID: " + selectedAppt.getApptID() +
+                            "\n\tAppointment Type: " + selectedAppt.getApptType() +
+                            "\n\tAppointment Title: " + selectedAppt.getApptTitle()
             ).filter(response -> response == ButtonType.OK).isPresent();
 
             if (confirmed) {
@@ -104,9 +104,9 @@ public class ApptViewController implements Initializable {
                 Utilities.showInfoAlert(
                         "Delete Successful",
                         "The following appointment has been successfully deleted/canceled:\n" +
-                                "Appointment ID: " + selectedAppt.getApptID() + "\n" +
-                                "Appointment Type: " + selectedAppt.getApptType() + "\n" +
-                                "Appointment Title: " + selectedAppt.getApptTitle()
+                                "\n\tAppointment ID: " + selectedAppt.getApptID() +
+                                "\n\tAppointment Type: " + selectedAppt.getApptType() +
+                                "\n\tAppointment Title: " + selectedAppt.getApptTitle()
                 );
             }
         } else {

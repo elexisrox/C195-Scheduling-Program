@@ -203,10 +203,10 @@ public class LoginController implements Initializable {
         if (!upcomingAppointments.isEmpty()) {
             StringBuilder alertContent = new StringBuilder("You have the following appointments within the next 15 minutes:\n");
             for (Appointment appt : upcomingAppointments) {
-                alertContent.append("ID: ").append(appt.getApptID())
+                alertContent.append("\nAppointment ID: ").append(appt.getApptID())
                         .append(", Date: ").append(appt.getApptStart().toLocalDate())
-                        .append(", Time: ").append(appt.getApptStart().toLocalTime())
-                        .append("\n");
+                        //TODO make sure this displays in user timezone
+                        .append(", Time: ").append(appt.getApptStart().toLocalTime());
             }
             Utilities.showInfoAlert("Upcoming Appointments", alertContent.toString());
         } else {

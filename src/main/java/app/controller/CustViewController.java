@@ -74,27 +74,48 @@ public class CustViewController implements Initializable {
     void onActionDelCust(ActionEvent event) {
         System.out.println("Delete Appointment button selected.");
         clearErrorLbl();
+        //Fetch the customer selected by the user
         Customer selectedCust = custTable.getSelectionModel().getSelectedItem();
         if (selectedCust != null) {
-            boolean confirmed = Utilities.showConfirmationAlert(
-                    "Delete Confirmation",
-                    "Are you sure you want to delete this customer?",
-                    "Customer ID: " + selectedCust.getCustID() +
-                            "\nCustomer Name: " + selectedCust.getCustName()
-            ).filter(response -> response == ButtonType.OK).isPresent();
+            //Check if the selected customer has any existing appointments.
+           ObservableList<Appointment> custApptList = DBAppointments.readApptsByCustID(selectedCust.getCustID());
 
-            if (confirmed) {
-                DBAppointments.deleteAppt(selectedCust.getCustID());
-                System.out.println("Customer #" + selectedCust.getCustID() + " deleted.");
-                updateTableData();
-                Utilities.showInfoAlert(
-                        "Delete Successful",
-                        "The following customer has been successfully deleted/canceled:\n" +
-                                "Customer ID: " + selectedCust.getCustID() +
-                                "\nCustomer Name: " + selectedCust.getCustName()
-                );
+            //If the customer has no appointments, continue to deletion confirmation.
+            if (custApptList.isEmpty()) {
+                //Display a confirmation alert to confirm that the user wants to delete the selected customer.
+                boolean confirmed = Utilities.showConfirmationAlert(
+                    "Delete Confirmation",
+                    "Are you sure you want to delete this customer?\n",
+                    "\n\tCustomer ID: " + selectedCust.getCustID() +
+                            "\n\tCustomer Name: " + selectedCust.getCustName()
+                ).filter(response -> response == ButtonType.OK).isPresent();
+
+                if (confirmed) {
+                    DBCustomers.deleteCustomer(selectedCust.getCustID());
+                    System.out.println("Customer #" + selectedCust.getCustID() + " deleted.");
+                    updateTableData();
+                    Utilities.showInfoAlert(
+                            "Delete Successful",
+                            "The following customer has been successfully deleted:\n" +
+                                    "\n\tCustomer ID: " + selectedCust.getCustID() +
+                                    "\n\tCustomer Name: " + selectedCust.getCustName()
+                    );
+                }
+            } else {
+                //If the customer has appointments, compile the appointments to display in a warning message to the user.
+                StringBuilder warningContent = new StringBuilder("The following customer cannot be deleted because they have existing appointments:\n" +
+                        "\n\tCustomer ID: " + selectedCust.getCustID() +
+                        "\n\tCustomer Name: " + selectedCust.getCustName() +
+                        "\n\nPlease delete the following appointments and try again:\n");
+                for (Appointment appt : custApptList) {
+                    warningContent.append("\n\tAppointment ID: ").append(appt.getApptID())
+                            .append(", Date: ").append(appt.getApptStart().toLocalDate());
+                }
+                // Alert the user that the customer could not be deleted.
+                Utilities.showErrorAlert("Failure to Delete Customer", warningContent.toString());
             }
         } else {
+            //If the user hasn't selected a customer to delete, display an error message.
             System.out.println("No customer selected.");
             errorMsgLbl.setText("Please select a customer to delete.");
         }
