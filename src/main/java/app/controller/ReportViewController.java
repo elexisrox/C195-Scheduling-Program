@@ -5,7 +5,6 @@ import app.DBaccess.DBAppointments;
 import app.helper.Utilities;
 import app.model.Appointment;
 import app.model.Contact;
-import app.model.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -70,7 +69,7 @@ public class ReportViewController implements Initializable {
         Utilities.exitButton();
     }
 
-    //Changing Tabs
+    //Handle changing tabs
     @FXML
     void onReportsTabChanged(Event event) {
         if (event.getSource() instanceof Tab) {
@@ -152,23 +151,48 @@ public class ReportViewController implements Initializable {
             }
         });
     }
+
+    //Handle Contact selection from ChoiceBox
+    private ObservableList<Appointment> handleContactSelection(String contactString) {
+        // Extract Contact ID from the selected string
+        int contactID = Integer.parseInt(contactString.split(" - ")[0]);
+
+        // Fetch appointments for the selected contact
+
+        return DBAppointments.readApptsByContactID(contactID);
+    }
+
     //Load Appointment Types into ChoiceBox as general Objects
     //Load Months into ChoiceBox as general Objects
     //Load Countries into ChoiceBox as general Objects
 
     private void setupContactReportTab() {
+        //Set text labels accordingly
+        choiceBoxLbl.setText("Select a Contact:");
+
         //Create an Appointments table to occupy the reportsTablePane
         if (reportsTablePane != null) {
             TableView<Appointment> apptTable = Utilities.createAppointmentTable(userLocalZone);
             addTableToPane(apptTable);
 
-//            ObservableList<Appointment> appointments = DBAppointments.readMonthAppts();
-//            apptTable.setItems(appointments);
+            //Enable the reportsBox and populate it with contacts
+            reportsBox.setDisable(false);
+            loadReportsContactsCBox(reportsBox);
+
+            // Add listener to the ChoiceBox for selection changes
+            reportsBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    ObservableList<Appointment> displayAppts = handleContactSelection(newValue.toString());
+                    // Update the table with the fetched appointments
+                    apptTable.setItems(displayAppts);
+                    //Set the reportsResultLbl with the correct
+                    int resultsCount = displayAppts.size();
+                    reportsResultLbl.setText("Total Appointments: " + resultsCount);
+                }
+            });
+
         }
 
-        //Enable the reportsBox and populate it with contacts
-        reportsBox.setDisable(false);
-        loadReportsContactsCBox(reportsBox);
     }
 
     private void setupTypeReportTab() {

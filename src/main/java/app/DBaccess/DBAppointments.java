@@ -163,7 +163,7 @@ public class DBAppointments {
         return apptList;
     }
     //SQL Query that retrieves all appointments by contact ID
-    public static ObservableList<Appointment> readAppointmentsByContact(int contactID) {
+    public static ObservableList<Appointment> readApptsByContactID(int contactID) {
         ObservableList<Appointment> apptList = FXCollections.observableArrayList();
         try {
             String sql = "SELECT * FROM appointments WHERE Contact_ID = ?";
