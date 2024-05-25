@@ -163,6 +163,28 @@ public class ReportViewController implements Initializable {
     }
 
     //Load Appointment Types into ChoiceBox as general Objects
+    public void loadReportsTypesCBox(ChoiceBox<Object> choiceBox) {
+        ObservableList<String> apptTypes = DBAppointments.readAllApptTypes();
+
+        // Convert appointment types to a list of general objects
+        ObservableList<Object> apptTypeObjects = FXCollections.observableArrayList(apptTypes);
+
+        choiceBox.setItems(apptTypeObjects);
+
+        // Set the converter for the ChoiceBox
+        choiceBox.setConverter(new StringConverter<Object>() {
+            @Override
+            public String toString(Object object) {
+                return object == null ? null : object.toString();
+            }
+
+            @Override
+            public Object fromString(String string) {
+                return string; // Just return the string representation
+            }
+        });
+    }
+
     //Load Months into ChoiceBox as general Objects
     //Load Countries into ChoiceBox as general Objects
 
@@ -190,13 +212,16 @@ public class ReportViewController implements Initializable {
                     reportsResultLbl.setText("Total Appointments: " + resultsCount);
                 }
             });
-
         }
-
     }
 
     private void setupTypeReportTab() {
+        // Set text labels accordingly
+        choiceBoxLbl.setText("Select an Appointment Type:");
 
+        // Enable the reportsBox and populate it with appointment types
+        reportsBox.setDisable(false);
+        loadReportsTypesCBox(reportsBox);
     }
 
     private void setupMonthReportTab() {

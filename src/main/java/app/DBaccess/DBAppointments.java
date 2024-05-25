@@ -259,6 +259,23 @@ public class DBAppointments {
         return apptList;
     }
 
+    //SQL Query to retrieve distinct appointment types
+    public static ObservableList<String> readAllApptTypes() {
+        ObservableList<String> apptTypes = FXCollections.observableArrayList();
+        try {
+            String sql = "SELECT DISTINCT Type FROM appointments";
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                apptTypes.add(rs.getString("Type"));
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Appointment Types): " + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return apptTypes;
+    }
 
     //SQL Query to retrieves the next available appointment ID
     public static String readNextApptID() {

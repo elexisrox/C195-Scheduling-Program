@@ -61,7 +61,7 @@
                     <GridPane.margin>
                         <Insets />
                     </GridPane.margin>
-               <Label fx:id="choiceBoxLbl">
+               <Label fx:id="choiceBoxLbl" wrapText="true">
                   <font>
                      <Font name="System Bold" size="12.0" />
                   </font>
@@ -93,8 +93,8 @@
             </GridPane>
             <TabPane prefHeight="40.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1" GridPane.rowIndex="0">
                 <Tab fx:id="tabContactReport" onSelectionChanged="#onReportsTabChanged" text="Contact Schedules" />
-                <Tab fx:id="tabTypeReport" onSelectionChanged="#onReportsTabChanged" text="Customers by Type" />
-                <Tab fx:id="tabMonthReport" onSelectionChanged="#onReportsTabChanged" text="Customers by Month" />
+                <Tab fx:id="tabTypeReport" onSelectionChanged="#onReportsTabChanged" text="Appointments by Type" />
+                <Tab fx:id="tabMonthReport" onSelectionChanged="#onReportsTabChanged" text="Appointments by Month" />
             <Tab fx:id="tabCountryReport" onSelectionChanged="#onReportsTabChanged" text="Customers by Country" />
             </TabPane>
          <AnchorPane fx:id="reportsTablePane" minHeight="400.0" minWidth="903.0" prefHeight="400.0" prefWidth="903.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
