@@ -75,7 +75,7 @@ public class DBContacts {
     }
 
     //SQL Query that returns a Contact ID based on the provided Contact Name.
-    public static int readContactID(String contactName) {
+    public static int readContactByName(String contactName) {
 
         int contactID = 0;
 

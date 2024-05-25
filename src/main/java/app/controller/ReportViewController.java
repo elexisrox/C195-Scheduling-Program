@@ -6,6 +6,7 @@ import app.helper.Utilities;
 import app.model.Appointment;
 import app.model.Contact;
 import app.model.Customer;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.Initializable;
@@ -109,9 +110,6 @@ public class ReportViewController implements Initializable {
         //Sets timezone label according to the user's timezone
         timezoneLbl.setText(String.valueOf(userLocalZone));
 
-        //Debug statement to check if the AnchorPane is injected
-        System.out.println("reportsTablePane: " + reportsTablePane);
-
         //Set up the default tab
         setupContactReportTab();
     }
@@ -128,21 +126,49 @@ public class ReportViewController implements Initializable {
         }
     }
 
+    //CHOICE BOXES FOR REPORTS
+    //Load Contacts into ChoiceBox as general Objects
+    public void loadReportsContactsCBox(ChoiceBox<Object> choiceBox) {
+        ObservableList<Contact> contacts = DBContacts.readAllContacts();
+
+        // Convert Contact objects to a list of formatted strings
+        ObservableList<Object> contactNames = FXCollections.observableArrayList();
+        for (Contact contact : contacts) {
+            contactNames.add(contact.getContactID() + " - " + contact.getContactName());
+        }
+
+        choiceBox.setItems(contactNames);
+
+        // Set the converter for the ChoiceBox
+        choiceBox.setConverter(new StringConverter<Object>() {
+            @Override
+            public String toString(Object object) {
+                return object == null ? null : object.toString();
+            }
+
+            @Override
+            public Object fromString(String string) {
+                return string; // Just return the string representation
+            }
+        });
+    }
+    //Load Appointment Types into ChoiceBox as general Objects
+    //Load Months into ChoiceBox as general Objects
+    //Load Countries into ChoiceBox as general Objects
+
     private void setupContactReportTab() {
-        // TODO reminder to wrap functions inside this if condition to make sure that the reportsTablePane exists before modifying it
+        //Create an Appointments table to occupy the reportsTablePane
         if (reportsTablePane != null) {
             TableView<Appointment> apptTable = Utilities.createAppointmentTable(userLocalZone);
             addTableToPane(apptTable);
 
-            // Debug statement to check the TableView creation
-            System.out.println("Appointment TableView created: " + apptTable);
-
-            ObservableList<Appointment> appointments = DBAppointments.readMonthAppts();
-            apptTable.setItems(appointments);
-
-            // Debug statement to check if data is loaded
-            System.out.println("Appointments loaded: " + appointments.size());
+//            ObservableList<Appointment> appointments = DBAppointments.readMonthAppts();
+//            apptTable.setItems(appointments);
         }
+
+        //Enable the reportsBox and populate it with contacts
+        reportsBox.setDisable(false);
+        loadReportsContactsCBox(reportsBox);
     }
 
     private void setupTypeReportTab() {

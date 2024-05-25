@@ -12,6 +12,7 @@ import app.model.Contact;
 import app.model.Customer;
 import app.model.User;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -187,11 +188,11 @@ public class Utilities {
         });
     }
 
+    //TIME
     //Used for LocalDateTime formatting methods
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    //TIME
     //Converts LocalDateTime to a formatted Date string in a specific timezone
     public static String formatDate(LocalDateTime utcDateTime, ZoneId targetZone) {
         if (utcDateTime == null) return "";
@@ -239,7 +240,7 @@ public class Utilities {
         alert.showAndWait();
     }
 
-    //Displays an information alert with custom title, header, and content text.
+    //Displays a warning alert with custom title, header, and content text.
     public static void showErrorAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
@@ -248,7 +249,7 @@ public class Utilities {
         alert.showAndWait();
     }
 
-    //CHOICE BOXES
+    //CHOICE BOXES FOR DIALOG PANE
     //Load Contacts into Contacts ChoiceBox
     public static void loadChoiceBoxContacts(ChoiceBox<Contact> choiceBox) {
         ObservableList<Contact> contacts = DBContacts.readAllContacts();
@@ -308,6 +309,7 @@ public class Utilities {
             }
         });
     }
+
 
     //BUTTONS
     //Logout Button
