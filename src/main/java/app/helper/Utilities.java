@@ -441,11 +441,11 @@ public class Utilities {
 
         TableColumn<Customer, String> custNameCol = new TableColumn<>("Name");
         custNameCol.setCellValueFactory(new PropertyValueFactory<>("custName"));
-        custNameCol.setPrefWidth(200);
+        custNameCol.setPrefWidth(150);
 
         TableColumn<Customer, String> custAddressCol = new TableColumn<>("Address");
         custAddressCol.setCellValueFactory(new PropertyValueFactory<>("custAddress"));
-        custAddressCol.setPrefWidth(250);
+        custAddressCol.setPrefWidth(150);
 
         TableColumn<Customer, String> custPostalCol = new TableColumn<>("Postal Code");
         custPostalCol.setCellValueFactory(new PropertyValueFactory<>("custPostalCode"));
@@ -455,12 +455,16 @@ public class Utilities {
         custPhoneCol.setCellValueFactory(new PropertyValueFactory<>("custPhone"));
         custPhoneCol.setPrefWidth(100);
 
-        TableColumn<Customer, Integer> custDivCol = new TableColumn<>("Division ID");
-        custDivCol.setCellValueFactory(new PropertyValueFactory<>("custDivisionID"));
-        custDivCol.setPrefWidth(75);
+        TableColumn<Customer, Integer> custDivCol = new TableColumn<>("Division Name");
+        custDivCol.setCellValueFactory(new PropertyValueFactory<>("custDivisionName"));
+        custDivCol.setPrefWidth(100);
+
+        TableColumn<Customer, String> custCountryCol = new TableColumn<>("Country");
+        custCountryCol.setCellValueFactory(new PropertyValueFactory<>("custCountryName"));
+        custCountryCol.setPrefWidth(100);
 
         Collections.addAll(customerTable.getColumns(),
-                custIDCol, custNameCol, custAddressCol, custPostalCol, custPhoneCol, custDivCol
+                custIDCol, custNameCol, custAddressCol, custPostalCol, custPhoneCol, custDivCol, custCountryCol
         );
 
         return customerTable;
