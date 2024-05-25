@@ -72,15 +72,21 @@ public class ReportViewController implements Initializable {
     //Changing Tabs
     @FXML
     void onReportsTabChanged(Event event) {
-        System.out.println("onReportsTabChanged Fired");
-        Tab selectedTab = (Tab) event.getSource();
-        if (selectedTab.isSelected()) {
-            if (selectedTab == tabContactReport) {
-                setupContactSchedulesTab();
-            } else if (selectedTab == tabTypeReport) {
+        if (event.getSource() instanceof Tab) {
+            updateTabData();
+        }
+    }
 
-            }
-            // Handle other tabs similarly
+    //Update the table, ChoiceBox and labels based on the selected tab
+    public void updateTabData() {
+        if (tabContactReport.isSelected()) {
+            setupContactReportTab();
+        } else if (tabTypeReport.isSelected()) {
+            setupTypeReportTab();
+        } else if (tabMonthReport.isSelected()) {
+            setupMonthReportTab();
+        } else if (tabCountryReport.isSelected()) {
+            setupCountryReportTab();
         }
     }
 
@@ -102,27 +108,55 @@ public class ReportViewController implements Initializable {
 
         //Sets timezone label according to the user's timezone
         timezoneLbl.setText(String.valueOf(userLocalZone));
-        setupContactSchedulesTab();
-    }
 
-    private void setupContactSchedulesTab() {
-        // TODO reminder to wrap functions inside this if condition to make sure that the reportsTablePane exists before modifying it
-        if (reportsTablePane != null) {
-            TableView<Appointment> appointmentTable = Utilities.createAppointmentTable(userLocalZone);
-            addTableToPane(appointmentTable);
-        }
+        //Debug statement to check if the AnchorPane is injected
+        System.out.println("reportsTablePane: " + reportsTablePane);
+
+        //Set up the default tab
+        setupContactReportTab();
     }
 
     // Helper method to add a table to the AnchorPane
     private void addTableToPane(TableView<?> table) {
         if (reportsTablePane != null) {
-            reportsTablePane.getChildren().clear();}
-        System.out.println(reportsTablePane);
-        System.out.println(table);
-        AnchorPane.setTopAnchor(table, 0.0);
-        AnchorPane.setBottomAnchor(table, 0.0);
-        AnchorPane.setLeftAnchor(table, 0.0);
-        AnchorPane.setRightAnchor(table, 0.0);
+            reportsTablePane.getChildren().clear(); // Clear any existing children
+            reportsTablePane.getChildren().add(table); // Add the TableView to the AnchorPane
+            AnchorPane.setTopAnchor(table, 0.0);
+            AnchorPane.setBottomAnchor(table, 0.0);
+            AnchorPane.setLeftAnchor(table, 0.0);
+            AnchorPane.setRightAnchor(table, 0.0);
+        }
     }
+
+    private void setupContactReportTab() {
+        // TODO reminder to wrap functions inside this if condition to make sure that the reportsTablePane exists before modifying it
+        if (reportsTablePane != null) {
+            TableView<Appointment> apptTable = Utilities.createAppointmentTable(userLocalZone);
+            addTableToPane(apptTable);
+
+            // Debug statement to check the TableView creation
+            System.out.println("Appointment TableView created: " + apptTable);
+
+            ObservableList<Appointment> appointments = DBAppointments.readMonthAppts();
+            apptTable.setItems(appointments);
+
+            // Debug statement to check if data is loaded
+            System.out.println("Appointments loaded: " + appointments.size());
+        }
+    }
+
+    private void setupTypeReportTab() {
+
+    }
+
+    private void setupMonthReportTab() {
+
+    }
+
+    private void setupCountryReportTab() {
+
+    }
+
+
 
 }
