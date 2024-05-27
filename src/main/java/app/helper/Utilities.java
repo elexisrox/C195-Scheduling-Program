@@ -11,29 +11,27 @@ import app.model.Appointment;
 import app.model.Contact;
 import app.model.Customer;
 import app.model.User;
+
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-
-import java.io.IOException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Optional;
-
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Optional;
 
 /** Utilities class provides scene transitions, data formatting methods, and other universal functions.
  * @author Elexis Rox
@@ -41,8 +39,52 @@ import javafx.util.StringConverter;
 
 public class Utilities {
 
-    //Scene Transitions
-    //Reusable scene transition method
+    // Constants
+    private static final String APPT_VIEW_PATH = "/app/ApptView.fxml";
+    private static final String LOGIN_VIEW_PATH = "/app/Login.fxml";
+    private static final String CUST_VIEW_PATH = "/app/CustView.fxml";
+    private static final String REPORT_VIEW_PATH = "/app/ReportView.fxml";
+    private static final String APPT_DIALOG_PATH = "/app/ApptDialog.fxml";
+    private static final String CUST_DIALOG_PATH = "/app/CustDialog.fxml";
+
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+    private static final String TIME_FORMAT = "HH:mm:ss";
+
+    // DateTimeFormatter: Used for LocalDateTime formatting methods
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
+
+    // Time formatting methods
+    // Convert LocalDateTime to a formatted Date string in a specific timezone
+    public static String formatDate(LocalDateTime utcDateTime, ZoneId targetZone) {
+        if (utcDateTime == null) return "";
+        ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
+        return DATE_FORMATTER.format(zonedDateTime);
+    }
+
+    // Convert UTC LocalDateTime to a formatted Time string in a specific timezone
+    public static String formatTime(LocalDateTime utcDateTime, ZoneId targetZone) {
+        if (utcDateTime == null) return "";
+        ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
+        return TIME_FORMATTER.format(zonedDateTime);
+    }
+
+    // Converts LocalDateTime from the user's timezone to UTC
+    public static LocalDateTime toUTC(LocalDateTime localDateTime, ZoneId userZone) {
+        ZonedDateTime localZonedDateTime = localDateTime.atZone(userZone);
+        ZonedDateTime utcZoneDateTime = localZonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
+        return utcZoneDateTime.toLocalDateTime();
+    }
+
+    // Converts LocalDateTime from UTC to the user's timezone
+    public static LocalDateTime fromUTC(LocalDateTime utcDateTime, ZoneId userZone) {
+        ZonedDateTime utcZonedDateTime = utcDateTime.atZone(ZoneId.of("UTC"));
+        ZonedDateTime localZonedDateTime = utcZonedDateTime.withZoneSameInstant(userZone);
+        return localZonedDateTime.toLocalDateTime();
+    }
+
+    // Scene Transitions
+    // Reusable scene transition method
     private static <Parent> void transitionToView(Stage stage, String fxmlPath, String title) throws IOException {
         Parent scene = FXMLLoader.load(Utilities.class.getResource(fxmlPath));
         stage.setScene(new Scene((javafx.scene.Parent) scene));
@@ -51,30 +93,30 @@ public class Utilities {
         stage.show();
     }
 
-    //Method to transition to the Appointment View in the main application.
+    // Method to transition to the Appointment View in the main application
     public static void transitionApptView(Stage stage) throws IOException {
-        transitionToView(stage, "/app/ApptView.fxml", "View Appointments");
+        transitionToView(stage, APPT_VIEW_PATH, "View Appointments");
     }
 
-    //Method to transition to the Login screen in the main application.
+    // Method to transition to the Login screen in the main application
     public static void transitionLoginView(Stage stage) throws IOException {
-        transitionToView(stage, "/app/Login.fxml", "");
+        transitionToView(stage, LOGIN_VIEW_PATH, "");
     }
 
-    //Toggle group for scene transitions between Main application views
+    // Toggle group for scene transitions between Main application views
     public static void onRadioButtonSelected(ToggleGroup toggleGroup, Stage stage) throws IOException {
         RadioButton selectedRadioButton = (RadioButton) toggleGroup.getSelectedToggle();
         if (selectedRadioButton != null) {
             String toggleGroupValue = selectedRadioButton.getText();
             switch (toggleGroupValue) {
                 case "Appointments":
-                    transitionToView(stage, "/app/ApptView.fxml", "View Appointments");
+                    transitionToView(stage, APPT_VIEW_PATH, "View Appointments");
                     break;
                 case "Customers":
-                    transitionToView(stage, "/app/CustView.fxml", "View Customers");
+                    transitionToView(stage, CUST_VIEW_PATH, "View Customers");
                     break;
                 case "Reports":
-                    transitionToView(stage, "/app/ReportView.fxml", "View Reports");
+                    transitionToView(stage, REPORT_VIEW_PATH, "View Reports");
                     break;
                 default:
                     throw new IllegalArgumentException("Unexpected value: " + toggleGroupValue);
@@ -82,11 +124,11 @@ public class Utilities {
         }
     }
 
-    //Dialog Box Transitions
-    //Main method to open the Add/Modify Appointments Dialog.
+    // Dialog Box Transitions
+    // Main method to open the Add/Modify Appointments Dialog
     public static void openApptDialog(Stage ownerStage, boolean isAddMode, ApptViewController apptMainView, Appointment selectedAppt) throws IOException {
         // Initialize and create the dialog pane
-        FXMLLoader fxmlLoader = new FXMLLoader(Utilities.class.getResource("/app/ApptDialog.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Utilities.class.getResource(APPT_DIALOG_PATH));
         DialogPane apptPane = fxmlLoader.load();
         ApptDialogController dialogController = fxmlLoader.getController();
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -115,35 +157,33 @@ public class Utilities {
 
         // Add validation and save handling for the Save button
         dialog.getDialogPane().lookupButton(saveButtonType).addEventFilter(ActionEvent.ACTION, event -> {
-            System.out.println("Save button selected.");
             if (!dialogController.validateInputs()) {
-                System.out.println("\tValidation failed.");
-                event.consume(); // Prevents the dialog from closing
+                // Prevent the dialog from closing if validation fails
+                event.consume();
             } else {
-                System.out.println("\tValidation succeeded, saving data.");
+                // Save the new Appointment if validation succeeds
                 dialogController.handleSave();
             }
         });
 
-        // Show the dialog and handle the result
         dialog.showAndWait().ifPresent(result -> {
             if (result.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+                // Update the table data after the dialog closes
                 apptMainView.updateTableData();
-            } else {
-                System.out.println("Cancel or close button selected.");
             }
         });
     }
 
-    //Main method to open the Add/Modify Customers Dialog.
+    // Main method to open the Add/Modify Customers Dialog
     public static void openCustDialog(Stage ownerStage, boolean isAddMode, CustViewController custMainView, Customer selectedCust) throws IOException {
         //Initialize and create the dialog pane
-        FXMLLoader fxmlLoader = new FXMLLoader(Utilities.class.getResource("/app/CustDialog.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Utilities.class.getResource(CUST_DIALOG_PATH));
         DialogPane custPane = fxmlLoader.load();
         CustDialogController dialogController = fxmlLoader.getController();
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setDialogPane(custPane);
-        //Set owner and modality
+
+        // Set owner and modality
         dialog.initOwner(ownerStage);
         dialog.initModality(Modality.APPLICATION_MODAL);
 
@@ -152,79 +192,47 @@ public class Utilities {
         dialog.setTitle(modeString);
         dialogController.setCustLabels(modeString);
 
-        //If adding a customer
+        // If adding a customer:
         if (isAddMode) {
-            //Retrieve the new customer ID
+            // Retrieve the new customer ID
             dialogController.retrieveNewCustID();
-            //Block the divisions input
+            // Block the divisions input
             dialogController.blockDivBox(true);
-            //Add event listener for Country input ChoiceBox. When a country is selected, the Division input ChoiceBox will become enabled and populate with the divisions that correlate to the chosen country.
+            // Add event listener for Country input ChoiceBox. When a country is selected, the Division input ChoiceBox will become enabled and populate with the divisions that correlate to the chosen country.
             dialogController.addListeners();
-        //If modifying a customer
+        //If modifying a customer:
         } else if (selectedCust != null) {
-            //Fetches customer's info and fills in input fields accordingly
+            // Fetch customer's info and fills in input fields accordingly
             dialogController.setCustomer(selectedCust);
-            //Adds the event listener for the Country input ChoiceBox after the customer's data has populated.
+            // Add the event listener for the Country input ChoiceBox after the customer's data has populated
             dialogController.addListeners();
         }
 
+        // Create Save/Cancel buttons
         ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
 
         dialog.getDialogPane().lookupButton(saveButtonType).addEventFilter(ActionEvent.ACTION, event -> {
             if (!dialogController.validateInputs()) {
-                //prevents the dialog pane from closing if validation fails.
+                // Prevent the dialog pane from closing if validation fails
                 event.consume();
             } else {
-                //If validation is successful, save the customer to the database.
+                //If validation is successful, save the customer to the database
                 dialogController.handleSave();
             }
         });
 
         dialog.showAndWait().ifPresent(result -> {
             if (result.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-                //Update the table data after the dialog closes.
+                // Update the table data after the dialog closes
                 custMainView.updateTableData();
             }
         });
     }
 
-    //TIME
-    //Used for LocalDateTime formatting methods
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-    //Converts LocalDateTime to a formatted Date string in a specific timezone
-    public static String formatDate(LocalDateTime utcDateTime, ZoneId targetZone) {
-        if (utcDateTime == null) return "";
-        ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
-        return DATE_FORMATTER.format(zonedDateTime);
-    }
-
-    //Converts UTC LocalDateTime to a formatted Time string in a specific timezone
-    public static String formatTime(LocalDateTime utcDateTime, ZoneId targetZone) {
-        if (utcDateTime == null) return "";
-        ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
-        return TIME_FORMATTER.format(zonedDateTime);
-    }
-
-    //Converts LocalDateTime from the user's timezone to UTC
-    public static LocalDateTime toUTC(LocalDateTime localDateTime, ZoneId userZone) {
-        ZonedDateTime localZonedDateTime = localDateTime.atZone(userZone);
-        ZonedDateTime utcZoneDateTime = localZonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
-        return utcZoneDateTime.toLocalDateTime();
-    }
-
-    //Converts LocalDateTime from UTC to the user's timezone
-    public static LocalDateTime fromUTC(LocalDateTime utcDateTime, ZoneId userZone) {
-        ZonedDateTime utcZonedDateTime = utcDateTime.atZone(ZoneId.of("UTC"));
-        ZonedDateTime localZonedDateTime = utcZonedDateTime.withZoneSameInstant(userZone);
-        return localZonedDateTime.toLocalDateTime();
-    }
-
-    //ALERTS
-    //Displays a confirmation alert with custom title, header, and content text.
+    // Alert methods
+    // Display a confirmation alert with custom title, header, and content text
     public static Optional<ButtonType> showConfirmationAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -233,7 +241,7 @@ public class Utilities {
         return alert.showAndWait();
     }
 
-    //Displays an information alert with custom title, header, and content text.
+    // Display an information alert with custom title, header, and content text
     public static void showInfoAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -251,8 +259,8 @@ public class Utilities {
         alert.showAndWait();
     }
 
-    //CHOICE BOXES FOR DIALOG PANE
-    //Load Contacts into Contacts ChoiceBox
+    // ChoiceBox loading methods
+    // Load Contacts into Contacts ChoiceBox
     public static void loadChoiceBoxContacts(ChoiceBox<Contact> choiceBox) {
         ObservableList<Contact> contacts = DBContacts.readAllContacts();
         choiceBox.setItems(contacts);
@@ -316,8 +324,6 @@ public class Utilities {
     //BUTTONS
     //Logout Button
     public static void logoutButton(Stage stage) throws IOException {
-        System.out.println("Logout button selected.");
-
         // Create a confirmation alert
         Optional<ButtonType> result = showConfirmationAlert(
                 "Logout Confirmation",
@@ -327,17 +333,12 @@ public class Utilities {
 
         // Transition to login screen if user clicks OK.
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            System.out.println("Logout confirmed.");
             Utilities.transitionLoginView(stage);
-        } else {
-            System.out.println("Logout canceled.");
         }
     }
 
     //Exit button
     public static void exitButton() {
-        System.out.println("Exit button selected.");
-
         // Create a confirmation alert
         Optional<ButtonType> result = showConfirmationAlert(
                 "Exit Confirmation",
@@ -348,10 +349,7 @@ public class Utilities {
         //Exit if user clicks OK.
         if (result.isPresent() && result.get() == ButtonType.OK) {
             app.helper.JDBC.closeConnection();
-            System.out.println("Application terminated.");
             System.exit(0);
-        } else {
-            System.out.println("Exit canceled.");
         }
     }
 
