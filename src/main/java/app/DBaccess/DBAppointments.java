@@ -296,7 +296,7 @@ public class DBAppointments {
         return String.valueOf(nextApptID);
     }
 
-    //SQL Query that retrieves Appointments by Type and Month for Reports
+    //SQL Query that retrieves Appointments by Month and Type for Reports
     public static ObservableList<Pair<String, Pair<String, Integer>>> readApptsByTypeAndMonth() {
         ObservableList<Pair<String, Pair<String, Integer>>> list = FXCollections.observableArrayList();
         try {
@@ -313,7 +313,7 @@ public class DBAppointments {
                 list.add(new Pair<>(month, new Pair<>(type, count)));
             }
         } catch (SQLException e) {
-            System.out.println("SQL Exception Error (Appointments by Type and Month): " + e.getErrorCode());
+            System.out.println("SQL Exception Error (Appointments by Month and Type): " + e.getErrorCode());
         }
         return list;
     }

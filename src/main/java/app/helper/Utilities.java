@@ -473,7 +473,7 @@ public class Utilities {
     }
 
     //Method to create Appointments by Type/Month table for Reports View
-    public static TableView<Pair<String, Pair<String, Integer>>> createAppointmentTypeMonthTable() {
+    public static TableView<Pair<String, Pair<String, Integer>>> createAppointmentMonthTypeTable() {
         TableView<Pair<String, Pair<String, Integer>>> table = new TableView<>();
 
         TableColumn<Pair<String, Pair<String, Integer>>, String> monthCol = new TableColumn<>("Month");

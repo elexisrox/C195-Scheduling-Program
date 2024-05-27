@@ -3,6 +3,7 @@ package app.controller;
 import app.DBaccess.DBContacts;
 import app.DBaccess.DBAppointments;
 import app.DBaccess.DBCountries;
+import app.DBaccess.DBCustomers;
 import app.helper.Utilities;
 import app.model.Appointment;
 import app.model.Contact;
@@ -194,8 +195,7 @@ public class ReportViewController implements Initializable {
         int countryID = Integer.parseInt(countryString.split(" - ")[0]);
 
         // Fetch appointments for the selected contact
-
-        return DBAppointments.readApptsByCountryID(countryID);
+        return DBCustomers.readCustomersByCountryID(countryID);
     }
 
     //Load Months into ChoiceBox as general Objects
@@ -211,8 +211,12 @@ public class ReportViewController implements Initializable {
             TableView<Appointment> apptTable = Utilities.createAppointmentTable(userLocalZone);
             addTableToPane(apptTable);
 
-            //Enable the reportsBox and populate it with contacts
-            reportsBox.setDisable(false);
+            // Clear and enable the reportsBox
+            reportsBox.getItems().clear(); // Clear all items
+            reportsBox.getSelectionModel().clearSelection(); // Clear the selected item
+            reportsBox.setDisable(false); // Enable the ChoiceBox
+
+            //Populate the ChoiceBox with the contacts list
             loadChoiceBoxContactsGeneral(reportsBox);
 
             // Add listener to the ChoiceBox for selection changes
@@ -239,14 +243,14 @@ public class ReportViewController implements Initializable {
         reportsBox.getSelectionModel().clearSelection(); // Clear the selected item
         reportsBox.setDisable(true);
 
-        // Create an Appointments Type and Month table to occupy the reportsTablePane
+        // Create an Appointments Month and Type table to occupy the reportsTablePane
         if (reportsTablePane != null) {
-            TableView<Pair<String, Pair<String, Integer>>> apptTypeMonthTable = Utilities.createAppointmentTypeMonthTable();
-            addTableToPane(apptTypeMonthTable);
+            TableView<Pair<String, Pair<String, Integer>>> apptMonthTypeTable = Utilities.createAppointmentMonthTypeTable();
+            addTableToPane(apptMonthTypeTable);
 
             // Fetch the data and set it to the table
             ObservableList<Pair<String, Pair<String, Integer>>> data = DBAppointments.readApptsByTypeAndMonth();
-            apptTypeMonthTable.setItems(data);
+            apptMonthTypeTable.setItems(data);
         }
     }
 
@@ -255,10 +259,32 @@ public class ReportViewController implements Initializable {
         choiceBoxLbl.setText("Select a Country:");
         reportsResultLbl.setText("");
 
-        // Clear the reportsBox
+        // Clear and enable the reportsBox
         reportsBox.getItems().clear(); // Clear all items
         reportsBox.getSelectionModel().clearSelection(); // Clear the selected item
-        reportsBox.setDisable(true);
+        reportsBox.setDisable(false); // Enable the ChoiceBox
+
+        //Create an Appointments table to occupy the reportsTablePane
+        if (reportsTablePane != null) {
+            TableView<Customer> custTable = Utilities.createCustomerTable();
+            addTableToPane(custTable);
+
+            //Enable the reportsBox and populate it with contacts
+            reportsBox.setDisable(false);
+            loadChoiceBoxCountriesGeneral(reportsBox);
+
+            // Add listener to the ChoiceBox for selection changes
+            reportsBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    ObservableList<Customer> displayCustomers = handleCountrySelection(newValue.toString());
+                    // Update the table with the fetched appointments
+                    custTable.setItems(displayCustomers);
+                    //Set the reportsResultLbl with the correct
+                    int resultsCount = displayCustomers.size();
+                    reportsResultLbl.setText("Total Customers: " + resultsCount);
+                }
+            });
+        }
     }
 
 
