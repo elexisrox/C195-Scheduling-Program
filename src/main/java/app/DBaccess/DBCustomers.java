@@ -145,6 +145,40 @@ public class DBCustomers {
         return String.valueOf(nextCustID);
     }
 
+    //SQL Query that returns a list of customers based on a Country ID.
+    public static ObservableList<Customer> readCustomersByCountryID(int countryID) {
+        ObservableList<Customer> custList = FXCollections.observableArrayList();
+        try {
+            String sql = "SELECT c.Customer_ID, c.Customer_Name, c.Address, c.Postal_Code, c.Phone, c.Division_ID, f.Division, f.Country_ID, countries.Country " +
+                    "FROM customers as c " +
+                    "JOIN first_level_divisions as f ON c.Division_ID = f.Division_ID " +
+                    "JOIN countries ON countries.Country_ID = f.Country_ID " +
+                    "WHERE f.Country_ID = ? " +
+                    "ORDER BY c.Customer_ID";
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ps.setInt(1, countryID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int custID = rs.getInt("Customer_ID");
+                String custName = rs.getString("Customer_Name");
+                String custAddress = rs.getString("Address");
+                String custPostalCode = rs.getString("Postal_Code");
+                String custPhone = rs.getString("Phone");
+                int custDivisionID = rs.getInt("Division_ID");
+                String custDivisionName = rs.getString("Division");
+                int custCountryID = rs.getInt("Country_ID");
+                String custCountryName = rs.getString("Country");
+                Customer c = new Customer(custID, custName, custAddress, custPostalCode, custPhone, custDivisionID, custDivisionName, custCountryID, custCountryName);
+                custList.add(c);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Customers by Country): " + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return custList;
+    }
+
     //UPDATE QUERIES
     //SQL Query that updates a selected customer within the database.
     public static void updateCustomer(int custID, String custName, String custAddress, String custPostalCode, String custPhone, int custDivisionID) {

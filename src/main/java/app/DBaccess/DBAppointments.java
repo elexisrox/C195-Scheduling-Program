@@ -4,6 +4,7 @@ import app.helper.JDBC;
 import app.model.Appointment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Pair;
 
 import java.sql.*;
 import java.time.*;
@@ -293,6 +294,28 @@ public class DBAppointments {
             System.out.println("Error: " + e.getMessage());
         }
         return String.valueOf(nextApptID);
+    }
+
+    //SQL Query that retrieves Appointments by Type and Month for Reports
+    public static ObservableList<Pair<String, Pair<String, Integer>>> readApptsByTypeAndMonth() {
+        ObservableList<Pair<String, Pair<String, Integer>>> list = FXCollections.observableArrayList();
+        try {
+            String sql = "SELECT MONTHNAME(Start) AS Month, Type, COUNT(*) AS Count " +
+                    "FROM appointments " +
+                    "GROUP BY Month, Type " +
+                    "ORDER BY MONTH(Start), Type";
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String month = rs.getString("Month");
+                String type = rs.getString("Type");
+                int count = rs.getInt("Count");
+                list.add(new Pair<>(month, new Pair<>(type, count)));
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Appointments by Type and Month): " + e.getErrorCode());
+        }
+        return list;
     }
 
     //UPDATE QUERIES

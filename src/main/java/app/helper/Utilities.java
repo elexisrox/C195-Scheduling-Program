@@ -11,6 +11,7 @@ import app.model.Appointment;
 import app.model.Contact;
 import app.model.Customer;
 import app.model.User;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +32,7 @@ import java.util.Optional;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 
 /** Utilities class provides scene transitions, data formatting methods, and other universal functions.
@@ -468,5 +470,26 @@ public class Utilities {
         );
 
         return customerTable;
+    }
+
+    //Method to create Appointments by Type/Month table for Reports View
+    public static TableView<Pair<String, Pair<String, Integer>>> createAppointmentTypeMonthTable() {
+        TableView<Pair<String, Pair<String, Integer>>> table = new TableView<>();
+
+        TableColumn<Pair<String, Pair<String, Integer>>, String> monthCol = new TableColumn<>("Month");
+        monthCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKey()));
+        monthCol.setPrefWidth(100);
+
+        TableColumn<Pair<String, Pair<String, Integer>>, String> typeCol = new TableColumn<>("Type");
+        typeCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getValue().getKey()));
+        typeCol.setPrefWidth(200);
+
+        TableColumn<Pair<String, Pair<String, Integer>>, Integer> countCol = new TableColumn<>("Count");
+        countCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getValue().getValue()).asObject());
+        countCol.setPrefWidth(100);
+
+        Collections.addAll(table.getColumns(), monthCol, typeCol, countCol);
+
+        return table;
     }
 }

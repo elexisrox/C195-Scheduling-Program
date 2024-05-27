@@ -2,9 +2,12 @@ package app.controller;
 
 import app.DBaccess.DBContacts;
 import app.DBaccess.DBAppointments;
+import app.DBaccess.DBCountries;
 import app.helper.Utilities;
 import app.model.Appointment;
 import app.model.Contact;
+import app.model.Country;
+import app.model.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -20,6 +23,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 
 public class ReportViewController implements Initializable {
@@ -148,6 +152,32 @@ public class ReportViewController implements Initializable {
         });
     }
 
+    //Load Countries into ChoiceBox as general Objects
+    public void loadChoiceBoxCountriesGeneral(ChoiceBox<Object> choiceBox) {
+        ObservableList<Country> countries = DBCountries.readAllCountries();
+
+        // Convert Contact objects to a list of formatted strings
+        ObservableList<Object> countryNames = FXCollections.observableArrayList();
+        for (Country country : countries) {
+            countryNames.add(country.getCountryID() + " - " + country.getCountryName());
+        }
+
+        choiceBox.setItems(countryNames);
+
+        // Set the converter for the ChoiceBox
+        choiceBox.setConverter(new StringConverter<Object>() {
+            @Override
+            public String toString(Object object) {
+                return object == null ? null : object.toString();
+            }
+
+            @Override
+            public Object fromString(String string) {
+                return string; // Just return the string representation
+            }
+        });
+    }
+
     //Handle Contact selection from ChoiceBox
     private ObservableList<Appointment> handleContactSelection(String contactString) {
         // Extract Contact ID from the selected string
@@ -158,12 +188,23 @@ public class ReportViewController implements Initializable {
         return DBAppointments.readApptsByContactID(contactID);
     }
 
+    //Handle Country selection from ChoiceBox
+    private ObservableList<Customer> handleCountrySelection(String countryString) {
+        // Extract Contact ID from the selected string
+        int countryID = Integer.parseInt(countryString.split(" - ")[0]);
+
+        // Fetch appointments for the selected contact
+
+        return DBAppointments.readApptsByCountryID(countryID);
+    }
+
     //Load Months into ChoiceBox as general Objects
     //Load Countries into ChoiceBox as general Objects
 
     private void setupContactReportTab() {
         //Set text labels accordingly
         choiceBoxLbl.setText("Select a Contact:");
+        reportsResultLbl.setText("");
 
         //Create an Appointments table to occupy the reportsTablePane
         if (reportsTablePane != null) {
@@ -197,10 +238,27 @@ public class ReportViewController implements Initializable {
         reportsBox.getItems().clear(); // Clear all items
         reportsBox.getSelectionModel().clearSelection(); // Clear the selected item
         reportsBox.setDisable(true);
+
+        // Create an Appointments Type and Month table to occupy the reportsTablePane
+        if (reportsTablePane != null) {
+            TableView<Pair<String, Pair<String, Integer>>> apptTypeMonthTable = Utilities.createAppointmentTypeMonthTable();
+            addTableToPane(apptTypeMonthTable);
+
+            // Fetch the data and set it to the table
+            ObservableList<Pair<String, Pair<String, Integer>>> data = DBAppointments.readApptsByTypeAndMonth();
+            apptTypeMonthTable.setItems(data);
+        }
     }
 
     private void setupCountryReportTab() {
+        // Set text labels accordingly
+        choiceBoxLbl.setText("Select a Country:");
+        reportsResultLbl.setText("");
 
+        // Clear the reportsBox
+        reportsBox.getItems().clear(); // Clear all items
+        reportsBox.getSelectionModel().clearSelection(); // Clear the selected item
+        reportsBox.setDisable(true);
     }
 
 
