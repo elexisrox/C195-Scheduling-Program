@@ -2,21 +2,26 @@ package app.DBaccess;
 
 import app.helper.JDBC;
 import app.model.Contact;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * DBContacts class contains all queries for the contacts table in the database.
+ * This class handles reading all contacts from the database and retrieving a specific contact
+ * by ID.
+ *
  * @author Elexis Rox
  */
-
 public class DBContacts {
-    //READ QUERIES
-    //SQL Query that retrieves all contacts and adds them to an ObservableList.
+
+    /**
+     * Retrieves all contacts from the database and adds them to an ObservableList.
+     *
+     * @return an ObservableList containing all contacts from the database
+     */
     public static ObservableList<Contact> readAllContacts() {
 
         ObservableList<Contact> contactList = FXCollections.observableArrayList();
@@ -45,7 +50,12 @@ public class DBContacts {
         return contactList;
     }
 
-    //SQL Query that returns a Contact based on the provided Contact ID.
+    /**
+     * Retrieves a specific contact from the database based on the provided Contact ID.
+     *
+     * @param contactID the ID of the contact to retrieve
+     * @return the Contact object corresponding to the provided contact ID
+     */
     public static Contact readContact(int contactID) {
 
         int providedContactID = 0;
@@ -72,28 +82,5 @@ public class DBContacts {
             System.out.println("Error:" + e.getMessage());
         }
         return new Contact(providedContactID, contactName, contactEmail);
-    }
-
-    //SQL Query that returns a Contact ID based on the provided Contact Name.
-    public static int readContactByName(String contactName) {
-
-        int contactID = 0;
-
-        try {
-            String sql = "SELECT Contact_ID, Contact_Name FROM contacts WHERE Contact_Name = ?";
-
-            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
-            ps.setString(1, contactName);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                contactID = rs.getInt("Contact_ID");
-            }
-        } catch (SQLException e) {
-            System.out.println("SQL Exception Error (Contact ID):" + e.getErrorCode());
-        } catch (Exception e) {
-            System.out.println("Error:" + e.getMessage());
-        }
-        return contactID;
     }
 }

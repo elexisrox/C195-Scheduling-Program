@@ -4,6 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * JDBC class handles the database connection setup and closure for the client_schedule database.
+ * It uses the MySQL JDBC driver to establish a connection.
+ * This is an abstract class to ensure no instances are created.
+ * It contains methods to open, close, and get the current database connection.
+ *
+ * @author Elexis Rox
+ */
 public abstract class JDBC {
 
     private static final String protocol = "jdbc";
@@ -17,8 +25,10 @@ public abstract class JDBC {
     public static Connection connection;  // Connection Interface
 
     /**
-     * Start database connection to client_schedule.
-     * @author Elexis Rox
+     * Starts the database connection to the client_schedule database.
+     * This method loads the JDBC driver and establishes the connection using the specified
+     * URL, username, and password.
+     * It prints a message to the console if the connection is successful or if an error occurs.
      */
     public static void openConnection()
     {
@@ -36,15 +46,19 @@ public abstract class JDBC {
         }
     }
 
-    /** @return connection to client_schedule
-     * Gets database connection state for performing queries.
+    /**
+     * Gets the current database connection.
+     *
+     * @return the Connection object representing the database connection.
      */
     public static Connection getConnection() {
         return connection;
     }
 
     /**
-     * Closes database connection to client_schedule.
+     * Closes the database connection to the client_schedule database.
+     * This method prints a message to the console if the connection is successfully closed or
+     * if an error occurs.
      */
     public static void closeConnection() {
         try {

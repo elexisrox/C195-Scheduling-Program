@@ -9,18 +9,19 @@ import app.model.Appointment;
 import app.model.Contact;
 import app.model.Customer;
 import app.model.User;
-
 import java.net.URL;
 import java.time.*;
 import java.util.ResourceBundle;
-
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 
-/** Controller class for ApptDialog.fxml. Applies to both the Add Appointment and Modify Appointment dialog boxes.
+/**
+ * Controller class for the Appointment Dialog (Add/Modify Appointment): ApptDialog.fxml.
+ * Manages the appointment input form and handles validation and data saving.
+ *
  * @author Elexis Rox
  */
 
@@ -51,7 +52,8 @@ public class ApptDialogController implements Initializable {
     LocalTime businessEnd = LocalTime.of(22, 0);
 
     /**
-     * Initializes the dialog pane, calling methods to set up the ChoiceBoxes, Spinners, and DatePickers.
+     * Initializes the dialog pane, calling methods to set up the ChoiceBoxes, Spinners, and
+     * DatePickers.
      */
 
     @Override
@@ -91,6 +93,7 @@ public class ApptDialogController implements Initializable {
 
     /**
      * Sets the labels for the dialog based on the mode (Add/Modify).
+     *
      * @param topTitleString The title string to set.
      */
     public void setApptLabels(String topTitleString) {
@@ -98,15 +101,8 @@ public class ApptDialogController implements Initializable {
     }
 
     /**
-     * Retrieves the next available appointment ID and sets it in the input field.
-     */
-    public void retrieveNewApptID() {
-        String newApptID = DBAppointments.readNextApptID();
-        apptIDInput.setText(newApptID);
-    }
-
-    /**
      * Sets the appointment data in the input fields for editing.
+     *
      * @param appointment The appointment to edit.
      */
     public void setAppointment(Appointment appointment) {
@@ -150,6 +146,7 @@ public class ApptDialogController implements Initializable {
 
     /**
      * Checks if the inputted times are within business hours.
+     *
      * @param startDateTime The start date and time.
      * @param endDateTime The end date and time.
      * @return True if within business hours, otherwise false.
@@ -179,26 +176,27 @@ public class ApptDialogController implements Initializable {
     }
 
     /**
-     * Checks if the given time range conflicts with any of the existing appointments for the customer.
+     * Checks if the given time range conflicts with any of the existing appointments for
+     * the customer.
+     *
      * @param customerID The customer ID.
      * @param newStart The new start date and time.
      * @param newEnd The new end date and time.
      * @return True if there are conflicting appointments, otherwise false.
      */
-    //TODO Fix
     private boolean hasConflictingAppointments(int customerID, LocalDateTime newStart, LocalDateTime newEnd) {
-        ZoneId userLocalZone = ZoneId.systemDefault();
         // Pass along current appointment ID if modifying an existing appointment
         // Use -1 if there is no appointment to exclude
         int excludeApptID = (appointment != null) ? appointment.getApptID() : -1;
 
-        ObservableList<Appointment> conflictingAppointments = DBAppointments.readOverlappingApptsByCustID(customerID, newStart, newEnd, userLocalZone, excludeApptID);
+        ObservableList<Appointment> conflictingAppointments = DBAppointments.readOverlappingApptsByCustID(customerID, newStart, newEnd, excludeApptID);
 
         return !conflictingAppointments.isEmpty();
     }
 
     /**
      * Validates all input fields before adding or updating an appointment.
+     *
      * @return True if inputs are valid, otherwise false.
      */
     public boolean validateInputs() {
@@ -325,5 +323,4 @@ public class ApptDialogController implements Initializable {
             DBAppointments.updateAppt(appointment.getApptID(), title, desc, location, type, startDateTime, endDateTime, userID, contactID, customerID);
         }
     }
-
 }

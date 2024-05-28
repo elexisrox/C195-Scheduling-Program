@@ -2,23 +2,28 @@ package app.controller;
 
 import app.DBaccess.*;
 import app.model.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.fxml.Initializable;
-
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.util.StringConverter;
 
+/**
+ * Controller class for the Customer Dialog (Add/Modify Customer): CustDialog.fxml.
+ * Manages the customer input form and handles validation and data saving.
+ *
+ * @author Elexis Rox
+ */
 public class CustDialogController implements Initializable {
 
+    /** The dialog pane for the customer dialog */
     @FXML public DialogPane dialogPane;
+
+    /** The label for the dialog title */
     @FXML private Label topTitleLabel;
 
-    //Input Fields
+    /** Input fields for customer information */
     @FXML
     private TextField custIDInput;
     @FXML
@@ -34,7 +39,7 @@ public class CustDialogController implements Initializable {
     @FXML
     private ChoiceBox<Division> custDivisionInput;
 
-    //Warning Labels
+    /** Warning labels */
     @FXML
     private Label custNameWarning;
     @FXML
@@ -50,28 +55,42 @@ public class CustDialogController implements Initializable {
     @FXML
     private Label failureSaveWarning;
 
-    //Customer object
+    /** Customer object for modifying existing customer details */
     private Customer customer;
 
 
-    //Initialize the content in the dialog pane
-    @Override
+    /**
+     * Initializes the content in the dialog pane.
+     *
+     * @param url the location used to resolve relative paths for the root object, or null if
+     *           the location is not known
+     * @param rb the resources used to localize the root object, or null if the root object
+     *           was not localized
+     */    @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Load the Countries ChoiceBox
         loadCountries();
-
     }
 
-    //ChoiceBoxes
-    //Method to enable/disable the Division ChoiceBox
+    /**
+     * Enables or disables the Division ChoiceBox.
+     *
+     * @param isBlocked true to disable the Division ChoiceBox, false to enable it
+     */
     public void blockDivBox(boolean isBlocked) {
         custDivisionInput.setDisable(isBlocked);
     }
 
-    // Load countries into the country choice box
+    /**
+     * Loads countries into the country choice box.
+     * LAMBDA EXPRESSION: The lambdas used in this method converts a country to and from
+     * its string interpretation. This quickly displays both the country ID and name to
+     * provide more information to the user in an easy-to-read format, while also
+     * permitting convenient data retrieval.
+     */
     public void loadCountries() {
         custCountryInput.setItems(DBCountries.readAllCountries());
-        custCountryInput.setConverter(new StringConverter<Country>() {
+        custCountryInput.setConverter(new StringConverter< >() {
             @Override
             public String toString(Country country) {
                 return country == null ? null : country.getCountryID() + " - " + country.getCountryName();
@@ -87,11 +106,16 @@ public class CustDialogController implements Initializable {
         });
     }
 
-    // Load divisions into the division choice box based on the selected country
+    /**
+     * Loads divisions into the division choice box based on the selected country.
+     * LAMBDA EXPRESSION: The lambdas used in this method converts a division to and from its string interpretation. This quickly displays both the division ID and name to provide more information to the user in an easy-to-read format, while also permitting convenient data retrieval.
+     *
+     * @param countryID the ID of the selected country
+     */
     private void loadDivisions(int countryID) {
         custDivisionInput.setValue(null);
         custDivisionInput.setItems(DBDivisions.returnDivsByCountry(countryID));
-        custDivisionInput.setConverter(new StringConverter<Division>() {
+        custDivisionInput.setConverter(new StringConverter< >() {
             @Override
             public String toString(Division division) {
                 return division == null ? null : division.getDivID() + " - " + division.getDivName();
@@ -107,34 +131,36 @@ public class CustDialogController implements Initializable {
         });
     }
 
-    //Sets any labels that may change between Add/Modify modes
+    /**
+     * Sets labels that may change between Add and Modify modes.
+     *
+     * @param topTitleString the title string to set
+     */
     public void setCustLabels(String topTitleString) {
         topTitleLabel.setText(topTitleString);
     }
 
-    //Retrieves auto-generated Customer ID for new customers
-    public void retrieveNewCustID() {
-        String newCustID = DBCustomers.readNextCustID();
-        custIDInput.setText(newCustID);
-    }
-
-    // Method to set the customer object and populate the fields
+    /**
+     * Sets the customer object and populates the fields with customer data.
+     *
+     * @param customer the customer object to set
+     */
     public void setCustomer(Customer customer) {
         this.customer = customer;
 
-        //Fetch and populate the data in the text fields
+        // Fetch and populate the data in the text fields
         custIDInput.setText(String.valueOf(customer.getCustID()));
         custNameInput.setText(customer.getCustName());
         custAddressInput.setText(customer.getCustAddress());
         custPostalInput.setText(customer.getCustPostalCode());
         custPhoneInput.setText(customer.getCustPhone());
 
-        //Fetch data for First Level Division and Country
+        // Fetch data for First Level Division and Country
         int custDivID = customer.getCustDivisionID();
         Division custDiv = DBDivisions.retrieveDiv(custDivID);
         Country custCountry = DBCountries.retrieveCountry(custDiv.getDivCountryID());
 
-        //Set Country Input
+        // Set Country Input
         custCountryInput.setValue(custCountry);
 
         // Load the correlating divisions and set the correct division in the input field
@@ -142,22 +168,27 @@ public class CustDialogController implements Initializable {
         custDivisionInput.setValue(custDiv);
     }
 
-    // Method to add listeners after setting initial data
+    /**
+     * Adds listeners to the input fields after setting initial data.
+     * LAMBDA EXPRESSION: The purpose of this lambda expression is to load the divisions
+     * corresponding to the selected country and enable or disable the custDivisionInput
+     * ChoiceBox based on whether a country is selected. Using a lambda here instead of an
+     * anonymous inner method improves the readability of the code.
+     */
     public void addListeners() {
-        custCountryInput.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Country>() {
-            @Override
-            public void changed(ObservableValue<? extends Country> observable, Country oldValue, Country newValue) {
-                if (newValue != null) {
-                    loadDivisions(newValue.getCountryID());
-                    blockDivBox(false);
-                } else {
-                    blockDivBox(true);
-                }
+        custCountryInput.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                loadDivisions(newValue.getCountryID());
+                blockDivBox(false);
+            } else {
+                blockDivBox(true);
             }
         });
     }
 
-    //Clears all error labels
+    /**
+     * Clears all error labels.
+     */
     public void clearErrorLbls() {
         custNameWarning.setText("");
         custAddressWarning.setText("");
@@ -168,17 +199,21 @@ public class CustDialogController implements Initializable {
         failureSaveWarning.setText("");
     }
 
-    //Validates all data fields before adding/updating an appointment
+    /**
+     * Validates all data fields before adding or updating a customer.
+     *
+     * @return true if all inputs are valid, otherwise false
+     */
     public boolean validateInputs() {
         System.out.println("\tValidating all inputs.");
 
-        //Clear all Error Labels
+        // Clear all Error Labels
         clearErrorLbls();
 
-        //Create a flag for the main warning message at the bottom of the dialog pane. If any errors are present, this value will be assigned as "true".
+        // Create a flag for the main warning message at the bottom of the dialog pane. If any errors are present, this value will be assigned as "true".
         boolean errorsPresent = false;
 
-        //Retrieve data fields
+        // Retrieve data fields
         String name = custNameInput.getText();
         String address = custAddressInput.getText();
         String postal = custPostalInput.getText();
@@ -186,7 +221,7 @@ public class CustDialogController implements Initializable {
         Country selectedCountry = custCountryInput.getValue();
         Division selectedDivision = custDivisionInput.getValue();
 
-        //Validate: Make sure that no fields have been left empty/blank.
+        // Validate: Make sure that no fields have been left empty/blank.
         if (name.isBlank()) {
             custNameWarning.setText("Please enter a name.");
             errorsPresent = true;
@@ -212,26 +247,28 @@ public class CustDialogController implements Initializable {
             errorsPresent = true;
         }
 
-        //Set failureSaveWarning label if errors have been found.
+        // Set failureSaveWarning label if errors have been found.
         if (errorsPresent) {
             failureSaveWarning.setText("Unable to save. Please check the warnings above and try again.");
         }
         return !errorsPresent;
     }
 
-    //Method for Save button
+    /**
+     * Handles saving the customer to the database.
+     */
     public void handleSave() {
-        //Fetch data input from text fields
+        // Fetch data input from text fields
         String name = custNameInput.getText();
         String address = custAddressInput.getText();
         String postal = custPostalInput.getText();
         String phone = custPhoneInput.getText();
 
-        //Fetch selected item from the Division ChoiceBox
+        // Fetch selected item from the Division ChoiceBox
         Division selectedDivision = custDivisionInput.getValue();
         int divID = selectedDivision.getDivID();
 
-        //If the customer object is null, add a new customer to the database. If it is not null, update the fields and save the changes to the customer.
+        // If the customer object is null, add a new customer to the database. If it is not null, update the fields and save the changes to the customer.
         if (customer == null) {
             System.out.println("\tAdding new customer to the database.");
             DBCustomers.addCustomer(name, address, postal, phone, divID);

@@ -3,18 +3,23 @@ package app.DBaccess;
 import app.helper.JDBC;
 import app.model.Country;
 import java.sql.*;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
  * DBCountries class contains all queries for the countries table in the database.
+ * This class handles reading all countries from the database and retrieving a specific country
+ * by ID.
+ *
  * @author Elexis Rox
  */
 public class DBCountries {
 
-    //READ QUERIES
-    //SQL Query that retrieves all countries and adds them to an ObservableList.
+    /**
+     * Retrieves all countries from the database and adds them to an ObservableList.
+     *
+     * @return an ObservableList containing all countries from the database
+     */
     public static ObservableList<Country> readAllCountries() {
 
         ObservableList<Country> countryList = FXCollections.observableArrayList();
@@ -43,7 +48,12 @@ public class DBCountries {
         return countryList;
     }
 
-    //SQL Query that returns a country's name based on the provided country ID.
+    /**
+     * Retrieves a specific country from the database based on the provided Country ID.
+     *
+     * @param countryID the ID of the country to retrieve
+     * @return the Country object corresponding to the provided Country ID
+     */
     public static Country retrieveCountry(int countryID) {
 
         int providedCountryID = 0;

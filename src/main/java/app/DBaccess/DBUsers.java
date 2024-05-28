@@ -2,21 +2,25 @@ package app.DBaccess;
 
 import app.helper.JDBC;
 import app.model.User;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * DBUsers class contains all queries for the users table in the database.
+ * This class provides methods to read user data, validate usernames and passwords.
+ *
  * @author Elexis Rox
  */
-
 public class DBUsers {
-    //READ QUERIES
-    //SQL Query that retrieves all users in the database and adds them to an ObservableList.
+
+    /**
+     * Retrieves all users from the database and adds them to an ObservableList.
+     *
+     * @return an ObservableList containing all users in the database
+     */
     public static ObservableList<User> readAllUsers() {
         ObservableList<User> userList = FXCollections.observableArrayList();
         try {
@@ -43,7 +47,12 @@ public class DBUsers {
         return userList;
     }
 
-    //SQL Query that retrieves a user by associated userID.
+    /**
+     * Retrieves a user by their associated userID.
+     *
+     * @param userID the ID of the user to retrieve
+     * @return a User object corresponding to the provided userID
+     */
     public static User readUser(int userID) {
 
         int providedUserID = 0;
@@ -72,8 +81,13 @@ public class DBUsers {
         return new User(providedUserID, userName, userPass);
     }
 
-    //VALIDATION QUERIES
-    //SQL Query that validates Username is case-sensitive and correct.
+    /**
+     * Validates that a username exists in the database.
+     * This validation is case-sensitive.
+     *
+     * @param userName the username to validate
+     * @return true if the username exists, otherwise false
+     */
     public static boolean userNameValidate(String userName) {
         boolean matchFound = false;
         try {
@@ -95,7 +109,14 @@ public class DBUsers {
         return matchFound;
     }
 
-    //SQL Query that validates Password matches the associated Username and is case-sensitive and correct.
+    /**
+     * Validates that a username and password match in the database.
+     * This validation is case-sensitive.
+     *
+     * @param userName the username to validate
+     * @param userPassword the password to validate
+     * @return true if the username and password match, otherwise false
+     */
     public static boolean userLoginValidate(String userName, String userPassword) {
         boolean loginValidated = false;
         try {

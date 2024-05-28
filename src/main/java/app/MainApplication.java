@@ -11,6 +11,7 @@ import java.io.IOException;
  * MainApplication class extends the JavaFX Application class and serves as the entry
  * point for the JavaFX application. It handles the initialization, starting, and
  * stopping of the application, as well as managing the database connection.
+ *
  * @author Elexis Rox
  */
 public class MainApplication extends Application {
@@ -26,6 +27,7 @@ public class MainApplication extends Application {
     /**
      * Starts the application. This method is called after the init method has been
      * executed. It sets up the primary stage and loads the login screen.
+     *
      * @param stage The primary stage for this application, onto which the application
      *              scene can be set.
      * @throws IOException if the FXML file cannot be loaded.
@@ -53,6 +55,7 @@ public class MainApplication extends Application {
      * The main method is the entry point for the application. It connects to the
      * database, launches the JavaFX application, and closes the database connection
      * when the application ends.
+     *
      * @param args Command line arguments.
      */
     public static void main(String[] args) {

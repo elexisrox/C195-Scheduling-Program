@@ -1,26 +1,30 @@
 package app.DBaccess;
 
 import app.helper.JDBC;
-import app.model.Appointment;
-import app.model.Contact;
 import app.model.Customer;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * DBCustomers class contains all queries for the customers table in the database.
+ * This class handles creating, updating, deleting, and reading customers from the database.
+ *
  * @author Elexis Rox
  */
-
 public class DBCustomers {
-    //CREATE QUERIES
-    //SQL Query that adds a new customer in the database. Customer ID is auto-incremented by the database.
+
+    /**
+     * Adds a new customer to the database. Customer ID is auto-incremented by the database.
+     *
+     * @param custName the name of the customer
+     * @param custAddress the address of the customer
+     * @param custPostalCode the postal code of the customer
+     * @param custPhone the phone number of the customer
+     * @param custDivisionID the division ID of the customer
+     */
     public static void addCustomer(String custName, String custAddress, String custPostalCode, String custPhone, int custDivisionID) {
         try {
             String sql = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Division_ID) VALUES (?, ?, ?, ?, ?)";
@@ -42,8 +46,16 @@ public class DBCustomers {
         }
     }
 
-    //UPDATE QUERIES
-    //SQL Query that updates a selected customer within the database.
+    /**
+     * Updates a selected customer in the database.
+     *
+     * @param custID the ID of the customer
+     * @param custName the new name of the customer
+     * @param custAddress the new address of the customer
+     * @param custPostalCode the new postal code of the customer
+     * @param custPhone the new phone number of the customer
+     * @param custDivisionID the new division ID of the customer
+     */
     public static void updateCustomer(int custID, String custName, String custAddress, String custPostalCode, String custPhone, int custDivisionID) {
         try {
             String sql = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ? " +
@@ -66,8 +78,11 @@ public class DBCustomers {
         }
     }
 
-    //DELETE QUERIES
-    //SQL Query that deletes a selected customer within the database
+    /**
+     * Deletes a selected customer from the database.
+     *
+     * @param custID the ID of the customer to delete
+     */
     public static void deleteCustomer(int custID) {
         try {
             String sql = "DELETE FROM customers WHERE Customer_ID = ?";
@@ -82,48 +97,12 @@ public class DBCustomers {
         }
     }
 
-    //READ QUERIES
-    //SQL Query that retrieves all customers in the database and adds them to an ObservableList.
-    public static ObservableList<Customer> readAllCustomers() {
-        ObservableList<Customer> custList = FXCollections.observableArrayList();
-
-        try {
-            String sql = "SELECT c.Customer_ID, c.Customer_Name, c.Address, c.Postal_Code, c.Phone, c.Division_ID, f.Division, f.Country_ID, countries.Country " +
-                    "FROM customers as c " +
-                    "JOIN first_level_divisions as f " +
-                    "ON c.Division_ID = f.Division_ID " +
-                    "JOIN countries " +
-                    "ON countries.Country_ID = f.Country_ID " +
-                    "ORDER BY c.Customer_ID";
-
-            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                int custID = rs.getInt("Customer_ID");
-                String custName = rs.getString("Customer_Name");
-                String custAddress = rs.getString("Address");
-                String custPostalCode = rs.getString("Postal_Code");
-                String custPhone = rs.getString("Phone");
-                int custDivisionID = rs.getInt("Division_ID");
-                String custDivisionName = rs.getString("Division");
-                int custCountryID = rs.getInt("Country_ID");
-                String custCountryName = rs.getString("Country");
-
-                Customer c = new Customer(custID, custName, custAddress, custPostalCode, custPhone, custDivisionID, custDivisionName, custCountryID, custCountryName);
-
-                custList.add(c);
-            }
-        } catch (SQLException e) {
-            System.out.println("SQL Exception Error (Customers): " + e.getErrorCode());
-        } catch(Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-        return custList;
-    }
-
-    //SQL Query that returns a Customer based on the provided Customer ID.
+    /**
+     * Retrieves a customer from the database based on the provided Customer ID.
+     *
+     * @param custID the ID of the customer to retrieve
+     * @return the Customer object corresponding to the provided Customer ID
+     */
     public static Customer readCustomer(int custID) {
 
         int providedCustID = 0;
@@ -168,30 +147,56 @@ public class DBCustomers {
         return new Customer(providedCustID, custName, custAddress, custPostalCode, custPhone, custDivisionID, custDivisionName, custCountryID, custCountryName);
     }
 
-    //SQL Query to retrieves the next available customer ID
-    public static String readNextCustID() {
-        int nextCustID = 0;
+    /**
+     * Retrieves all customers from the database and adds them to an ObservableList.
+     *
+     * @return an ObservableList containing all customers from the database
+     */
+    public static ObservableList<Customer> readAllCustomers() {
+        ObservableList<Customer> custList = FXCollections.observableArrayList();
+
         try {
-            String sql = "SELECT AUTO_INCREMENT " +
-                        "FROM information_schema.TABLES " +
-                        "WHERE TABLE_SCHEMA = 'client_schedule' " +
-                        "AND TABLE_NAME = 'customers'";
+            String sql = "SELECT c.Customer_ID, c.Customer_Name, c.Address, c.Postal_Code, c.Phone, c.Division_ID, f.Division, f.Country_ID, countries.Country " +
+                    "FROM customers as c " +
+                    "JOIN first_level_divisions as f " +
+                    "ON c.Division_ID = f.Division_ID " +
+                    "JOIN countries " +
+                    "ON countries.Country_ID = f.Country_ID " +
+                    "ORDER BY c.Customer_ID";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                nextCustID = rs.getInt(1);
+            while (rs.next()) {
+                int custID = rs.getInt("Customer_ID");
+                String custName = rs.getString("Customer_Name");
+                String custAddress = rs.getString("Address");
+                String custPostalCode = rs.getString("Postal_Code");
+                String custPhone = rs.getString("Phone");
+                int custDivisionID = rs.getInt("Division_ID");
+                String custDivisionName = rs.getString("Division");
+                int custCountryID = rs.getInt("Country_ID");
+                String custCountryName = rs.getString("Country");
+
+                Customer c = new Customer(custID, custName, custAddress, custPostalCode, custPhone, custDivisionID, custDivisionName, custCountryID, custCountryName);
+
+                custList.add(c);
             }
         } catch (SQLException e) {
-            System.out.println("SQL Exception Error (Get Next Customer ID): " + e.getErrorCode());
-        } catch (Exception e) {
+            System.out.println("SQL Exception Error (Customers): " + e.getErrorCode());
+        } catch(Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
-        return String.valueOf(nextCustID);
+        return custList;
     }
 
-    //SQL Query that returns a list of customers based on a Country ID.
+    /**
+     * Retrieves a list of customers based on a Country ID from the database.
+     *
+     * @param countryID the ID of the country
+     * @return an ObservableList containing customers from the specified country
+     */
     public static ObservableList<Customer> readCustomersByCountryID(int countryID) {
         ObservableList<Customer> custList = FXCollections.observableArrayList();
         try {

@@ -1,55 +1,51 @@
 package app.controller;
 
-//TODO Organize imports for clarity/readability
 import app.DBaccess.DBAppointments;
 import app.DBaccess.DBUsers;
 import app.helper.Utilities;
 import app.model.Appointment;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
-
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
 
-/** Controller class for Login.fxml.
+/**
+ * Controller class for Login.fxml.
+ * Manages the login process, language selection, and user authentication.
+ * Logs login attempts and displays appropriate messages to the user.
+ *
  * @author Elexis Rox
  */
 
 public class LoginController implements Initializable {
 
-    static Stage stage;
-    static Parent scene;
-
-    //ComboBox
+    // ComboBox for language selection
     @FXML
     private ComboBox<String> langComboBox;
 
-    //User fields
+    // User fields
     @FXML
     private TextField usernameField;
     @FXML
     private PasswordField passwordField;
 
-    //Labels
+    // Labels
     @FXML
     private Label loginErrorLbl;
     @FXML
     private Label timezoneLbl;
 
-    //Translation Strings
+    // Translation Strings
     @FXML
     private Label welcomeString;
     @FXML
@@ -63,11 +59,13 @@ public class LoginController implements Initializable {
     @FXML
     private Label zoneString;
     @FXML
+    private Hyperlink resetString;
+
+    // Buttons
+    @FXML
     private Button loginButton;
     @FXML
     private Button exitButton;
-    @FXML
-    private Hyperlink resetString;
 
     // Used for translations
     private ResourceBundle rb;
@@ -75,18 +73,19 @@ public class LoginController implements Initializable {
     // Detect the user's time zone
     ZoneId userLocalZone = ZoneId.systemDefault();
 
-    // Detect the user's current time
-    LocalDateTime userTimeNow = LocalDateTime.now();
-
-    // Detect users' default language
-    Locale userLocale = Locale.getDefault();
-
-    //Validates username and password upon login. Displays an appropriate error/success message upon login attempt. Logs completed login attempts in login_activity.txt file.
+    /**
+     * Validates username and password upon login.
+     * Displays an appropriate error/success message upon login attempt.
+     * Logs completed login attempts in login_activity.txt file.
+     *
+     * @param event the action event triggered by the user
+     * @throws IOException if there is an issue writing to the login_activity.txt file
+     */
     @FXML
     public void onActionLogin(ActionEvent event) throws IOException {
         String userName = usernameField.getText();
         String userPassword = passwordField.getText();
-        boolean loginSuccess = false;
+        boolean loginSuccess;
 
         // Display error message if both username and password fields are blank or empty.
         if ((userName.isBlank()) && (userPassword.isBlank())) {
@@ -130,21 +129,31 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Handles the action of exiting the application.
+     */
     @FXML
-    void onActionExit(ActionEvent event) {
+    void onActionExit() {
         System.out.println("Exit button selected.");
         app.helper.JDBC.closeConnection();
         System.out.println("Application terminated.");
         System.exit(0);
     }
 
-    @FXML
-    void onActionReset(ActionEvent event) {
+    /**
+     * Handles the action of resetting the input fields.
+     */
+     @FXML
+    void onActionReset() {
         System.out.println("Reset fields button selected.");
         usernameField.clear();
         passwordField.clear();
     }
 
+    /**
+     * Detects the user's locale and sets the appropriate language bundle.
+     * Sets text labels based on the detected language.
+     */
     @FXML
     void detectUserLocale() {
         Locale userLocale = Locale.getDefault();
@@ -156,6 +165,9 @@ public class LoginController implements Initializable {
         setTextLabels();
     }
 
+    /**
+     * Sets the text labels for the UI components based on the selected language.
+     */
     private void setTextLabels() {
         welcomeString.setText(rb.getString("welcomeString"));
         loginString.setText(rb.getString("loginString"));
@@ -166,12 +178,19 @@ public class LoginController implements Initializable {
         resetString.setText(rb.getString("resetString"));
         langString.setText(rb.getString("langString"));
         zoneString.setText(rb.getString("zoneString"));
-        //Clear any previous login warnings.
+        // Clear any previous login warnings.
         loginErrorLbl.setText(null);
-        //Sets timezone label according to the user's timezone
+        // Sets timezone label according to the user's timezone
         timezoneLbl.setText(String.valueOf(userLocalZone));
     }
 
+    /**
+     * Initializes the language ComboBox with available languages.
+     * Sets the selected language based on the user's locale.
+     * LAMBDA EXPRESSION: The lambda expression in this method is used as an event handler for
+     * the setOnAction method of the langComboBox. By using a lambda expression here, the code
+     * is more concise and readable compared to using an anonymous inner class.
+     */
     private void initializeLangComboBox() {
         langComboBox.getItems().addAll("English", "Français");
         Locale userLocale = Locale.getDefault();
@@ -192,21 +211,17 @@ public class LoginController implements Initializable {
         });
     }
 
-    // Initializes the Login View Controller Class.
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        detectUserLocale();
-        initializeLangComboBox();
-    }
-
-    // Checks for appointments within the next 15 minutes.
+    /**
+     * Checks for upcoming appointments within the next 15 minutes.
+     * Displays an alert if there are any upcoming appointments.
+     */
     public void checkForUpcomingAppts() {
         // Retrieve any appointments in the next 15 minutes
         ObservableList<Appointment> upcomingAppointments = DBAppointments.readNext15MinAppts();
-        // User's local time zone
-        ZoneId userLocalZone = ZoneId.systemDefault();
+
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+
         // Build and display the alert
         if (!upcomingAppointments.isEmpty()) {
             StringBuilder alertContent = new StringBuilder("You have the following appointments within the next 15 minutes:\n");
@@ -222,7 +237,11 @@ public class LoginController implements Initializable {
         }
     }
 
-    /** This method records all login activity to login_activity.txt.
+    /**
+     * Records all login activity to login_activity.txt.
+     *
+     * @param loginSuccess indicates whether the login attempt was successful
+     * @throws IOException if there is an issue writing to the login_activity.txt file
      */
     public void recordLoginActivity(boolean loginSuccess) throws IOException {
         // Filename and data formatting
@@ -230,15 +249,29 @@ public class LoginController implements Initializable {
         DateTimeFormatter loginFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy hh:mm:ss");
         String loginStatus = loginSuccess ? "SUCCESS" : "FAILURE";
 
-        // Get the current time in UTC
-        LocalDateTime utcTimeNow = LocalDateTime.now(ZoneId.of("UTC"));
+        // Detect the user's current time
+        LocalDateTime userTimeNow = LocalDateTime.now();
 
         // Create and open file
         FileWriter loginPrint = new FileWriter(filename, true);
 
         // Record login activity to file and close
-        System.out.println("Saving to file");
         loginPrint.write("\nLOGIN " + loginStatus + "\n\tUsername:" + usernameField.getText() + ", " + loginFormatter.format(userTimeNow));
         loginPrint.close();
+    }
+
+    /**
+     * Initializes the Login View Controller.
+     * Sets up language detection and initializes the language ComboBox.
+     *
+     * @param url the location used to resolve relative paths for the root object, or null if
+     *           the location is not known
+     * @param rb the resources used to localize the root object, or null if the root object
+     *           was not localized
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        detectUserLocale();
+        initializeLangComboBox();
     }
 }

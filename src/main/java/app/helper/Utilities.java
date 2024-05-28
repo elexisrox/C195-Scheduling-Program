@@ -12,8 +12,14 @@ import app.model.Contact;
 import app.model.Customer;
 import app.model.User;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.function.Function;
+
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,15 +31,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.function.Function;
 
 /** Utilities class provides scene transitions, data formatting methods, and other universal functions.
  * @author Elexis Rox
@@ -48,7 +45,6 @@ public class Utilities {
     private static final String REPORT_VIEW_PATH = "/app/ReportView.fxml";
     private static final String APPT_DIALOG_PATH = "/app/ApptDialog.fxml";
     private static final String CUST_DIALOG_PATH = "/app/CustDialog.fxml";
-
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String TIME_FORMAT = "HH:mm:ss";
 
@@ -57,20 +53,40 @@ public class Utilities {
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
 
     // Time formatting methods
-    // Format LocalDateTime to date string
+
+    /**
+     * Formats a LocalDateTime object to a date string.
+     *
+     * @param localDateTime the LocalDateTime object to format.
+     * @return formatted date string, or an empty string if localDateTime is null.
+     */
     public static String formatDate(LocalDateTime localDateTime) {
         if (localDateTime == null) return "";
         return DATE_FORMATTER.format(localDateTime);
     }
 
-    // Format LocalDateTime to time string
+    /**
+     * Formats a LocalDateTime object to a time string.
+     *
+     * @param localDateTime the LocalDateTime object to format.
+     * @return formatted time string, or an empty string if localDateTime is null.
+     */
     public static String formatTime(LocalDateTime localDateTime) {
         if (localDateTime == null) return "";
         return TIME_FORMATTER.format(localDateTime);
     }
 
     // Scene Transitions
-    // Reusable scene transition method
+
+    /**
+     * Reusable scene transition method.
+     *
+     * @param <Parent>  the type of the parent scene.
+     * @param stage     the current Stage object.
+     * @param fxmlPath  the path to the FXML file.
+     * @param title     the title of the new scene.
+     * @throws IOException if loading the FXML file fails.
+     */
     private static <Parent> void transitionToView(Stage stage, String fxmlPath, String title) throws IOException {
         Parent scene = FXMLLoader.load(Utilities.class.getResource(fxmlPath));
         stage.setScene(new Scene((javafx.scene.Parent) scene));
@@ -79,17 +95,34 @@ public class Utilities {
         stage.show();
     }
 
-    // Method to transition to the Appointment View in the main application
+    /**
+     * Transitions to the Appointment View in the main application.
+     *
+     * @param stage the current Stage object.
+     * @throws IOException if loading the FXML file fails.
+     */
     public static void transitionApptView(Stage stage) throws IOException {
         transitionToView(stage, APPT_VIEW_PATH, "View Appointments");
     }
 
-    // Method to transition to the Login screen in the main application
+    /**
+     * Transitions to the Login screen in the main application.
+     *
+     * @param stage the current Stage object.
+     * @throws IOException if loading the FXML file fails.
+     */
     public static void transitionLoginView(Stage stage) throws IOException {
         transitionToView(stage, LOGIN_VIEW_PATH, "");
     }
 
-    // Toggle group for scene transitions between Main application views
+    /**
+     * Handles scene transitions between main application views based on the selected toggle
+     * button.
+     *
+     * @param toggleGroup the ToggleGroup containing the toggle buttons.
+     * @param stage       the current Stage object.
+     * @throws IOException if loading the FXML file fails.
+     */
     public static void onRadioButtonSelected(ToggleGroup toggleGroup, Stage stage) throws IOException {
         RadioButton selectedRadioButton = (RadioButton) toggleGroup.getSelectedToggle();
         if (selectedRadioButton != null) {
@@ -111,7 +144,19 @@ public class Utilities {
     }
 
     // Dialog Box Transitions
-    // Main method to open the Add/Modify Appointments Dialog
+
+    /**
+     * Opens the Add/Modify Appointments Dialog.
+     * LAMBDA EXPRESSION: The lambda expression in this method is used as an event handler for
+     * addEventFilter. Using a lambda here is more concise and promotes better readability than
+     * creating a separate method.
+     *
+     * @param ownerStage    the owner Stage object.
+     * @param isAddMode     flag indicating if the dialog is for adding (true) or modifying (false).
+     * @param apptMainView  the ApptViewController instance.
+     * @param selectedAppt  the selected Appointment object, if any.
+     * @throws IOException if loading the FXML file fails.
+     */
     public static void openApptDialog(Stage ownerStage, boolean isAddMode, ApptViewController apptMainView, Appointment selectedAppt) throws IOException {
         // Initialize and create the dialog pane
         FXMLLoader fxmlLoader = new FXMLLoader(Utilities.class.getResource(APPT_DIALOG_PATH));
@@ -129,10 +174,8 @@ public class Utilities {
         dialog.setTitle(modeString);
         dialogController.setApptLabels(modeString);
 
-        // Populate fields if modifying, else retrieve new appointment ID
-        if (isAddMode) {
-            dialogController.retrieveNewApptID();
-        } else if (selectedAppt != null) {
+        // Retrieve ID for modified appointment
+        if (selectedAppt != null) {
             dialogController.setAppointment(selectedAppt);
         }
 
@@ -142,7 +185,6 @@ public class Utilities {
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
 
         // Add validation and save handling for the Save button
-        // LAMBDA EXPRESSION: The lambda expression here is used as an event handler for addEventFilter. Using a lambda here is more concise and promotes better readability than creating a separate method.
         dialog.getDialogPane().lookupButton(saveButtonType).addEventFilter(ActionEvent.ACTION, event -> {
             if (!dialogController.validateInputs()) {
                 // Prevent the dialog from closing if validation fails
@@ -161,7 +203,18 @@ public class Utilities {
         });
     }
 
-    // Main method to open the Add/Modify Customers Dialog
+    /**
+     * Opens the Add/Modify Customers Dialog.
+     * LAMBDA EXPRESSION: The lambda expression in this method is used as an event handler for
+     * addEventFilter. Using a lambda here is more concise and promotes better readability than
+     * creating a separate method.
+     *
+     * @param ownerStage    the owner Stage object.
+     * @param isAddMode     flag indicating if the dialog is for adding (true) or modifying (false).
+     * @param custMainView  the CustViewController instance.
+     * @param selectedCust  the selected Customer object, if any.
+     * @throws IOException if loading the FXML file fails.
+     */
     public static void openCustDialog(Stage ownerStage, boolean isAddMode, CustViewController custMainView, Customer selectedCust) throws IOException {
         // Initialize and create the dialog pane
         FXMLLoader fxmlLoader = new FXMLLoader(Utilities.class.getResource(CUST_DIALOG_PATH));
@@ -181,8 +234,6 @@ public class Utilities {
 
         // If adding a customer:
         if (isAddMode) {
-            // Retrieve the new customer ID
-            dialogController.retrieveNewCustID();
             // Block the divisions input
             dialogController.blockDivBox(true);
             // Add event listener for Country input ChoiceBox. When a country is selected, the Division input ChoiceBox will become enabled and populate with the divisions that correlate to the chosen country.
@@ -201,7 +252,7 @@ public class Utilities {
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
 
         // Add validation and save handling for the Save button
-        // LAMBDA EXPRESSION: The lambda expression here is used as an event handler for addEventFilter. Using a lambda here is more concise and promotes better readability than creating a separate method.
+        //
         dialog.getDialogPane().lookupButton(saveButtonType).addEventFilter(ActionEvent.ACTION, event -> {
             if (!dialogController.validateInputs()) {
                 // Prevent the dialog pane from closing if validation fails
@@ -221,7 +272,15 @@ public class Utilities {
     }
 
     // Alert methods
-    // Display a confirmation alert
+
+    /**
+     * Displays a confirmation alert.
+     *
+     * @param title   the title of the alert.
+     * @param header  the header text of the alert.
+     * @param content the content text of the alert.
+     * @return an Optional containing the user's response.
+     */
     public static Optional<ButtonType> showConfirmationAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -230,7 +289,12 @@ public class Utilities {
         return alert.showAndWait();
     }
 
-    // Display an information alert
+    /**
+     * Displays an information alert.
+     *
+     * @param title   the title of the alert.
+     * @param content the content text of the alert.
+     */
     public static void showInfoAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -239,7 +303,12 @@ public class Utilities {
         alert.showAndWait();
     }
 
-    // Display a warning alert
+    /**
+     * Displays a warning alert.
+     *
+     * @param title   the title of the alert.
+     * @param content the content text of the alert.
+     */
     public static void showErrorAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
@@ -249,20 +318,29 @@ public class Utilities {
     }
 
     // ChoiceBox loading methods
-    // Main helper method for loading ChoiceBox. Handles data formatting
+
+    /**
+     * Main helper method for loading ChoiceBox. Handles data formatting.
+     * LAMBDA EXPRESSION: Used to convert an object to its string interpretation. This lambda
+     * will be reused as this method is called, promoting concise code.
+     *
+     * @param <T>      the type of the items in the ChoiceBox.
+     * @param choiceBox the ChoiceBox to load data into.
+     * @param items    the list of items to load.
+     * @param converter the Function to convert items to strings for display.
+     */
     private static <T> void loadChoiceBox(ChoiceBox<T> choiceBox, ObservableList<T> items, Function<T, String> converter) {
         choiceBox.setItems(items);
         choiceBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(T object) {
-                // LAMBDA EXPRESSION: Used to convert an object to its string interpretation. This lambda will be reused as this method is called, promoting concise code.
+                //
                 return object == null ? null : converter.apply(object);
             }
 
             @Override
             public T fromString(String string) {
                 return choiceBox.getItems().stream()
-                        // LAMBDA EXPRESSION: Used to translate a string to an item. This lambda will be reused as this method is called, promoting concise code.
                         .filter(item -> converter.apply(item).equals(string))
                         .findFirst()
                         .orElse(null);
@@ -270,26 +348,51 @@ public class Utilities {
         });
     }
 
-    // Load Contacts into Contacts ChoiceBox
-    // LAMBDA EXPRESSION: The lambda below concisely creates a string representation of a Contact, displaying both the ID and Name. This displays more information about the contact in a user-friendly way.
+    /**
+     * Loads Contacts into the Contacts ChoiceBox.
+     * LAMBDA EXPRESSION: The lambda used in this method concisely creates a string
+     * representation of a Contact, displaying both the ID and Name. This displays more
+     * information about the contact in a user-friendly way.
+     *
+     * @param choiceBox the ChoiceBox to load data into.
+     */
+    //
     public static void loadChoiceBoxContacts(ChoiceBox<Contact> choiceBox) {
         loadChoiceBox(choiceBox, DBContacts.readAllContacts(), contact -> contact.getContactID() + " - " + contact.getContactName());
     }
 
-    // Load Contacts into Customers ChoiceBox
-    // LAMBDA EXPRESSION: The lambda below concisely creates a string representation of a Customer, displaying both the ID and Name. This displays more information about the customer in a user-friendly way.
+    /**
+     * Loads Customers into the Customers ChoiceBox.
+     * LAMBDA EXPRESSION: The lambda in this method concisely creates a string representation
+     * of a Customer, displaying both the ID and Name. This displays more information about the
+     * customer in a user-friendly way.
+     *
+     * @param choiceBox the ChoiceBox to load data into.
+     */
     public static void loadChoiceBoxCustomers(ChoiceBox<Customer> choiceBox) {
         loadChoiceBox(choiceBox, DBCustomers.readAllCustomers(), customer -> customer.getCustID() + " - " + customer.getCustName());
     }
 
-    // Load Users into Users ChoiceBox
-    // LAMBDA EXPRESSION: The lambda below concisely creates a string representation of a User, displaying both the ID and Name. This displays more information about the user in a user-friendly way.
+    /**
+     * Loads Users into the Users ChoiceBox.
+     * LAMBDA EXPRESSION: The lambda in this method concisely creates a string representation
+     * of a User, displaying both the ID and Name. This displays more information about the
+     * user in a user-friendly way.
+     *
+     * @param choiceBox the ChoiceBox to load data into.
+     */
     public static void loadChoiceBoxUsers(ChoiceBox<User> choiceBox) {
         loadChoiceBox(choiceBox, DBUsers.readAllUsers(), user -> user.getUserID() + " - " + user.getUserName());
     }
 
     // Button Methods
-    // Logout Button
+
+    /**
+     * Handles the Logout button action.
+     *
+     * @param stage the current Stage object.
+     * @throws IOException if loading the FXML file fails.
+     */
     public static void logoutButton(Stage stage) throws IOException {
         // Create a confirmation alert
         Optional<ButtonType> result = showConfirmationAlert("Logout Confirmation", "Logging Out", "Are you sure you want to log out?");
@@ -299,7 +402,9 @@ public class Utilities {
         }
     }
 
-    // Exit button
+    /**
+     * Handles the Exit button action.
+     */
     public static void exitButton() {
         // Create a confirmation alert
         Optional<ButtonType> result = showConfirmationAlert("Exit Confirmation", "Exit Application", "Are you sure you want to exit?");
@@ -311,8 +416,14 @@ public class Utilities {
     }
 
     // Table methods
-    // Method to create Appointments table and corresponding columns
-    // LAMBDA EXPRESSIOSN: Lambdas are utilized in the following method to format times and dates for the columns for better readability.
+
+    /**
+     * Creates a TableView for displaying Appointments with corresponding columns.
+     * LAMBDA EXPRESSION: Lambdas are utilized in the following method to format times and
+     * dates for the columns for better readability.
+     *
+     * @return the created TableView for Appointments.
+     */
     public static TableView<Appointment> createAppointmentTable() {
         TableView<Appointment> appointmentTable = new TableView<>();
 
@@ -389,7 +500,11 @@ public class Utilities {
         return appointmentTable;
     }
 
-    // Method to create Customers table and corresponding columns
+    /**
+     * Creates a TableView for displaying Customers with corresponding columns.
+     *
+     * @return the created TableView for Customers.
+     */
     public static TableView<Customer> createCustomerTable() {
         TableView<Customer> customerTable = new TableView<>();
 
@@ -428,9 +543,16 @@ public class Utilities {
         return customerTable;
     }
 
-    // Method to create Appointments by Type/Month table for Reports View
-    // The "Pair" here is equivalent to "(Month, (Appointment Type, Count))
-    // LAMBDA: Lambdas are utilized in the following method to extract and format the nested 'Pair' values for the type and count columns in the Appointment by Month/Type table. The first lambda retrieves the Type from the value pair, and the second lambda retrieves and converts the count to a string.
+    /**
+     * Creates a TableView for displaying Appointments by Type/Month for the Reports View.
+     * The "Pair" here is equivalent to "(Month, (Appointment Type, Count))".
+     * LAMBDA EXPRESSION: Lambdas are utilized in this method to extract and format the nested
+     * 'Pair' values for the type and count columns in the Appointment by Month/Type table. The
+     * first lambda retrieves the Type from the value pair, and the second lambda retrieves and
+     * converts the count to a string.
+     *
+     * @return the created TableView for Appointments by Month/Type.
+     */
     public static TableView<Pair<String, Pair<String, Integer>>> createAppointmentMonthTypeTable() {
         TableView<Pair<String, Pair<String, Integer>>> table = new TableView<>();
 
