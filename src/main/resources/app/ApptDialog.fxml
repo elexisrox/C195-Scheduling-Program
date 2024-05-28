@@ -133,7 +133,7 @@
                     <Spinner fx:id="endTimeMinutesInput" />
                 </HBox>
             </GridPane>
-            <Label fx:id="apptTimeWarning" text=" " textFill="RED" wrapText="true">
+            <Label fx:id="apptTimeWarning" prefHeight="34.0" text=" " textAlignment="CENTER" textFill="RED" wrapText="true">
                 <font>
                     <Font name="System Italic" size="12.0" />
                 </font>

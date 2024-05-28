@@ -46,13 +46,7 @@ public class DBAppointments {
         // Convert the ZonedDateTime to the user's local time zone
         ZonedDateTime userLocalZonedDateTime = utcZonedDateTime.withZoneSameInstant(userLocalZone);
 
-        // Extract the LocalDateTime from the user's local ZonedDateTime
-        LocalDateTime userLocalDateTime = userLocalZonedDateTime.toLocalDateTime();
-
-        // Print the conversion details
-        System.out.println("Converting from UTC: " + utcZonedDateTime.toLocalDateTime() + " -> " + userLocalDateTime);
-
-        return userLocalDateTime;
+        return userLocalZonedDateTime.toLocalDateTime();
     }
 
     //CREATE QUERIES
@@ -63,7 +57,6 @@ public class DBAppointments {
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
 
-            System.out.println("addAppt Database called");
             // Convert to UTC before storing
             Timestamp apptStartUTC = toUTC(apptStart);
             Timestamp apptEndUTC = toUTC(apptEnd);
@@ -186,16 +179,18 @@ public class DBAppointments {
     //TODO times?????
     public static ObservableList<Appointment> readWeekAppts() {
         ObservableList<Appointment> apptList = FXCollections.observableArrayList();
-        LocalDate startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY);
-        LocalDate endOfWeek = startOfWeek.plusDays(6);
+        LocalDateTime startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY).atStartOfDay();
+        Timestamp startOfWeekUTC = toUTC(startOfWeek);
+        LocalDateTime endOfWeek = startOfWeek.plusDays(6);
+        Timestamp endOfWeekUTC = toUTC(endOfWeek);
 
         String sql = APPT_BASE_SQL +
                 "WHERE a.Start BETWEEN ? AND ? " +
                 "ORDER BY a.Appointment_ID";
 
         try (PreparedStatement ps = JDBC.getConnection().prepareStatement(sql)) {
-            ps.setObject(1, startOfWeek);
-            ps.setObject(2, endOfWeek);
+            ps.setObject(1, startOfWeekUTC);
+            ps.setObject(2, endOfWeekUTC);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -209,23 +204,23 @@ public class DBAppointments {
     }
 
     //SQL Query that retrieves all appointments in the current calendar month and adds them to an ObservableList.
-    //TODO fix
     public static ObservableList<Appointment> readMonthAppts() {
         ObservableList<Appointment> apptList = FXCollections.observableArrayList();
         //Set the first day of the month at the start of the day
         LocalDateTime firstDayOfMonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay();
-        System.out.println(firstDayOfMonth);
+        Timestamp firstDayOfMonthUTC = toUTC(firstDayOfMonth);
 
         //Set the last day of the month at the end of the day
         LocalDateTime lastDayOfMonth = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()).atTime(LocalTime.MAX);
+        Timestamp lastDayOfMonthUTC = toUTC(lastDayOfMonth);
 
         String sql = APPT_BASE_SQL +
                 "WHERE a.Start BETWEEN ? AND ? " +
                 "ORDER BY a.Appointment_ID";
 
         try (PreparedStatement ps = JDBC.getConnection().prepareStatement(sql)) {
-            ps.setObject(1, firstDayOfMonth);
-            ps.setObject(2, lastDayOfMonth);
+            ps.setObject(1, firstDayOfMonthUTC);
+            ps.setObject(2, lastDayOfMonthUTC);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     apptList.add(retrieveAppt(rs));
@@ -374,13 +369,16 @@ public class DBAppointments {
     public static String readNextApptID() {
         int nextApptID = 0;
         try {
-            String sql = "SELECT MAX(Appointment_ID) FROM appointments";
+            String sql = "SELECT AUTO_INCREMENT " +
+                        "FROM information_schema.TABLES " +
+                        "WHERE TABLE_SCHEMA = 'client_schedule' " +
+                        "AND TABLE_NAME = 'appointments'";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                nextApptID = rs.getInt(1) + 1;
+                nextApptID = rs.getInt(1);
             }
         } catch (SQLException e) {
             System.out.println("SQL Exception Error (Get Next Appointment ID): " + e.getErrorCode());
@@ -393,6 +391,7 @@ public class DBAppointments {
     // SQL Query that retrieves Appointments by Month and Type for Reports
     public static ObservableList<Pair<String, Pair<String, Integer>>> readApptsByMonthAndType() {
         ObservableList<Pair<String, Pair<String, Integer>>> list = FXCollections.observableArrayList();
+
         try {
             String sql = "SELECT MONTHNAME(Start) AS Month, Type, COUNT(*) AS Count " +
                     "FROM appointments " +

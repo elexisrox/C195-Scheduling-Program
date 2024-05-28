@@ -172,13 +172,16 @@ public class DBCustomers {
     public static String readNextCustID() {
         int nextCustID = 0;
         try {
-            String sql = "SELECT MAX(Customer_ID) FROM customers";
+            String sql = "SELECT AUTO_INCREMENT " +
+                        "FROM information_schema.TABLES " +
+                        "WHERE TABLE_SCHEMA = 'client_schedule' " +
+                        "AND TABLE_NAME = 'customers'";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                nextCustID = rs.getInt(1) + 1;
+                nextCustID = rs.getInt(1);
             }
         } catch (SQLException e) {
             System.out.println("SQL Exception Error (Get Next Customer ID): " + e.getErrorCode());

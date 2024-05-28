@@ -11,7 +11,6 @@ import app.model.Customer;
 import app.model.User;
 
 import java.net.URL;
-import java.sql.Timestamp;
 import java.time.*;
 import java.util.ResourceBundle;
 
@@ -48,8 +47,8 @@ public class ApptDialogController implements Initializable {
     // Define business hours in ET
     ZoneId businessZone = ZoneId.of("America/New_York");
     // Business start and end time in ET
-    LocalTime businessStartTimeET = LocalTime.of(8, 0);
-    LocalTime businessEndTimeET = LocalTime.of(22, 0);
+    LocalTime businessStart = LocalTime.of(8, 0);
+    LocalTime businessEnd = LocalTime.of(22, 0);
 
     /**
      * Initializes the dialog pane, calling methods to set up the ChoiceBoxes, Spinners, and DatePickers.
@@ -155,36 +154,28 @@ public class ApptDialogController implements Initializable {
      * @param endDateTime The end date and time.
      * @return True if within business hours, otherwise false.
      */
-    //TODO fix this because it's stupid
-    private boolean isWithinBusinessHours(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public boolean isWithinBusinessHours(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         // Get user's local time zone
         ZoneId userTimeZone = ZoneId.systemDefault();
+
         // Convert business hours to user's local time zone
-        ZonedDateTime businessStartTimeUserZone = ZonedDateTime.of(LocalDate.now(), businessStartTimeET, businessZone).withZoneSameInstant(userTimeZone);
-        ZonedDateTime businessEndTimeUserZone = ZonedDateTime.of(LocalDate.now(), businessEndTimeET, businessZone).withZoneSameInstant(userTimeZone);
-        //TODO print the above, idk it's behaving weirdly
-        // Convert appointment times to user's local time zone
-        ZonedDateTime appointmentStartUserZone = startDateTime.atZone(userTimeZone);
-        ZonedDateTime appointmentEndUserZone = endDateTime.atZone(userTimeZone);
+        // Create ZonedDateTime for business hours in ET
+        ZonedDateTime businessStartTimeET = ZonedDateTime.of(LocalDate.now(), businessStart, businessZone);
+        ZonedDateTime businessEndTimeET = ZonedDateTime.of(LocalDate.now(), businessEnd, businessZone);
+
+        // Convert to user's local time zone
+        LocalTime businessStartTimeLocal = businessStartTimeET.withZoneSameInstant(userTimeZone).toLocalTime();
+        LocalTime businessEndTimeLocal = businessEndTimeET.withZoneSameInstant(userTimeZone).toLocalTime();
+
+        // Extract the LocalTime components from the appointment times
+        LocalTime apptStartTime = startDateTime.toLocalTime();
+        LocalTime apptEndTime = endDateTime.toLocalTime();
 
         // Check if appointment times are within business hours
-        boolean startsWithinBusinessHours = !appointmentStartUserZone.isBefore(businessStartTimeUserZone) && !appointmentStartUserZone.isAfter(businessEndTimeUserZone);
-        boolean endsWithinBusinessHours = !appointmentEndUserZone.isBefore(businessStartTimeUserZone) && !appointmentEndUserZone.isAfter(businessEndTimeUserZone);
+        boolean startsWithinBusinessHours = !apptStartTime.isBefore(businessStartTimeLocal) && !apptStartTime.isAfter(businessEndTimeLocal);
+        boolean endsWithinBusinessHours = !apptEndTime.isBefore(businessStartTimeLocal) && !apptEndTime.isAfter(businessEndTimeLocal);
 
         return startsWithinBusinessHours && endsWithinBusinessHours;
-
-        // Defined business hours in ET
-//        private static final ZoneId businessZone = ZoneId.of("America/New_York");
-//        private static final LocalTime businessStartTime = LocalTime.of(8, 0);  // 8:00 AM ET
-//        private static final LocalTime businessEndTime = LocalTime.of(22, 0);   // 10:00 PM ET
-
-//        ZonedDateTime startZonedDateTime = startDateTime.atZone(userLocalZone).withZoneSameInstant(businessZone);
-//        ZonedDateTime endZonedDateTime = endDateTime.atZone(userLocalZone).withZoneSameInstant(businessZone);
-//
-//        LocalTime startLocalTime = startZonedDateTime.toLocalTime();
-//        LocalTime endLocalTime = endZonedDateTime.toLocalTime();
-//
-//        return !startLocalTime.isBefore(businessStartTime) && !endLocalTime.isAfter(businessEndTime);
     }
 
     /**
@@ -203,20 +194,7 @@ public class ApptDialogController implements Initializable {
 
         ObservableList<Appointment> conflictingAppointments = DBAppointments.readOverlappingApptsByCustID(customerID, newStart, newEnd, userLocalZone, excludeApptID);
 
-        //Debugging print statements
-        if (!conflictingAppointments.isEmpty()) {
-            System.out.println("Conflicting appointments found:");
-            for (Appointment appt : conflictingAppointments) {
-//                System.out.println("Appointment ID: " + appt.getApptID());
-//                System.out.println("\tStart: " + appt.getApptStart() +
-//                                    ", End: " + appt.getApptEnd());
-//                System.out.println("\tConflicting Inputs:" +
-//                                    "\n\tStart (UTC): " + Utilities.toUTC(newStart, userLocalZone) +
-//                                    ", End (UTC): " + Utilities.toUTC(newEnd, userLocalZone));
-            }
-            return true;
-        }
-        return false;
+        return !conflictingAppointments.isEmpty();
     }
 
     /**
@@ -289,7 +267,7 @@ public class ApptDialogController implements Initializable {
         // Validate: Check to make sure times are within business hours
         if (!isWithinBusinessHours(startDateTime, endDateTime)) {
             apptTimeWarning.setText("Appointment times must be within business hours: \n"
-                    + businessStartTimeET + " to " + businessEndTimeET + " " + businessZone);
+                    + businessStart + " to " + businessEnd + " " + businessZone);
             errorsPresent = true;
         }
 
