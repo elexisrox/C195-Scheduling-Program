@@ -3,7 +3,6 @@ package app.controller;
 import app.DBaccess.DBAppointments;
 import app.helper.Utilities;
 import app.model.Appointment;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -11,23 +10,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import javafx.scene.control.ToggleGroup;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 /** Controller class for ApptView.fxml.
  * @author Elexis Rox
  */
-
-//TODO Possibly rename MainViewController depending on how I handle the other views
 public class ApptViewController implements Initializable {
 
     //Top navigation toggle group
@@ -51,9 +44,6 @@ public class ApptViewController implements Initializable {
     private Label errorMsgLbl;
     @FXML
     private Label timezoneLbl;
-
-    //Detect the user's time zone
-    ZoneId userLocalZone = ZoneId.systemDefault();
 
     //Clear Error Label
     public void clearErrorLbl() {
@@ -151,10 +141,17 @@ public class ApptViewController implements Initializable {
 
     //Loads all appointments
     @FXML
-    void loadAllAppts() {
+    public void loadAllAppts() {
         if (apptTable != null) {
             ObservableList<Appointment> appointments = DBAppointments.readAllAppts();
             apptTable.setItems(appointments);
+//            appointments.forEach(appt -> {
+//                System.out.println("Appointment ID: " + appt.getApptID());
+//                System.out.println("\tStart (UTC): " + appt.getApptStart());
+//                System.out.println("\tStart (Local): " + Utilities.fromUTC(appt.getApptStart(), userLocalZone));
+//                System.out.println("\tEnd (UTC): " + appt.getApptEnd());
+//                System.out.println("\tEnd (Local): " + Utilities.fromUTC(appt.getApptEnd(), userLocalZone));
+//            });
         }
     }
 
@@ -179,6 +176,8 @@ public class ApptViewController implements Initializable {
     //Initializes the Main Appointment View
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        ZoneId userLocalZone = ZoneId.systemDefault();
+
         //Set up the toggle navigation menu
         topMenuToggle.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -196,7 +195,7 @@ public class ApptViewController implements Initializable {
         timezoneLbl.setText(String.valueOf(userLocalZone));
 
         //Initialize the Appointments table and set up the columns
-        apptTable.getColumns().setAll(Utilities.createAppointmentTable(userLocalZone).getColumns());
+        apptTable.getColumns().setAll(Utilities.createAppointmentTable().getColumns());
 
         //Load data based on the selected tab
         updateTableData();

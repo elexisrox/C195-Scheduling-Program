@@ -208,7 +208,7 @@ public class ReportViewController implements Initializable {
 
         //Create an Appointments table to occupy the reportsTablePane
         if (reportsTablePane != null) {
-            TableView<Appointment> apptTable = Utilities.createAppointmentTable(userLocalZone);
+            TableView<Appointment> apptTable = Utilities.createAppointmentTable();
             addTableToPane(apptTable);
 
             // Clear and enable the reportsBox
@@ -249,7 +249,7 @@ public class ReportViewController implements Initializable {
             addTableToPane(apptMonthTypeTable);
 
             // Fetch the data and set it to the table
-            ObservableList<Pair<String, Pair<String, Integer>>> data = DBAppointments.readApptsByTypeAndMonth();
+            ObservableList<Pair<String, Pair<String, Integer>>> data = DBAppointments.readApptsByMonthAndType();
             apptMonthTypeTable.setItems(data);
         }
     }

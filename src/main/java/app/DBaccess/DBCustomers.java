@@ -42,6 +42,46 @@ public class DBCustomers {
         }
     }
 
+    //UPDATE QUERIES
+    //SQL Query that updates a selected customer within the database.
+    public static void updateCustomer(int custID, String custName, String custAddress, String custPostalCode, String custPhone, int custDivisionID) {
+        try {
+            String sql = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ? " +
+                    "WHERE Customer_ID = ?";
+
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+
+            ps.setString(1, custName);
+            ps.setString(2, custAddress);
+            ps.setString(3, custPostalCode);
+            ps.setString(4, custPhone);
+            ps.setInt(5, custDivisionID);
+            ps.setInt(6, custID);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Update Customer):" + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+    }
+
+    //DELETE QUERIES
+    //SQL Query that deletes a selected customer within the database
+    public static void deleteCustomer(int custID) {
+        try {
+            String sql = "DELETE FROM customers WHERE Customer_ID = ?";
+
+            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
+            ps.setInt(1, custID);
+            ps.execute();
+        } catch (SQLException e) {
+            System.out.println("SQL Exception Error (Delete Customer):" + e.getErrorCode());
+        } catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+    }
+
     //READ QUERIES
     //SQL Query that retrieves all customers in the database and adds them to an ObservableList.
     public static ObservableList<Customer> readAllCustomers() {
@@ -104,6 +144,7 @@ public class DBCustomers {
                     "JOIN countries " +
                     "ON countries.Country_ID = f.Country_ID " +
                     "WHERE c.Customer_ID = ?";
+
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setInt(1, custID);
             ResultSet rs = ps.executeQuery();
@@ -132,8 +173,10 @@ public class DBCustomers {
         int nextCustID = 0;
         try {
             String sql = "SELECT MAX(Customer_ID) FROM customers";
+
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
                 nextCustID = rs.getInt(1) + 1;
             }
@@ -155,9 +198,11 @@ public class DBCustomers {
                     "JOIN countries ON countries.Country_ID = f.Country_ID " +
                     "WHERE f.Country_ID = ? " +
                     "ORDER BY c.Customer_ID";
+
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setInt(1, countryID);
             ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
                 int custID = rs.getInt("Customer_ID");
                 String custName = rs.getString("Customer_Name");
@@ -168,7 +213,9 @@ public class DBCustomers {
                 String custDivisionName = rs.getString("Division");
                 int custCountryID = rs.getInt("Country_ID");
                 String custCountryName = rs.getString("Country");
+
                 Customer c = new Customer(custID, custName, custAddress, custPostalCode, custPhone, custDivisionID, custDivisionName, custCountryID, custCountryName);
+
                 custList.add(c);
             }
         } catch (SQLException e) {
@@ -177,47 +224,5 @@ public class DBCustomers {
             System.out.println("Error: " + e.getMessage());
         }
         return custList;
-    }
-
-    //UPDATE QUERIES
-    //SQL Query that updates a selected customer within the database.
-    public static void updateCustomer(int custID, String custName, String custAddress, String custPostalCode, String custPhone, int custDivisionID) {
-        try {
-            String sql = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ? " +
-                    "WHERE Customer_ID = ?";
-
-            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
-
-            ps.setString(1, custName);
-            ps.setString(2, custAddress);
-            ps.setString(3, custPostalCode);
-            ps.setString(4, custPhone);
-            ps.setInt(5, custDivisionID);
-            ps.setInt(6, custID);
-
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("SQL Exception Error (Update Customer):" + e.getErrorCode());
-        } catch (Exception e) {
-            System.out.println("Error:" + e.getMessage());
-        }
-    }
-
-    //DELETE QUERIES
-    //SQL Query that deletes a selected customer within the database
-    public static void deleteCustomer(int custID) {
-        try {
-            String sql = "DELETE FROM customers WHERE Customer_ID = ?";
-
-            PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
-
-            ps.setInt(1, custID);
-
-            ps.execute();
-        } catch (SQLException e) {
-            System.out.println("SQL Exception Error (Delete Customer):" + e.getErrorCode());
-        } catch (Exception e) {
-            System.out.println("Error:" + e.getMessage());
-        }
     }
 }

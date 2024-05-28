@@ -24,7 +24,6 @@ public class DBCountries {
                         "FROM countries as cu";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
-
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
@@ -54,11 +53,13 @@ public class DBCountries {
             String sql = "SELECT c.Country_ID, c.Country " +
                         "FROM countries as c " +
                         "WHERE Country_ID = ?";
+
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setInt(1, countryID);
             ResultSet rs = ps.executeQuery();
 
             rs.next();
+
             providedCountryID = rs.getInt("Country_ID");
             countryName = rs.getString("Country");
         } catch (SQLException e) {
@@ -68,7 +69,5 @@ public class DBCountries {
         }
         return new Country(providedCountryID, countryName);
     }
-
-    //TODO May need more queries for reports
 }
 

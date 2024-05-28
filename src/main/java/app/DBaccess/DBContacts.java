@@ -26,7 +26,6 @@ public class DBContacts {
                         "FROM contacts as c";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
-
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
@@ -57,6 +56,7 @@ public class DBContacts {
             String sql = "SELECT c.Contact_ID, c.Contact_Name, c.Email " +
                     "FROM contacts as c " +
                     "WHERE c.Contact_ID = ?";
+
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setInt(1, contactID);
             ResultSet rs = ps.executeQuery();
@@ -81,6 +81,7 @@ public class DBContacts {
 
         try {
             String sql = "SELECT Contact_ID, Contact_Name FROM contacts WHERE Contact_Name = ?";
+
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setString(1, contactName);
             ResultSet rs = ps.executeQuery();

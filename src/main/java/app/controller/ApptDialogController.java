@@ -9,18 +9,15 @@ import app.model.Appointment;
 import app.model.Contact;
 import app.model.Customer;
 import app.model.User;
-import javafx.collections.ObservableList;
-import javafx.fxml.Initializable;
 
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.sql.Timestamp;
+import java.time.*;
 import java.util.ResourceBundle;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 
@@ -29,81 +26,90 @@ import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
  */
 
 public class ApptDialogController implements Initializable {
-    /**
-     *  Initializes the Appointment Dialog Box Controller Class.
-     */
-
+    // Dialog Pane components
     @FXML public DialogPane dialogPane;
     @FXML private Label topTitleLabel;
 
-    //Input Fields
-    @FXML private TextField apptIDInput;
-    @FXML private TextField apptTitleInput;
-    @FXML private TextField apptDescInput;
-    @FXML private TextField apptLocInput;
-    @FXML private TextField apptTypeInput;
-    @FXML private DatePicker startDateInput;
-    @FXML private DatePicker endDateInput;
+    // Input fields
+    @FXML private TextField apptIDInput, apptTitleInput, apptDescInput, apptLocInput, apptTypeInput;
+    @FXML private DatePicker startDateInput, endDateInput;
     @FXML private Spinner<Integer> startTimeHoursInput, startTimeMinutesInput, endTimeHoursInput, endTimeMinutesInput;
     @FXML private ChoiceBox<Contact> contactIDInput;
     @FXML private ChoiceBox<Customer> custIDInput;
     @FXML private ChoiceBox<User> userIDInput;
 
-    //Warning Labels
-    @FXML private Label apptTitleWarning;
-    @FXML private Label apptDescWarning;
-    @FXML private Label apptLocWarning;
-    @FXML private Label apptTypeWarning;
-    @FXML private Label apptContactWarning;
-    @FXML private Label apptCustomerWarning;
-    @FXML private Label apptUserWarning;
-    @FXML private Label apptTimeWarning;
-    @FXML private Label failureSaveWarning;
+    // Warning labels
+    @FXML private Label apptTitleWarning, apptDescWarning, apptLocWarning, apptTypeWarning;
+    @FXML private Label apptContactWarning, apptCustomerWarning, apptUserWarning, apptTimeWarning, failureSaveWarning;
 
-    //Appointment object
+    // Appointment object
     private Appointment appointment;
 
-    //Detect the user's time zone
-    ZoneId userLocalZone = ZoneId.systemDefault();
+    // Define business hours in ET
+    ZoneId businessZone = ZoneId.of("America/New_York");
+    // Business start and end time in ET
+    LocalTime businessStartTimeET = LocalTime.of(8, 0);
+    LocalTime businessEndTimeET = LocalTime.of(22, 0);
 
-    //Defined business hours in ET
-    private static final ZoneId businessTimeZone = ZoneId.of("America/New_York");
-    private static final LocalTime businessStartTime = LocalTime.of(8, 0);  // 8:00 AM ET
-    private static final LocalTime businessEndTime = LocalTime.of(22, 0);   // 10:00 PM ET
+    /**
+     * Initializes the dialog pane, calling methods to set up the ChoiceBoxes, Spinners, and DatePickers.
+     */
 
-    //Initialize the content in the dialog pane
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        initializeChoiceBoxes();
+        initializeSpinners();
+        initializeDatePickers();
+    }
 
-        //Load Choice boxes
+    /**
+     * Initializes the choice boxes with data from the database.
+     */
+    private void initializeChoiceBoxes() {
         Utilities.loadChoiceBoxContacts(contactIDInput);
         Utilities.loadChoiceBoxCustomers(custIDInput);
         Utilities.loadChoiceBoxUsers(userIDInput);
+    }
 
-        //Initialize spinners
+    /**
+     * Initializes the spinners for time inputs.
+     */
+    private void initializeSpinners() {
         startTimeHoursInput.setValueFactory(new IntegerSpinnerValueFactory(0, 23, 12));
         startTimeMinutesInput.setValueFactory(new IntegerSpinnerValueFactory(0, 59, 0, 1));
         endTimeHoursInput.setValueFactory(new IntegerSpinnerValueFactory(0, 23, 12));
         endTimeMinutesInput.setValueFactory(new IntegerSpinnerValueFactory(0, 59, 0, 1));
+    }
 
-        //Set DatePicker default values to today's date
+    /**
+     * Initializes the date pickers with the current date.
+     */
+    private void initializeDatePickers() {
         LocalDate today = LocalDate.now();
         startDateInput.setValue(today);
         endDateInput.setValue(today);
     }
 
-    //Sets any labels that may change between Add/Modify modes
+    /**
+     * Sets the labels for the dialog based on the mode (Add/Modify).
+     * @param topTitleString The title string to set.
+     */
     public void setApptLabels(String topTitleString) {
         topTitleLabel.setText(topTitleString);
     }
 
-    //Retrieves auto-generated Appointment ID for new appointments
+    /**
+     * Retrieves the next available appointment ID and sets it in the input field.
+     */
     public void retrieveNewApptID() {
         String newApptID = DBAppointments.readNextApptID();
         apptIDInput.setText(newApptID);
     }
 
-    // Method to set the appointment object and populate the fields
+    /**
+     * Sets the appointment data in the input fields for editing.
+     * @param appointment The appointment to edit.
+     */
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
         apptIDInput.setText(String.valueOf(appointment.getApptID()));
@@ -113,13 +119,11 @@ public class ApptDialogController implements Initializable {
         apptTypeInput.setText(appointment.getApptType());
 
         // Set date and time pickers with appointment data
-        LocalDateTime startDateTime = Utilities.fromUTC(appointment.getApptStart(), userLocalZone);
-        LocalDateTime endDateTime = Utilities.fromUTC(appointment.getApptEnd(), userLocalZone);
-
+        LocalDateTime startDateTime = appointment.getApptStart();
+        LocalDateTime endDateTime = appointment.getApptEnd();
         startDateInput.setValue(startDateTime.toLocalDate());
         startTimeHoursInput.getValueFactory().setValue(startDateTime.getHour());
         startTimeMinutesInput.getValueFactory().setValue(startDateTime.getMinute());
-
         endDateInput.setValue(endDateTime.toLocalDate());
         endTimeHoursInput.getValueFactory().setValue(endDateTime.getHour());
         endTimeMinutesInput.getValueFactory().setValue(endDateTime.getMinute());
@@ -130,7 +134,9 @@ public class ApptDialogController implements Initializable {
         userIDInput.setValue(DBUsers.readUser(appointment.getApptUserID()));
     }
 
-    //Clears all error labels
+    /**
+     * Clears all warning labels.
+     */
     public void clearErrorLbls() {
         apptTitleWarning.setText("");
         apptDescWarning.setText("");
@@ -143,20 +149,55 @@ public class ApptDialogController implements Initializable {
         failureSaveWarning.setText("");
     }
 
-    //Checks if inputted times are within set business hours
+    /**
+     * Checks if the inputted times are within business hours.
+     * @param startDateTime The start date and time.
+     * @param endDateTime The end date and time.
+     * @return True if within business hours, otherwise false.
+     */
+    //TODO fix this because it's stupid
     private boolean isWithinBusinessHours(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        ZonedDateTime startZonedDateTime = startDateTime.atZone(userLocalZone).withZoneSameInstant(businessTimeZone);
-        ZonedDateTime endZonedDateTime = endDateTime.atZone(userLocalZone).withZoneSameInstant(businessTimeZone);
+        // Get user's local time zone
+        ZoneId userTimeZone = ZoneId.systemDefault();
+        // Convert business hours to user's local time zone
+        ZonedDateTime businessStartTimeUserZone = ZonedDateTime.of(LocalDate.now(), businessStartTimeET, businessZone).withZoneSameInstant(userTimeZone);
+        ZonedDateTime businessEndTimeUserZone = ZonedDateTime.of(LocalDate.now(), businessEndTimeET, businessZone).withZoneSameInstant(userTimeZone);
+        //TODO print the above, idk it's behaving weirdly
+        // Convert appointment times to user's local time zone
+        ZonedDateTime appointmentStartUserZone = startDateTime.atZone(userTimeZone);
+        ZonedDateTime appointmentEndUserZone = endDateTime.atZone(userTimeZone);
 
-        LocalTime startLocalTime = startZonedDateTime.toLocalTime();
-        LocalTime endLocalTime = endZonedDateTime.toLocalTime();
+        // Check if appointment times are within business hours
+        boolean startsWithinBusinessHours = !appointmentStartUserZone.isBefore(businessStartTimeUserZone) && !appointmentStartUserZone.isAfter(businessEndTimeUserZone);
+        boolean endsWithinBusinessHours = !appointmentEndUserZone.isBefore(businessStartTimeUserZone) && !appointmentEndUserZone.isAfter(businessEndTimeUserZone);
 
-        return !startLocalTime.isBefore(businessStartTime) && !endLocalTime.isAfter(businessEndTime);
+        return startsWithinBusinessHours && endsWithinBusinessHours;
+
+        // Defined business hours in ET
+//        private static final ZoneId businessZone = ZoneId.of("America/New_York");
+//        private static final LocalTime businessStartTime = LocalTime.of(8, 0);  // 8:00 AM ET
+//        private static final LocalTime businessEndTime = LocalTime.of(22, 0);   // 10:00 PM ET
+
+//        ZonedDateTime startZonedDateTime = startDateTime.atZone(userLocalZone).withZoneSameInstant(businessZone);
+//        ZonedDateTime endZonedDateTime = endDateTime.atZone(userLocalZone).withZoneSameInstant(businessZone);
+//
+//        LocalTime startLocalTime = startZonedDateTime.toLocalTime();
+//        LocalTime endLocalTime = endZonedDateTime.toLocalTime();
+//
+//        return !startLocalTime.isBefore(businessStartTime) && !endLocalTime.isAfter(businessEndTime);
     }
 
-    // Checks if the given time range conflicts with any of the existing appointments for the customer.
+    /**
+     * Checks if the given time range conflicts with any of the existing appointments for the customer.
+     * @param customerID The customer ID.
+     * @param newStart The new start date and time.
+     * @param newEnd The new end date and time.
+     * @return True if there are conflicting appointments, otherwise false.
+     */
+    //TODO Fix
     private boolean hasConflictingAppointments(int customerID, LocalDateTime newStart, LocalDateTime newEnd) {
-        //Pass along current appointment ID if modifying an existing appointment
+        ZoneId userLocalZone = ZoneId.systemDefault();
+        // Pass along current appointment ID if modifying an existing appointment
         // Use -1 if there is no appointment to exclude
         int excludeApptID = (appointment != null) ? appointment.getApptID() : -1;
 
@@ -166,29 +207,30 @@ public class ApptDialogController implements Initializable {
         if (!conflictingAppointments.isEmpty()) {
             System.out.println("Conflicting appointments found:");
             for (Appointment appt : conflictingAppointments) {
-                System.out.println("Appointment ID: " + appt.getApptID());
-                System.out.println("\tStart: " + appt.getApptStart() +
-                                    ", End: " + appt.getApptEnd());
-                System.out.println("\tConflicting Inputs:" +
-                                    "\n\tStart (UTC): " + Utilities.toUTC(newStart, userLocalZone) +
-                                    ", End (UTC): " + Utilities.toUTC(newEnd, userLocalZone));
+//                System.out.println("Appointment ID: " + appt.getApptID());
+//                System.out.println("\tStart: " + appt.getApptStart() +
+//                                    ", End: " + appt.getApptEnd());
+//                System.out.println("\tConflicting Inputs:" +
+//                                    "\n\tStart (UTC): " + Utilities.toUTC(newStart, userLocalZone) +
+//                                    ", End (UTC): " + Utilities.toUTC(newEnd, userLocalZone));
             }
             return true;
         }
         return false;
     }
 
-    //Validates all data fields before adding/updating an appointment
+    /**
+     * Validates all input fields before adding or updating an appointment.
+     * @return True if inputs are valid, otherwise false.
+     */
     public boolean validateInputs() {
-        System.out.println("\tValidating all inputs.");
-
-        //Clear all Error Labels
+        // Clear all Error Labels
         clearErrorLbls();
 
-        //Create a flag for the main warning message at the bottom of the dialog pane. If any errors are present, this value will be assigned as "true".
+        // Create a flag for the main warning message at the bottom of the dialog pane. If any errors are present, this value will be assigned as "true".
         boolean errorsPresent = false;
 
-        //Retrieve data fields
+        // Retrieve data fields
         String title = apptTitleInput.getText();
         String desc = apptDescInput.getText();
         String location = apptLocInput.getText();
@@ -204,7 +246,7 @@ public class ApptDialogController implements Initializable {
         Customer selectedCustomer = custIDInput.getValue();
         User selectedUser = userIDInput.getValue();
 
-        //Validate: Make sure that no fields have been left empty/blank.
+        // Validate: Make sure that no fields have been left empty/blank.
         if (title.isBlank()) {
             apptTitleWarning.setText("Please enter a descriptive title.");
             errorsPresent = true;
@@ -234,7 +276,7 @@ public class ApptDialogController implements Initializable {
             errorsPresent = true;
         }
 
-        //Validate: Check for time/date errors
+        // Validate: Check for time/date errors
         if (startDate.isAfter(endDate)) {
             apptTimeWarning.setText("End Date must occur after Start Date.");
             errorsPresent = true;
@@ -244,46 +286,44 @@ public class ApptDialogController implements Initializable {
             errorsPresent = true;
         }
 
-        //Validate: Check to make sure times are within business hours
+        // Validate: Check to make sure times are within business hours
         if (!isWithinBusinessHours(startDateTime, endDateTime)) {
-            apptTimeWarning.setText("Appointment times must be within business hours (8:00 AM to 10:00 PM ET).");
+            apptTimeWarning.setText("Appointment times must be within business hours: \n"
+                    + businessStartTimeET + " to " + businessEndTimeET + " " + businessZone);
             errorsPresent = true;
         }
 
-        //Validate: Check for conflicts in customer's schedule
+        // Validate: Check for conflicts in customer's schedule
         if (selectedCustomer != null && hasConflictingAppointments(selectedCustomer.getCustID(), startDateTime, endDateTime)) {
             apptTimeWarning.setText("This customer already has an appointment during the selected time.");
             errorsPresent = true;
         }
 
-        //Set failureSaveWarning label if errors have been found.
+        // Set failureSaveWarning label if errors have been found.
         if (errorsPresent) {
             failureSaveWarning.setText("Unable to save. Please check the warnings above and try again.");
         }
         return !errorsPresent;
     }
 
-    //Method for Save button
+    /**
+     * Handles saving the appointment to the database.
+     */
     public void handleSave() {
-        //Fetch data input from text fields
+        // Fetch data input from text fields
         String title = apptTitleInput.getText();
         String desc = apptDescInput.getText();
         String location = apptLocInput.getText();
         String type = apptTypeInput.getText();
-
-        //Fetch Dates/Times
+        // Fetch Dates/Times
         LocalDate startDate = startDateInput.getValue();
         LocalTime startTime = LocalTime.of(startTimeHoursInput.getValue(), startTimeMinutesInput.getValue());
         LocalDate endDate = endDateInput.getValue();
         LocalTime endTime = LocalTime.of(endTimeHoursInput.getValue(), endTimeMinutesInput.getValue());
-        //Consolidate Dates/Times
+        // Consolidate Dates/Times
         LocalDateTime startDateTime = LocalDateTime.of(startDate, startTime);
         LocalDateTime endDateTime = LocalDateTime.of(endDate, endTime);
-        //Convert Dates/Times to UTC
-        LocalDateTime startDateTimeUTC = Utilities.toUTC(startDateTime, userLocalZone);
-        LocalDateTime endDateTimeUTC = Utilities.toUTC(endDateTime, userLocalZone);
-
-        //Fetch selected items from the ChoiceBoxes
+        // Fetch selected items from the ChoiceBoxes
         Contact selectedContact = contactIDInput.getValue();
         Customer selectedCustomer = custIDInput.getValue();
         User selectedUser = userIDInput.getValue();
@@ -291,23 +331,20 @@ public class ApptDialogController implements Initializable {
         int contactID = selectedContact.getContactID();
         int customerID = selectedCustomer.getCustID();
 
-        //If the appointment object is null, add a new appointment to the database. If it is not null, update the fields and save the changes to the appointment.
+        // If the appointment object is null, add a new appointment to the database. If it is not null, update the fields and save the changes to the appointment.
         if (appointment == null) {
-            System.out.println("\tAdding new appointment to the database.");
-            DBAppointments.addAppt(title, desc, location, type, startDateTimeUTC, endDateTimeUTC, userID, contactID, customerID);
+            DBAppointments.addAppt(title, desc, location, type, startDateTime, endDateTime, userID, contactID, customerID);
         } else {
-            System.out.println("\tUpdating existing appointment in the database.");
-            //TODO reassess code below
             appointment.setApptTitle(title);
             appointment.setApptDesc(desc);
             appointment.setApptLocation(location);
             appointment.setApptType(type);
-            appointment.setApptStart(startDateTimeUTC);
-            appointment.setApptEnd(endDateTimeUTC);
+            appointment.setApptStart(startDateTime);
+            appointment.setApptEnd(endDateTime);
             appointment.setApptUserID(userID);
             appointment.setApptContactID(contactID);
             appointment.setApptCustomerID(customerID);
-            DBAppointments.updateAppt(appointment.getApptID(), title, desc, location, type, startDateTimeUTC, endDateTimeUTC, userID, contactID, customerID);
+            DBAppointments.updateAppt(appointment.getApptID(), title, desc, location, type, startDateTime, endDateTime, userID, contactID, customerID);
         }
     }
 

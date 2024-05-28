@@ -1,27 +1,35 @@
 package app;
 
-import app.DBaccess.DBAppointments;
-import app.DBaccess.DBCountries;
-import app.model.Appointment;
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 
-
+/**
+ * MainApplication class extends the JavaFX Application class and serves as the entry
+ * point for the JavaFX application. It handles the initialization, starting, and
+ * stopping of the application, as well as managing the database connection.
+ * @author Elexis Rox
+ */
 public class MainApplication extends Application {
 
-    //initialize app
+    /**
+     * Initializes the application.
+     */
     @Override
     public void init() {
         System.out.println("Initializing Application...");
     }
-    //app content
+
+    /**
+     * Starts the application. This method is called after the init method has been
+     * executed. It sets up the primary stage and loads the login screen.
+     * @param stage The primary stage for this application, onto which the application
+     *              scene can be set.
+     * @throws IOException if the FXML file cannot be loaded.
+     */
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoaderDialog = new FXMLLoader(MainApplication.class.getResource("Login.fxml"));
@@ -33,39 +41,28 @@ public class MainApplication extends Application {
         stage.show();
     }
 
-    //stop app
+    /**
+     * Stops the application. This method is called to end the program.
+     */
     @Override
     public void stop() {
         System.out.println("Application terminated.");
     }
 
-    public static void main(String[] args) throws SQLException {
-        //connect to database
+    /**
+     * The main method is the entry point for the application. It connects to the
+     * database, launches the JavaFX application, and closes the database connection
+     * when the application ends.
+     * @param args Command line arguments.
+     */
+    public static void main(String[] args) {
+        // Connect to database
         app.helper.JDBC.openConnection();
 
-        //FRUITS EXERCISE
-        /*Utilities.select(3);
-        int rowsAffected = Utilities.delete(7);
-
-        if(rowsAffected > 0){s
-            System.out.println("Delete Successful");
-        }
-        else{
-            System.out.println("Delete Failed!");
-        }*/
-
-        //APPOINTMENTS ADD/DELETE/VIEW TEST
-        //DBAppointments.addAppt("Test Appt", "TestDesc", "test location", "test type", LocalDateTime.of(2019, 3, 28, 14, 33, 48, 640000), LocalDateTime.of(2019, 3, 28, 16, 33, 48, 640000), 1, 1, 1);
-
-        DBAppointments.deleteAppt(6);
-
-        //ObservableList<Appointment> AppointmentList = DBAppointments.readAllAppts();
-        //System.out.println(AppointmentList);
-
-        //launch application
+        // Launch application
         launch();
 
-        //end connection to database
+        // End connection to database
         app.helper.JDBC.closeConnection();
     }
 }

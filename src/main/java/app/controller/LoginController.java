@@ -13,9 +13,13 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -65,64 +69,62 @@ public class LoginController implements Initializable {
     @FXML
     private Hyperlink resetString;
 
-    //Used for translations
+    // Used for translations
     private ResourceBundle rb;
 
-    //Detect the user's time zone
+    // Detect the user's time zone
     ZoneId userLocalZone = ZoneId.systemDefault();
 
-    //Detect users' default language
+    // Detect the user's current time
+    LocalDateTime userTimeNow = LocalDateTime.now();
+
+    // Detect users' default language
     Locale userLocale = Locale.getDefault();
 
     //Validates username and password upon login. Displays an appropriate error/success message upon login attempt. Logs completed login attempts in login_activity.txt file.
     @FXML
     public void onActionLogin(ActionEvent event) throws IOException {
-        System.out.println("Login button selected.");
-
         String userName = usernameField.getText();
         String userPassword = passwordField.getText();
-        boolean loginSuccessful = false;
+        boolean loginSuccess = false;
 
-        //Displays error message if both username and password fields are blank or empty.
+        // Display error message if both username and password fields are blank or empty.
         if ((userName.isBlank()) && (userPassword.isBlank())) {
             loginErrorLbl.setText(rb.getString("errorUserPass"));
         }
-        //Displays error message if username field is blank or empty.
+        // Display error message if username field is blank or empty.
         else if (userName.isBlank()) {
             loginErrorLbl.setText(rb.getString("errorUser"));
         }
-        //Displays error message if password field is blank or empty.
+        // Display error message if password field is blank or empty.
         else if (userPassword.isBlank()) {
             loginErrorLbl.setText(rb.getString("errorPass"));
         }
-        //Displays error message if the provided username does not exist in the database. Records the login attempt.
+        // Display error message if the provided username does not exist in the database.
         else if (!DBUsers.userNameValidate(userName)) {
             loginErrorLbl.setText(rb.getString("errorUserNotFound"));
-            //TODO: LOGIN ACTIVITY
-            //loginActivity();
+            // Record the login failure.
+            recordLoginActivity(false);
         }
 
-        //Attempts to validate that the provided username and password match.
+        // Attempt to validate that the provided username and password match
         else {
-            loginSuccessful = DBUsers.userLoginValidate(userName, userPassword);
+            loginSuccess = DBUsers.userLoginValidate(userName, userPassword);
+            // Record the login success or failure.
+            recordLoginActivity(loginSuccess);
 
-            //If username and password do not match, displays an error message. Records the login attempt.
-            if (!loginSuccessful) {
+            // If username and password do not match, display an error message. Record the login attempt.
+            if (!loginSuccess) {
                 loginErrorLbl.setText(rb.getString("errorNoMatch"));
-                //TODO
-                //loginActivity();
             }
-            //If username and password are successfully validated, loads the main application Appointment view. Records the login attempt.
+            // If username and password are successfully validated, load the main application Appointment view. Record the login attempt.
             else {
-                System.out.println("Login successful.");
-                //Clear any previous login warnings.
+                // Clear any previous login warnings.
                 loginErrorLbl.setText(null);
-                //TODO
-                //loginActivity();
+                // Transition to Appointment Main View
                 Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
                 Utilities.transitionApptView(stage);
-
-                //Check for upcoming appointments within 15 minutes of logging in.
+                // Check for upcoming appointments within 15 minutes of logging in
                 checkForUpcomingAppts();
             }
         }
@@ -190,23 +192,29 @@ public class LoginController implements Initializable {
         });
     }
 
-    //Initializes the Login View Controller Class.
+    // Initializes the Login View Controller Class.
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         detectUserLocale();
         initializeLangComboBox();
     }
 
-    //Checks for appointments within the next 15 minutes.
+    // Checks for appointments within the next 15 minutes.
     public void checkForUpcomingAppts() {
+        // Retrieve any appointments in the next 15 minutes
         ObservableList<Appointment> upcomingAppointments = DBAppointments.readNext15MinAppts();
+        // User's local time zone
+        ZoneId userLocalZone = ZoneId.systemDefault();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+        // Build and display the alert
         if (!upcomingAppointments.isEmpty()) {
             StringBuilder alertContent = new StringBuilder("You have the following appointments within the next 15 minutes:\n");
             for (Appointment appt : upcomingAppointments) {
+                LocalDateTime localStartDateTime = appt.getApptStart();
                 alertContent.append("\nAppointment ID: ").append(appt.getApptID())
-                        .append(", Date: ").append(appt.getApptStart().toLocalDate())
-                        //TODO make sure this displays in user timezone
-                        .append(", Time: ").append(appt.getApptStart().toLocalTime());
+                        .append(", Date: ").append(localStartDateTime.format(dateFormatter))
+                        .append(", Time: ").append(localStartDateTime.format(timeFormatter));
             }
             Utilities.showInfoAlert("Upcoming Appointments", alertContent.toString());
         } else {
@@ -214,4 +222,23 @@ public class LoginController implements Initializable {
         }
     }
 
+    /** This method records all login activity to login_activity.txt.
+     */
+    public void recordLoginActivity(boolean loginSuccess) throws IOException {
+        // Filename and data formatting
+        String filename = "login_activity.txt";
+        DateTimeFormatter loginFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy hh:mm:ss");
+        String loginStatus = loginSuccess ? "SUCCESS" : "FAILURE";
+
+        // Get the current time in UTC
+        LocalDateTime utcTimeNow = LocalDateTime.now(ZoneId.of("UTC"));
+
+        // Create and open file
+        FileWriter loginPrint = new FileWriter(filename, true);
+
+        // Record login activity to file and close
+        System.out.println("Saving to file");
+        loginPrint.write("\nLOGIN " + loginStatus + "\n\tUsername:" + usernameField.getText() + ", " + loginFormatter.format(userTimeNow));
+        loginPrint.close();
+    }
 }

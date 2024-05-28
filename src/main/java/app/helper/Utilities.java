@@ -13,6 +13,7 @@ import app.model.Customer;
 import app.model.User;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,6 +33,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.function.Function;
 
 /** Utilities class provides scene transitions, data formatting methods, and other universal functions.
  * @author Elexis Rox
@@ -51,36 +53,20 @@ public class Utilities {
     private static final String TIME_FORMAT = "HH:mm:ss";
 
     // DateTimeFormatter: Used for LocalDateTime formatting methods
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
 
     // Time formatting methods
-    // Convert LocalDateTime to a formatted Date string in a specific timezone
-    public static String formatDate(LocalDateTime utcDateTime, ZoneId targetZone) {
-        if (utcDateTime == null) return "";
-        ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
-        return DATE_FORMATTER.format(zonedDateTime);
+    // Format LocalDateTime to date string
+    public static String formatDate(LocalDateTime localDateTime) {
+        if (localDateTime == null) return "";
+        return DATE_FORMATTER.format(localDateTime);
     }
 
-    // Convert UTC LocalDateTime to a formatted Time string in a specific timezone
-    public static String formatTime(LocalDateTime utcDateTime, ZoneId targetZone) {
-        if (utcDateTime == null) return "";
-        ZonedDateTime zonedDateTime = utcDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(targetZone);
-        return TIME_FORMATTER.format(zonedDateTime);
-    }
-
-    // Converts LocalDateTime from the user's timezone to UTC
-    public static LocalDateTime toUTC(LocalDateTime localDateTime, ZoneId userZone) {
-        ZonedDateTime localZonedDateTime = localDateTime.atZone(userZone);
-        ZonedDateTime utcZoneDateTime = localZonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
-        return utcZoneDateTime.toLocalDateTime();
-    }
-
-    // Converts LocalDateTime from UTC to the user's timezone
-    public static LocalDateTime fromUTC(LocalDateTime utcDateTime, ZoneId userZone) {
-        ZonedDateTime utcZonedDateTime = utcDateTime.atZone(ZoneId.of("UTC"));
-        ZonedDateTime localZonedDateTime = utcZonedDateTime.withZoneSameInstant(userZone);
-        return localZonedDateTime.toLocalDateTime();
+    // Format LocalDateTime to time string
+    public static String formatTime(LocalDateTime localDateTime) {
+        if (localDateTime == null) return "";
+        return TIME_FORMATTER.format(localDateTime);
     }
 
     // Scene Transitions
@@ -156,6 +142,7 @@ public class Utilities {
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
 
         // Add validation and save handling for the Save button
+        // LAMBDA EXPRESSION: The lambda expression here is used as an event handler for addEventFilter. Using a lambda here is more concise and promotes better readability than creating a separate method.
         dialog.getDialogPane().lookupButton(saveButtonType).addEventFilter(ActionEvent.ACTION, event -> {
             if (!dialogController.validateInputs()) {
                 // Prevent the dialog from closing if validation fails
@@ -176,7 +163,7 @@ public class Utilities {
 
     // Main method to open the Add/Modify Customers Dialog
     public static void openCustDialog(Stage ownerStage, boolean isAddMode, CustViewController custMainView, Customer selectedCust) throws IOException {
-        //Initialize and create the dialog pane
+        // Initialize and create the dialog pane
         FXMLLoader fxmlLoader = new FXMLLoader(Utilities.class.getResource(CUST_DIALOG_PATH));
         DialogPane custPane = fxmlLoader.load();
         CustDialogController dialogController = fxmlLoader.getController();
@@ -213,6 +200,8 @@ public class Utilities {
         ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, cancelButtonType);
 
+        // Add validation and save handling for the Save button
+        // LAMBDA EXPRESSION: The lambda expression here is used as an event handler for addEventFilter. Using a lambda here is more concise and promotes better readability than creating a separate method.
         dialog.getDialogPane().lookupButton(saveButtonType).addEventFilter(ActionEvent.ACTION, event -> {
             if (!dialogController.validateInputs()) {
                 // Prevent the dialog pane from closing if validation fails
@@ -232,7 +221,7 @@ public class Utilities {
     }
 
     // Alert methods
-    // Display a confirmation alert with custom title, header, and content text
+    // Display a confirmation alert
     public static Optional<ButtonType> showConfirmationAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -241,7 +230,7 @@ public class Utilities {
         return alert.showAndWait();
     }
 
-    // Display an information alert with custom title, header, and content text
+    // Display an information alert
     public static void showInfoAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -250,7 +239,7 @@ public class Utilities {
         alert.showAndWait();
     }
 
-    //Displays a warning alert with custom title, header, and content text.
+    // Display a warning alert
     public static void showErrorAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
@@ -260,92 +249,60 @@ public class Utilities {
     }
 
     // ChoiceBox loading methods
+    // Main helper method for loading ChoiceBox. Handles data formatting
+    private static <T> void loadChoiceBox(ChoiceBox<T> choiceBox, ObservableList<T> items, Function<T, String> converter) {
+        choiceBox.setItems(items);
+        choiceBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(T object) {
+                // LAMBDA EXPRESSION: Used to convert an object to its string interpretation. This lambda will be reused as this method is called, promoting concise code.
+                return object == null ? null : converter.apply(object);
+            }
+
+            @Override
+            public T fromString(String string) {
+                return choiceBox.getItems().stream()
+                        // LAMBDA EXPRESSION: Used to translate a string to an item. This lambda will be reused as this method is called, promoting concise code.
+                        .filter(item -> converter.apply(item).equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+    }
+
     // Load Contacts into Contacts ChoiceBox
+    // LAMBDA EXPRESSION: The lambda below concisely creates a string representation of a Contact, displaying both the ID and Name. This displays more information about the contact in a user-friendly way.
     public static void loadChoiceBoxContacts(ChoiceBox<Contact> choiceBox) {
-        ObservableList<Contact> contacts = DBContacts.readAllContacts();
-        choiceBox.setItems(contacts);
-        choiceBox.setConverter(new StringConverter<Contact>() {
-            @Override
-            public String toString(Contact contact) {
-                return contact == null ? null : contact.getContactID() + " - " + contact.getContactName();
-            }
-
-            @Override
-            public Contact fromString(String string) {
-                return choiceBox.getItems().stream()
-                        .filter(contact -> (contact.getContactID() + " - " + contact.getContactName()).equals(string))
-                        .findFirst()
-                        .orElse(null);
-            }
-        });
+        loadChoiceBox(choiceBox, DBContacts.readAllContacts(), contact -> contact.getContactID() + " - " + contact.getContactName());
     }
 
-    //Load Contacts into Customers ChoiceBox
+    // Load Contacts into Customers ChoiceBox
+    // LAMBDA EXPRESSION: The lambda below concisely creates a string representation of a Customer, displaying both the ID and Name. This displays more information about the customer in a user-friendly way.
     public static void loadChoiceBoxCustomers(ChoiceBox<Customer> choiceBox) {
-        ObservableList<Customer> customers = DBCustomers.readAllCustomers();
-        choiceBox.setItems(customers);
-        choiceBox.setConverter(new StringConverter<Customer>() {
-            @Override
-            public String toString(Customer customer) {
-                return customer == null ? null : customer.getCustID() + " - " + customer.getCustName();
-            }
-
-            @Override
-            public Customer fromString(String string) {
-                return choiceBox.getItems().stream()
-                        .filter(customer -> (customer.getCustID() + " - " + customer.getCustName()).equals(string))
-                        .findFirst()
-                        .orElse(null);
-            }
-        });
+        loadChoiceBox(choiceBox, DBCustomers.readAllCustomers(), customer -> customer.getCustID() + " - " + customer.getCustName());
     }
 
-    //Load Users into Users ChoiceBox
+    // Load Users into Users ChoiceBox
+    // LAMBDA EXPRESSION: The lambda below concisely creates a string representation of a User, displaying both the ID and Name. This displays more information about the user in a user-friendly way.
     public static void loadChoiceBoxUsers(ChoiceBox<User> choiceBox) {
-        ObservableList<User> users = DBUsers.readAllUsers();
-        choiceBox.setItems(users);
-        choiceBox.setConverter(new StringConverter<User>() {
-            @Override
-            public String toString(User user) {
-                return user == null ? null : user.getUserID() + " - " + user.getUserName();
-            }
-
-            @Override
-            public User fromString(String string) {
-                return choiceBox.getItems().stream()
-                        .filter(user -> (user.getUserID() + " - " + user.getUserName()).equals(string))
-                        .findFirst()
-                        .orElse(null);
-            }
-        });
+        loadChoiceBox(choiceBox, DBUsers.readAllUsers(), user -> user.getUserID() + " - " + user.getUserName());
     }
 
-
-    //BUTTONS
-    //Logout Button
+    // Button Methods
+    // Logout Button
     public static void logoutButton(Stage stage) throws IOException {
         // Create a confirmation alert
-        Optional<ButtonType> result = showConfirmationAlert(
-                "Logout Confirmation",
-                "Logging Out",
-                "Are you sure you want to log out?"
-        );
-
+        Optional<ButtonType> result = showConfirmationAlert("Logout Confirmation", "Logging Out", "Are you sure you want to log out?");
         // Transition to login screen if user clicks OK.
         if (result.isPresent() && result.get() == ButtonType.OK) {
             Utilities.transitionLoginView(stage);
         }
     }
 
-    //Exit button
+    // Exit button
     public static void exitButton() {
         // Create a confirmation alert
-        Optional<ButtonType> result = showConfirmationAlert(
-                "Exit Confirmation",
-                "Exit Application",
-                "Are you sure you want to exit?"
-        );
-
+        Optional<ButtonType> result = showConfirmationAlert("Exit Confirmation", "Exit Application", "Are you sure you want to exit?");
         //Exit if user clicks OK.
         if (result.isPresent() && result.get() == ButtonType.OK) {
             app.helper.JDBC.closeConnection();
@@ -353,9 +310,10 @@ public class Utilities {
         }
     }
 
-    //TABLES
-    //Method to create Appointments table and corresponding columns
-    public static TableView<Appointment> createAppointmentTable(ZoneId userLocalZone) {
+    // Table methods
+    // Method to create Appointments table and corresponding columns
+    // LAMBDA EXPRESSIOSN: Lambdas are utilized in the following method to format times and dates for the columns for better readability.
+    public static TableView<Appointment> createAppointmentTable() {
         TableView<Appointment> appointmentTable = new TableView<>();
 
         TableColumn<Appointment, Integer> apptIDCol = new TableColumn<>("Appt ID");
@@ -379,35 +337,35 @@ public class Utilities {
         apptTypeCol.setPrefWidth(75);
 
         TableColumn<Appointment, String> apptStartDateCol = new TableColumn<>("Start Date");
-        apptStartDateCol.setCellValueFactory(cellData ->
-                new SimpleStringProperty(
-                        Utilities.formatDate(cellData.getValue().getApptStart(), userLocalZone)
-                )
-        );
+        apptStartDateCol.setCellValueFactory(cellData -> {
+            LocalDateTime localStart = cellData.getValue().getApptStart();
+            String formattedDate = Utilities.formatDate(localStart);
+            return new SimpleStringProperty(formattedDate);
+        });
         apptStartDateCol.setPrefWidth(75);
 
         TableColumn<Appointment, String> apptStartTimeCol = new TableColumn<>("Start Time");
-        apptStartTimeCol.setCellValueFactory(cellData ->
-                new SimpleStringProperty(
-                        Utilities.formatTime(cellData.getValue().getApptStart(), userLocalZone)
-                )
-        );
+        apptStartTimeCol.setCellValueFactory(cellData -> {
+            LocalDateTime localStart = cellData.getValue().getApptStart();
+            String formattedTime = Utilities.formatTime(localStart);
+            return new SimpleStringProperty(formattedTime);
+        });
         apptStartTimeCol.setPrefWidth(75);
 
         TableColumn<Appointment, String> apptEndDateCol = new TableColumn<>("End Date");
-        apptEndDateCol.setCellValueFactory(cellData ->
-                new SimpleStringProperty(
-                        Utilities.formatDate(cellData.getValue().getApptEnd(), userLocalZone)
-                )
-        );
+        apptEndDateCol.setCellValueFactory(cellData -> {
+            LocalDateTime localEnd = cellData.getValue().getApptEnd();
+            String formattedDate = Utilities.formatDate(localEnd);
+            return new SimpleStringProperty(formattedDate);
+        });
         apptEndDateCol.setPrefWidth(75);
 
         TableColumn<Appointment, String> apptEndTimeCol = new TableColumn<>("End Time");
-        apptEndTimeCol.setCellValueFactory(cellData ->
-                new SimpleStringProperty(
-                        Utilities.formatTime(cellData.getValue().getApptEnd(), userLocalZone)
-                )
-        );
+        apptEndTimeCol.setCellValueFactory(cellData -> {
+            LocalDateTime localEnd = cellData.getValue().getApptEnd();
+            String formattedTime = Utilities.formatTime(localEnd);
+            return new SimpleStringProperty(formattedTime);
+        });
         apptEndTimeCol.setPrefWidth(75);
 
         TableColumn<Appointment, Integer> apptContactIDCol = new TableColumn<>("Contact ID");
@@ -431,7 +389,7 @@ public class Utilities {
         return appointmentTable;
     }
 
-    //Method to create Customers table and corresponding columns
+    // Method to create Customers table and corresponding columns
     public static TableView<Customer> createCustomerTable() {
         TableView<Customer> customerTable = new TableView<>();
 
@@ -470,7 +428,9 @@ public class Utilities {
         return customerTable;
     }
 
-    //Method to create Appointments by Type/Month table for Reports View
+    // Method to create Appointments by Type/Month table for Reports View
+    // The "Pair" here is equivalent to "(Month, (Appointment Type, Count))
+    // LAMBDA: Lambdas are utilized in the following method to extract and format the nested 'Pair' values for the type and count columns in the Appointment by Month/Type table. The first lambda retrieves the Type from the value pair, and the second lambda retrieves and converts the count to a string.
     public static TableView<Pair<String, Pair<String, Integer>>> createAppointmentMonthTypeTable() {
         TableView<Pair<String, Pair<String, Integer>>> table = new TableView<>();
 

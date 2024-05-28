@@ -25,7 +25,6 @@ public class DBUsers {
                     "ORDER BY u.User_ID";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -55,6 +54,7 @@ public class DBUsers {
             String sql = "SELECT u.User_ID, u.User_Name, u.Password " +
                     "FROM users as u " +
                     "WHERE u.User_ID = ?";
+
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setInt(1, userID);
             ResultSet rs = ps.executeQuery();
@@ -81,24 +81,16 @@ public class DBUsers {
                     "WHERE BINARY User_Name = ?";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
-
             ps.setString(1, userName);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                System.out.println("Username found in database.");
                 matchFound = true;
             }
-
         } catch (SQLException e) {
             System.out.println("SQL Exception Error (Username): " + e.getErrorCode());
         } catch(Exception e) {
             System.out.println("Error: " + e.getMessage());
-        }
-
-        if (!matchFound) {
-            System.out.println("Username not found in database.");
         }
         return matchFound;
     }
@@ -115,21 +107,15 @@ public class DBUsers {
 
             ps.setString(1, userName);
             ps.setString(2, userPassword);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                System.out.println("Username and password validation success!");
                 loginValidated = true;
             }
         } catch (SQLException e) {
             System.out.println("SQL Exception Error (Login Database Match): " + e.getErrorCode());
         } catch(Exception e) {
             System.out.println("Error: " + e.getMessage());
-        }
-
-        if (!loginValidated) {
-            System.out.println("Username and password validation failure.");
         }
 
         return loginValidated;

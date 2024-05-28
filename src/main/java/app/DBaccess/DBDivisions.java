@@ -24,7 +24,6 @@ public class DBDivisions {
                     "FROM first_level_divisions as f";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
-
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -53,9 +52,9 @@ public class DBDivisions {
                     "WHERE Division_ID = ?";
 
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
-
             ps.setInt(1, divID);
             ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
                 int providedDivID = rs.getInt("Division_ID");
                 String divName = rs.getString("Division");
@@ -77,14 +76,18 @@ public class DBDivisions {
             String sql = "SELECT f.Division_ID, f.Division, f.Country_ID " +
                     "FROM first_level_divisions as f " +
                     "WHERE f.Country_ID = ?";
+
             PreparedStatement ps = JDBC.getConnection().prepareStatement(sql);
             ps.setInt(1, countryID);
             ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
                 int divID = rs.getInt("Division_ID");
                 String divName = rs.getString("Division");
                 int divCountryID = rs.getInt("Country_ID");
+
                 Division d = new Division(divID, divName, divCountryID);
+
                 divList.add(d);
             }
         } catch (SQLException e) {
