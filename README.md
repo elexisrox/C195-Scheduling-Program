@@ -1,7 +1,7 @@
 # C195 Appointment Scheduling Application
 > Purpose: Provide the ability to add, modify, and delete customers and appointments, allowing access to an existing SQL database.
 
-## Received the WGU Award of Excellence, June 2024
+## Awarded the WGU Award of Excellence, June 2024
 - Author: Elexis Rox
 - Application Version 1.0
 - Date: 5/28/2024
