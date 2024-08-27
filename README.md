@@ -1,10 +1,9 @@
 # C195 Appointment Scheduling Application
 > Purpose: Provide the ability to add, modify, and delete customers and appointments, allowing access to an existing SQL database.
 
-Author: Elexis Rox
-Student ID: 001478546
-Application Version 1.0
-Date: 5/28/2024
+- Author: Elexis Rox
+- Application Version 1.0
+- Date: 5/28/2024
 
 IDE: IntelliJ IDEA 2023.2.2 (Community Edition) x64
 JDK version: Java 17.0.1
